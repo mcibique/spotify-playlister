@@ -8,11 +8,20 @@
 </head>
 
 <body ng-app="playlister">
-  <h1>Spotify playlister</h1>
+  <header ng-controller="LogoutController">
+    <h1>Spotify playlister</h1>
+    <a href="javascript:void(0);" ng-click="logout()" ng-if="isLoggedIn()">Logout</a>
+  </header>
+
+  <div ui-view=""></div>
 
   <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/angularjs/angular.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
   <script src="scripts/app.js"></script>
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/spotify-credentials.js"></script>
+  <script src="scripts/spotify-credentials-debug.js"></script>
 </body>
 
 </html>
