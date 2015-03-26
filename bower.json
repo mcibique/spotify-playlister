@@ -1,0 +1,16 @@
+{
+  "name": "spotify-playlister",
+  "version": "0.0.0",
+  "homepage": "https://github.com/mcibique/spotify-playlister",
+  "authors": [
+    "mcibique <mcibique@hotmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
