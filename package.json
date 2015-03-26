@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/mcibique/spotify-playlister/issues"
   },
-  "homepage": "https://github.com/mcibique/spotify-playlister"
+  "homepage": "https://github.com/mcibique/spotify-playlister",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-connect": "^2.2.0"
+  }
 }
