@@ -16,7 +16,7 @@
         });
     })
     .controller('PlaylistsController', function ($scope, $log, $filter, profile, SpotifyPlaylist, duplicatesFinder,
-      playlistComparer) {
+      playlistComparer, playlistMerge) {
       $scope.profile = profile;
       $scope.selected = [];
       $scope.duplicates = {};
@@ -40,7 +40,7 @@
           return;
         }
 
-        duplicatesFinder.find(profile.id, selected[0]).then(function (duplicates) {
+        duplicatesFinder.find(selected[0]).then(function (duplicates) {
           $log.debug('duplicates found: ', duplicates);
           $scope.duplicates = duplicates;
         });
@@ -52,7 +52,7 @@
           return;
         }
 
-        playlistComparer.compare(profile.id, selected[0], selected[1]).then(function (commonTracks) {
+        playlistComparer.compare(selected[0], selected[1]).then(function (commonTracks) {
           $log.debug('common tracks: ', commonTracks);
           $scope.commonTracks = commonTracks.map(function (track) {
             return $filter('track')(track);
@@ -60,13 +60,23 @@
           $scope.commonTracks.sort();
         });
       };
+
+      $scope.mergePlaylists = function (selected) {
+        if (!selected.length || selected.length !== 2) {
+          return;
+        }
+
+        playlistMerge.merge(selected[0], selected[1]).then(function () {
+          $log.debug('playlists merged');
+        });
+      };
     })
     .factory('playlistTracks', function ($q, SpotifyPlaylist) {
       var defaultLimit = 100;
-      var getTracksResponse = function (response, userId, playlist, offset, fields) {
+      var getTracksResponse = function (response, playlist, offset, fields) {
         var defer = $q.defer();
         if (response.items.length && response.items.length === defaultLimit) {
-          getTracks(userId, playlist, offset + defaultLimit, fields).then(function (tracks) {
+          getTracks(playlist, offset + defaultLimit, fields).then(function (tracks) {
             defer.resolve(response.items.concat(tracks));
           });
         } else {
@@ -76,16 +86,16 @@
         return defer.promise;
       };
 
-      var getTracks = function (userId, playlist, offset, fields) {
+      var getTracks = function (playlist, offset, fields) {
         var defer = $q.defer();
         SpotifyPlaylist.tracks({
-          userId: userId,
+          userId: playlist.owner.id,
           playlistId: playlist.id,
           limit: defaultLimit,
           offset: offset,
           fields: fields
         }, function (response) {
-          getTracksResponse(response, userId, playlist, offset, fields).then(function (tracks) {
+          getTracksResponse(response, playlist, offset, fields).then(function (tracks) {
             defer.resolve(tracks);
           });
         });
@@ -98,10 +108,10 @@
       };
     })
     .factory('duplicatesFinder', function ($q, playlistTracks, spotifyNamesSanitizer) {
-      var find = function (userId, playlist) {
+      var find = function (playlist) {
         var fields = 'items(track(name,id,album(name,id),artists(id,name)))';
 
-        return playlistTracks.get(userId, playlist, 0, fields).then(function (items) {
+        return playlistTracks.get(playlist, 0, fields).then(function (items) {
           var tracks = items.map(function (item) {
             var track = item.track;
             track.name = spotifyNamesSanitizer.sanitize(track.name);
@@ -170,38 +180,18 @@
         find: find
       };
     })
-    .factory('playlistComparer', function ($q, playlistTracks) {
-      var compare = function (userId, playlistA, playlistB) {
+    .factory('playlistComparer', function ($q, playlistTracks, tracksComparer) {
+      var compare = function (playlistA, playlistB) {
         var defer = $q.defer();
         var fields = 'items(track(name,id,album(name,id),artists(id,name)))';
 
-        var promiseA = playlistTracks.get(userId, playlistA, 0, fields);
-        var promiseB = playlistTracks.get(userId, playlistB, 0, fields);
+        var promiseA = playlistTracks.get(playlistA, 0, fields);
+        var promiseB = playlistTracks.get(playlistB, 0, fields);
 
         $q.all([promiseA, promiseB]).then(function (results) {
-          var tracksA = results[0].map(function (i) {
-            return i.track;
+          tracksComparer.compare(results[0], results[1]).then(function (duplicates) {
+            defer.resolve(duplicates);
           });
-          var tracksB = results[1].map(function (i) {
-            return i.track;
-          });
-
-          var temp = {};
-          tracksA.forEach(function (track) {
-            if (track.id) {
-              temp[track.id] = track;
-            }
-          });
-
-          var duplicates = [];
-
-          tracksB.forEach(function (track) {
-            if (track.id && temp[track.id]) {
-              duplicates.push(track);
-            }
-          });
-
-          defer.resolve(duplicates);
         });
 
         return defer.promise;
@@ -209,6 +199,146 @@
 
       return {
         compare: compare
+      };
+    })
+    .factory('tracksComparer', function ($q) {
+      var compare = function (tracksA, tracksB) {
+        var defer = $q.defer();
+        if (tracksA[0] && tracksA[0].track) {
+          tracksA = tracksA.map(function (i) {
+            return i.track;
+          });
+        }
+        if (tracksB[0] && tracksB[0].track) {
+          tracksB = tracksB.map(function (i) {
+            return i.track;
+          });
+        }
+
+        var temp = {};
+        tracksA.forEach(function (track) {
+          if (track.id) {
+            temp[track.id] = track;
+          }
+        });
+
+        var duplicates = [];
+
+        tracksB.forEach(function (track) {
+          var existingTrack = temp[track.id];
+          if (track.id && existingTrack) {
+            duplicates.push(existingTrack);
+          }
+        });
+
+        defer.resolve(duplicates);
+        return defer.promise;
+      };
+
+      return {
+        compare: compare
+      };
+    })
+    .factory('playlistMerge', function ($q, $modal, playlistTracks) {
+      var merge = function (fromPlaylist, toPlaylist) {
+        var defer = $q.defer();
+        var fields = 'items(added_at,track(name,id,uri,album(name,id),artists(id,name)))';
+
+        $modal.open({
+          templateUrl: 'views/modals/merge.html',
+          resolve: {
+            fromTracks: function () {
+              return playlistTracks.get(fromPlaylist, 0, fields);
+            },
+            toTracks: function () {
+              return playlistTracks.get(toPlaylist, 0, fields);
+            }
+          },
+          controller: function ($scope, $modalInstance, $log, fromTracks, toTracks, tracksComparer,
+            SpotifyPlaylist) {
+            $scope.fromPlaylist = fromPlaylist;
+            $scope.fromTracks = fromTracks;
+            $scope.filteredFromTracks = fromTracks;
+            $scope.toPlaylist = toPlaylist;
+            $scope.toTracks = toTracks;
+            $scope.lastXDays = 7;
+            $scope.ok = function () {
+              $modalInstance.dismiss('ok');
+              defer.resolve();
+            };
+            $scope.cancel = function () {
+              $modalInstance.dismiss('cancel');
+              defer.resolve();
+            };
+
+            // filtering
+            var filterTracks = function (tracks, days) {
+              var fromDate = new Date();
+              fromDate.setDate(fromDate.getDate() - days);
+              return tracks.filter(function (item) {
+                return new Date(item.added_at) >= fromDate;
+              });
+            };
+
+            $scope.filteredFromTracks = filterTracks(fromTracks, $scope.lastXDays);
+
+            $scope.$watch(function (scope) {
+              return scope.lastXDays;
+            }, function (newValue, oldValue) {
+              if (newValue !== oldValue && !isNaN(newValue) && newValue >= 0) {
+                $scope.filteredFromTracks = filterTracks(fromTracks, newValue);
+              }
+            });
+
+            // compare
+            $scope.commonTracks = [];
+
+            tracksComparer.compare(fromTracks, toTracks).then(function (commonTracks) {
+              $scope.commonTracks = commonTracks;
+              $scope.commonTracks.forEach(function (track) {
+                track.isCommon = true;
+              });
+            });
+
+            $scope.getUniqueTracks = function (tracks) {
+              return tracks.filter(function (item) {
+                return !item.track.isCommon || item.userOverride;
+              });
+            };
+
+            $scope.getDuplicateTracks = function (tracks) {
+              return tracks.filter(function (item) {
+                return item.track.isCommon && !item.userOverride;
+              });
+            };
+
+            $scope.addSelectedToPlaylist = function () {
+              var selected = $scope.filteredFromTracks.filter(function (item) {
+                return item.selected;
+              }).map(function (item) {
+                return item.track.uri;
+              });
+
+              if (selected.length) {
+                SpotifyPlaylist.addTracks({
+                  userId: toPlaylist.owner.id,
+                  playlistId: toPlaylist.id
+                }, {
+                  uris: selected
+                }, function (response) {
+                  $log.debug('success');
+                  $scope.ok();
+                });
+              }
+            };
+          }
+        });
+
+        return defer.promise;
+      };
+
+      return {
+        merge: merge
       };
     })
     .factory('spotifyNamesSanitizer', function () {

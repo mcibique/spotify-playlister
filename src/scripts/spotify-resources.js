@@ -26,10 +26,15 @@
     .factory('SpotifyPlaylist', function ($resource, spotifyApiUrl) {
       var playlistUrl = spotifyApiUrl + '/users/:userId/playlists/:playlistId';
       return $resource(playlistUrl, {
-        userId: '@userId'
+        userId: '@userId',
+        playlistId: '@playlistId'
       }, {
         tracks: {
           method: 'GET',
+          url: playlistUrl + '/tracks'
+        },
+        addTracks: {
+          method: 'POST',
           url: playlistUrl + '/tracks'
         }
       });

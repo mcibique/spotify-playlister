@@ -1,8 +1,8 @@
 (function (ng, $) {
   'use strict';
 
-  ng.module('playlister', ['ui.router', 'playlister.auth', 'playlister.playlists', 'playlister.spotify-credentials',
-      'playlister.spotify-resources'
+  ng.module('playlister', ['ui.router', 'ui.bootstrap', 'playlister.auth', 'playlister.playlists',
+      'playlister.spotify-credentials', 'playlister.spotify-resources'
     ])
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
       $stateProvider
