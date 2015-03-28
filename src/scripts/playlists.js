@@ -1,7 +1,7 @@
 (function (ng, $) {
   'use strict';
 
-  ng.module('playlister.playlists', ['ui.router', 'playlister.spotify-resources'])
+  ng.module('playlister.playlists', ['ui.router', 'playlister.filters', 'playlister.spotify-resources'])
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
       $stateProvider
         .state('playlists', {
@@ -15,10 +15,11 @@
           }
         });
     })
-    .controller('PlaylistsController', function ($scope, $log, profile, SpotifyPlaylist, duplicatesFinder) {
+    .controller('PlaylistsController', function ($scope, $log, $filter, profile, SpotifyPlaylist, duplicatesFinder,
+      playlistComparer) {
       $scope.profile = profile;
       $scope.selected = [];
-      $scope.duplicates = [];
+      $scope.duplicates = {};
       $scope.playlists = SpotifyPlaylist.get({
         userId: profile.id,
         limit: 50
@@ -34,14 +35,29 @@
       };
 
       $scope.findPlaylistDuplicates = function (selected) {
-        $scope.duplicates = [];
-        if (!selected.length) {
+        $scope.duplicates = {};
+        if (!selected.length || selected.length !== 1) {
           return;
         }
 
         duplicatesFinder.find(profile.id, selected[0]).then(function (duplicates) {
           $log.debug('duplicates found: ', duplicates);
           $scope.duplicates = duplicates;
+        });
+      };
+
+      $scope.comparePlaylists = function (selected) {
+        $scope.commonTracks = [];
+        if (!selected.length || selected.length !== 2) {
+          return;
+        }
+
+        playlistComparer.compare(profile.id, selected[0], selected[1]).then(function (commonTracks) {
+          $log.debug('common tracks: ', commonTracks);
+          $scope.commonTracks = commonTracks.map(function (track) {
+            return $filter('track')(track);
+          });
+          $scope.commonTracks.sort();
         });
       };
     })
@@ -145,13 +161,54 @@
 
           return {
             ids: duplicateIds,
-            title: titlesDuplicates
+            titles: titlesDuplicates
           };
         });
       };
 
       return {
         find: find
+      };
+    })
+    .factory('playlistComparer', function ($q, playlistTracks) {
+      var compare = function (userId, playlistA, playlistB) {
+        var defer = $q.defer();
+        var fields = 'items(track(name,id,album(name,id),artists(id,name)))';
+
+        var promiseA = playlistTracks.get(userId, playlistA, 0, fields);
+        var promiseB = playlistTracks.get(userId, playlistB, 0, fields);
+
+        $q.all([promiseA, promiseB]).then(function (results) {
+          var tracksA = results[0].map(function (i) {
+            return i.track;
+          });
+          var tracksB = results[1].map(function (i) {
+            return i.track;
+          });
+
+          var temp = {};
+          tracksA.forEach(function (track) {
+            if (track.id) {
+              temp[track.id] = track;
+            }
+          });
+
+          var duplicates = [];
+
+          tracksB.forEach(function (track) {
+            if (track.id && temp[track.id]) {
+              duplicates.push(track);
+            }
+          });
+
+          defer.resolve(duplicates);
+        });
+
+        return defer.promise;
+      };
+
+      return {
+        compare: compare
       };
     })
     .factory('spotifyNamesSanitizer', function () {

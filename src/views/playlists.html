@@ -10,9 +10,26 @@
 </ul>
 
 <button ng-click="findPlaylistDuplicates(selected)">Find duplicates</button>
+<button ng-click="comparePlaylists(selected)">Compare playlists</button>
 
-<ul ng-repeat="tracks in duplicates">
-  <li>
-    {{ tracks[0].id }} vs {{ tracks[1].id }}
+<div ng-if="duplicates.ids.length">
+  <strong>IDs:</strong>
+  <ul>
+    <li ng-repeat="pair in duplicates.ids">
+      {{ pair[0] | track }} vs {{ pair | track }}
+    </li>
+  </ul>
+</div>
+<div ng-if="duplicates.titles.length">
+  <strong>title:</strong>
+  <ul>
+    <li ng-repeat="title in duplicates.titles">
+      {{ title.key }} - {{ title.name }} ({{ title.filtered.join(', ') }})
+    </li>
+  </ul>
+</div>
+<div ng-if="commonTracks.length">
+  <li ng-repeat="commonTrack in commonTracks">
+    {{ commonTrack }}
   </li>
-</ul>
+</div>
