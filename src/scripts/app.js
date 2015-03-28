@@ -1,7 +1,7 @@
 (function (ng, $) {
   'use strict';
 
-  ng.module('playlister', ['ui.router', 'playlister.auth', 'playlister.spotify-credentials',
+  ng.module('playlister', ['ui.router', 'playlister.auth', 'playlister.playlists', 'playlister.spotify-credentials',
       'playlister.spotify-resources'
     ])
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -10,19 +10,9 @@
           url: '/login/',
           templateUrl: 'views/login.html',
           controller: 'LoginController'
-        })
-        .state('playlists', {
-          url: '/',
-          templateUrl: 'views/playlists.html',
-          controller: 'PlaylistsController',
-          resolve: {
-            profile: function (SpotifyUser) {
-              return SpotifyUser.get().$promise;
-            }
-          }
         });
 
-      $urlRouterProvider.otherwise('/');
+      $urlRouterProvider.otherwise('/playlists/');
 
       $httpProvider.defaults.useXDomain = true;
     })
@@ -59,9 +49,6 @@
       $scope.isLoggedIn = function () {
         return !!auth.getKey();
       };
-    })
-    .controller('PlaylistsController', function ($scope, profile) {
-      $scope.profile = profile;
     });
 
 })(angular, jQuery);

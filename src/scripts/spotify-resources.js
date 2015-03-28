@@ -19,16 +19,20 @@
         }
       };
     })
-    .factory('spotifyResource', function ($resource) {
-      return function () {
-        var args = Array.prototype.slice.call(arguments);
-        args[0] = 'https://api.spotify.com/v1' + args[0];
-
-        return $resource.apply(null, args);
-      };
+    .constant('spotifyApiUrl', 'https://api.spotify.com/v1')
+    .factory('SpotifyUser', function ($resource, spotifyApiUrl) {
+      return $resource(spotifyApiUrl + '/me');
     })
-    .factory('SpotifyUser', function (spotifyResource) {
-      return spotifyResource('/me');
+    .factory('SpotifyPlaylist', function ($resource, spotifyApiUrl) {
+      var playlistUrl = spotifyApiUrl + '/users/:userId/playlists/:playlistId';
+      return $resource(playlistUrl, {
+        userId: '@userId'
+      }, {
+        tracks: {
+          method: 'GET',
+          url: playlistUrl + '/tracks'
+        }
+      });
     });
 
 })(angular, jQuery);
