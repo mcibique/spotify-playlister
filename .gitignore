@@ -1,3 +1,4 @@
+.tmp
 node_modules
 bower_components
 src/scripts/spotify-credentials-debug.js
