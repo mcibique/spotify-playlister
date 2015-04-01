@@ -37,3 +37,11 @@
     </li>
   </ul>
 </div>
+<div ng-if="similarTracks.length">
+  <strong>Similar tracks:</strong>
+  <ul>
+    <li ng-repeat="similarTrack in similarTracks">
+      {{ similarTrack }}
+    </li>
+  </ul>
+</div>

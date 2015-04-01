@@ -54,10 +54,14 @@
 
         playlistComparer.compare(selected[0], selected[1]).then(function (commonTracks) {
           $log.debug('common tracks: ', commonTracks);
-          $scope.commonTracks = commonTracks.map(function (track) {
+          $scope.commonTracks = commonTracks.ids.map(function (track) {
             return $filter('track')(track);
           });
           $scope.commonTracks.sort();
+          $scope.similarTracks = commonTracks.titles.map(function (track) {
+            return $filter('track')(track.a) + ' vs. ' + $filter('track')(track.b);
+          });
+          $scope.similarTracks.sort();
         });
       };
 
@@ -201,7 +205,7 @@
         compare: compare
       };
     })
-    .factory('tracksComparer', function ($q) {
+    .factory('tracksComparer', function ($q, spotifyNamesSanitizer) {
       var compare = function (tracksA, tracksB) {
         var defer = $q.defer();
         if (tracksA[0] && tracksA[0].track) {
@@ -215,6 +219,7 @@
           });
         }
 
+        // IDs
         var temp = {};
         tracksA.forEach(function (track) {
           if (track.id) {
@@ -231,7 +236,41 @@
           }
         });
 
-        defer.resolve(duplicates);
+        // names
+        var uniqueKeyTemp = {};
+        var titles = [];
+        tracksA.forEach(function (track) {
+          if (track.id) {
+            var artists = track.artists.map(function (artist) {
+              return spotifyNamesSanitizer.sanitize(artist.name);
+            });
+            artists.sort();
+            var key = artists.join('') + spotifyNamesSanitizer.sanitize(track.name);
+            uniqueKeyTemp[key] = track;
+          }
+        });
+
+        tracksB.forEach(function (track) {
+          if (track.id) {
+            var artists = track.artists.map(function (artist) {
+              return spotifyNamesSanitizer.sanitize(artist.name);
+            });
+            artists.sort();
+            var key = artists.join('') + spotifyNamesSanitizer.sanitize(track.name);
+            var existing = uniqueKeyTemp[key];
+            if (existing) {
+              titles.push({
+                a: existing,
+                b: track
+              });
+            }
+          }
+        });
+
+        defer.resolve({
+          ids: duplicates,
+          titles: titles
+        });
         return defer.promise;
       };
 
@@ -294,7 +333,7 @@
             $scope.commonTracks = [];
 
             tracksComparer.compare(fromTracks, toTracks).then(function (commonTracks) {
-              $scope.commonTracks = commonTracks;
+              $scope.commonTracks = commonTracks.ids;
               $scope.commonTracks.forEach(function (track) {
                 track.isCommon = true;
               });
