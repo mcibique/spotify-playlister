@@ -1,7 +1,7 @@
 (function (ng) {
   'use strict';
 
-  ng.module('playlister.spotify-credentials', [])
+  ng.module('playlister.spotify.credentials', [])
     .constant('spotifyCredentials', {
       authorizeUrl: 'https://accounts.spotify.com/authorize',
       clientId: '<< insert valid client ID >>',

@@ -1,7 +1,7 @@
 (function (ng) {
   'use strict';
 
-  ng.module('playlister.auth', [])
+  ng.module('playlister.services.auth', [])
     .run(function ($log, $rootScope, $state, auth) {
       $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
         if (toState.name === 'login') {

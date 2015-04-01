@@ -1,17 +1,7 @@
 (function (ng, $) {
   'use strict';
 
-  ng.module('playlister.filters', [])
-    .filter('artists', function () {
-      return function (artists) {
-        if (!artists) {
-          return '';
-        }
-        return artists.map(function (artist) {
-          return artist.name || '';
-        }).join(', ');
-      };
-    })
+  ng.module('playlister.filters.tracks', ['playlister.filters.artists'])
     .filter('track', function ($filter) {
       var artistsFilter = $filter('artists');
       return function (track) {

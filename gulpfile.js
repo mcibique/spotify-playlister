@@ -3,6 +3,7 @@ var connect = require('gulp-connect');
 var sass = require('gulp-sass');
 var clean = require('gulp-clean');
 var autoprefixer = require('gulp-autoprefixer');
+var inject = require('gulp-inject');
 
 var sources = {
   tmp: ['./.tmp'],
@@ -47,6 +48,14 @@ gulp.task('styles', function () {
     }))
     .pipe(gulp.dest('./.tmp/styles/'))
     .pipe(connect.reload());
+});
+
+gulp.task('index', function () {
+  return gulp.src('./src/index.html')
+    .pipe(inject(gulp.src(sources.js.concat(['!**/spotify-credentials.js']), {
+      read: false
+    })))
+    .pipe(gulp.dest('./src/'));
 });
 
 gulp.task('watch', function () {
