@@ -1,0 +1,7 @@
+<h3>{{ playlist.name }}</h3>
+<p>Owner: {{ playlist.owner.id }}</p>
+<ul>
+  <li ng-repeat="item in trackItems track by $index">
+    {{ item.track | track }}
+  </li>
+</ul>

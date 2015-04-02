@@ -61,6 +61,13 @@
           $log.debug('playlists merged');
         });
       };
+    })
+    .controller('PlaylistController', function ($scope, playlist, playlistTracks) {
+      $scope.playlist = playlist;
+
+      playlistTracks.get(playlist, 0).then(function (result) {
+        $scope.trackItems = result;
+      });
     });
 
 })(angular, jQuery);

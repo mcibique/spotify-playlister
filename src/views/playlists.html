@@ -2,12 +2,19 @@
 
 <span>User: {{ profile.id }} {{ profile.display_name }} ({{ profile.email }})</span>
 
-<ul ng-repeat="playlist in playlists.items">
-  <li>
-    <input type="checkbox" ng-click="selectPlaylist(selected, playlist)">
-    <span>{{ playlist.name }}</span>
-  </li>
-</ul>
+<div class="row">
+  <div class="col-xs-3">
+    <ul>
+      <li ng-repeat="playlist in playlists.items">
+        <input type="checkbox" ng-click="selectPlaylist(selected, playlist)">
+        <a ui-sref="playlists.detail({ userId: playlist.owner.id, id: playlist.id })">{{ playlist.name }}</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col-xs-9">
+    <div ui-view=""></div>
+  </div>
+</div>
 
 <button ng-click="findPlaylistDuplicates(selected)">Find duplicates</button>
 <button ng-click="comparePlaylists(selected)">Compare playlists</button>

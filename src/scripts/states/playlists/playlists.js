@@ -15,6 +15,19 @@
               return SpotifyUser.get().$promise;
             }
           }
+        })
+        .state('playlists.detail', {
+          url: '/playlists/:userId/playlist/:id',
+          templateUrl: 'views/playlist.html',
+          controller: 'PlaylistController',
+          resolve: {
+            playlist: function ($stateParams, SpotifyPlaylist) {
+              return SpotifyPlaylist.get({
+                userId: $stateParams.userId,
+                playlistId: $stateParams.id
+              }).$promise;
+            }
+          }
         });
     })
     .factory('playlistTracks', function ($q, SpotifyPlaylist) {
