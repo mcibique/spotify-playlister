@@ -2,7 +2,7 @@
   'use strict';
 
   ng.module('playlister.states.playlists', ['ui.router', 'playlister.states.playlists.controllers',
-      'playlister.filters', 'playlister.spotify.resources'
+      'playlister.filters', 'playlister.spotify.resources', 'playlister.spotify.tracksCache'
     ])
     .config(function ($stateProvider) {
       $stateProvider
@@ -17,7 +17,7 @@
           }
         })
         .state('playlists.detail', {
-          url: '/playlists/:userId/playlist/:id',
+          url: ':userId/playlist/:id',
           templateUrl: 'views/playlist.html',
           controller: 'PlaylistController',
           resolve: {
@@ -30,47 +30,11 @@
           }
         });
     })
-    .factory('playlistTracks', function ($q, SpotifyPlaylist) {
-      var defaultLimit = 100;
-      var getTracksResponse = function (response, playlist, offset, fields) {
-        var defer = $q.defer();
-        if (response.items.length && response.items.length === defaultLimit) {
-          getTracks(playlist, offset + defaultLimit, fields).then(function (tracks) {
-            defer.resolve(response.items.concat(tracks));
-          });
-        } else {
-          defer.resolve(response.items);
-        }
-
-        return defer.promise;
-      };
-
-      var getTracks = function (playlist, offset, fields) {
-        var defer = $q.defer();
-        SpotifyPlaylist.tracks({
-          userId: playlist.owner.id,
-          playlistId: playlist.id,
-          limit: defaultLimit,
-          offset: offset,
-          fields: fields
-        }, function (response) {
-          getTracksResponse(response, playlist, offset, fields).then(function (tracks) {
-            defer.resolve(tracks);
-          });
-        });
-
-        return defer.promise;
-      };
-
-      return {
-        get: getTracks
-      };
-    })
-    .factory('duplicatesFinder', function ($q, playlistTracks, spotifyNamesSanitizer) {
+    .factory('duplicatesFinder', function ($q, tracksCache, spotifyNamesSanitizer) {
       var find = function (playlist) {
         var fields = 'items(track(name,id,album(name,id),artists(id,name)))';
 
-        return playlistTracks.get(playlist, 0, fields).then(function (items) {
+        return tracksCache.get(playlist, 0, fields).then(function (items) {
           var tracks = items.map(function (item) {
             var track = item.track;
             track.name = spotifyNamesSanitizer.sanitize(track.name);
@@ -139,13 +103,13 @@
         find: find
       };
     })
-    .factory('playlistComparer', function ($q, playlistTracks, tracksComparer) {
+    .factory('playlistComparer', function ($q, tracksCache, tracksComparer) {
       var compare = function (playlistA, playlistB) {
         var defer = $q.defer();
         var fields = 'items(track(name,id,album(name,id),artists(id,name)))';
 
-        var promiseA = playlistTracks.get(playlistA, 0, fields);
-        var promiseB = playlistTracks.get(playlistB, 0, fields);
+        var promiseA = tracksCache.get(playlistA, 0, fields);
+        var promiseB = tracksCache.get(playlistB, 0, fields);
 
         $q.all([promiseA, promiseB]).then(function (results) {
           tracksComparer.compare(results[0], results[1]).then(function (duplicates) {
@@ -233,7 +197,7 @@
         compare: compare
       };
     })
-    .factory('playlistMerge', function ($q, $modal, playlistTracks) {
+    .factory('playlistMerge', function ($q, $modal, tracksCache) {
       var merge = function (fromPlaylist, toPlaylist) {
         var defer = $q.defer();
         var fields = 'items(added_at,track(name,id,uri,album(name,id),artists(id,name)))';
@@ -242,10 +206,10 @@
           templateUrl: 'views/modals/merge.html',
           resolve: {
             fromTracks: function () {
-              return playlistTracks.get(fromPlaylist, 0, fields);
+              return tracksCache.get(fromPlaylist, 0, fields);
             },
             toTracks: function () {
-              return playlistTracks.get(toPlaylist, 0, fields);
+              return tracksCache.get(toPlaylist, 0, fields);
             }
           },
           controller: function ($scope, $modalInstance, $log, fromTracks, toTracks, tracksComparer,

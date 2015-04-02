@@ -62,10 +62,10 @@
         });
       };
     })
-    .controller('PlaylistController', function ($scope, playlist, playlistTracks) {
+    .controller('PlaylistController', function ($scope, playlist, tracksCache) {
       $scope.playlist = playlist;
 
-      playlistTracks.get(playlist, 0).then(function (result) {
+      tracksCache.get(playlist, 0).then(function (result) {
         $scope.trackItems = result;
       });
     });
