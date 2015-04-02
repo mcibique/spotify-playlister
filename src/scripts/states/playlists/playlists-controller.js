@@ -68,6 +68,14 @@
       tracksCache.get(playlist, 0).then(function (result) {
         $scope.trackItems = result;
       });
+
+      $scope.refreshTracks = function (playlist) {
+        tracksCache.refresh(playlist);
+
+        tracksCache.get(playlist, 0).then(function (result) {
+          $scope.trackItems = result;
+        });
+      };
     });
 
 })(angular, jQuery);

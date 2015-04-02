@@ -1,5 +1,6 @@
 <h3>{{ playlist.name }}</h3>
 <p>Owner: {{ playlist.owner.id }}</p>
+<a ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
 <ul>
   <li ng-repeat="item in trackItems track by $index">
     {{ item.track | track }}
