@@ -7,7 +7,7 @@
     .config(function ($httpProvider) {
       $httpProvider.interceptors.push('spotifyAuthHttpInterceptor');
     })
-    .factory('spotifyAuthHttpInterceptor', function (auth, spotifyApiUrl) {
+    .factory('spotifyAuthHttpInterceptor', function ($injector, auth, spotifyApiUrl) {
       return {
         request: function (config) {
           if (config.url.indexOf(spotifyApiUrl) === 0) {
@@ -18,6 +18,14 @@
           }
 
           return config;
+        },
+        responseError: function (rejection) {
+          if (rejection.config.url.indexOf(spotifyApiUrl) === 0) {
+            if (rejection.status === 401) {
+              auth.clearKey();
+              $injector.get('$state').go('login');
+            }
+          }
         }
       };
     })

@@ -1,26 +1,28 @@
-<h2>Playlists</h2>
+<div class="playlists">
+  <div class="playlists-header">
+    <span class="user-info">{{ profile.id }} {{ profile.display_name }} ({{ profile.email }})</span>
+  </div>
 
-<span>User: {{ profile.id }} {{ profile.display_name }} ({{ profile.email }})</span>
-
-<div class="row">
-  <div class="col-xs-3">
-    <ul>
-      <li ng-repeat="playlist in playlists.items">
-        <input type="checkbox" ng-click="selectPlaylist(selected, playlist)">
-        <a ui-sref="playlists.detail({ userId: playlist.owner.id, id: playlist.id })">{{ playlist.name }}</a>
+  <div class="playlist-sidebar">
+    <ul class="playlist-list">
+      <li ng-repeat="playlist in playlists.items" class="playlist-item" ng-class="{ 'owned-by-user': playlist.owner.id === profile.id }">
+        <input class="playlist-checker" type="checkbox" ng-click="selectPlaylist(selected, playlist)">
+        <a class="playlist-name" ui-sref="playlists.detail({ userId: playlist.owner.id, id: playlist.id })">{{ playlist.name }}</a>
+        <span class="playlist-tracks-badge">{{ playlist.tracks.total }}</span>
       </li>
     </ul>
   </div>
-  <div class="col-xs-9">
-    <div ui-view=""></div>
+  <div class="playlist-working-area">
+    <div class="action-bar">
+      <button class="btn btn-default" ng-click="findPlaylistDuplicates(selected)">Find duplicates</button>
+      <button class="btn btn-default" ng-click="comparePlaylists(selected)">Compare playlists</button>
+      <button class="btn btn-default" ng-click="mergePlaylists(selected)">Merge playlists</button>
+    </div>
+    <div class="playlist-detail" ui-view=""></div>
   </div>
 </div>
 
-<button ng-click="findPlaylistDuplicates(selected)">Find duplicates</button>
-<button ng-click="comparePlaylists(selected)">Compare playlists</button>
-<button ng-click="mergePlaylists(selected)">Merge playlists</button>
-
-<div ng-if="duplicates.ids.length">
+<!-- <div ng-if="duplicates.ids.length">
   <strong>Duplicate IDs:</strong>
   <ul>
     <li ng-repeat="pair in duplicates.ids">
@@ -51,4 +53,4 @@
       {{ similarTrack }}
     </li>
   </ul>
-</div>
+</div> -->

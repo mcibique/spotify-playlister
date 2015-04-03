@@ -5,17 +5,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Spotify playlister</title>
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="styles/main.css">
 </head>
 
 <body ng-app="playlister" class="container">
   <header ng-controller="LogoutController">
-    <h1>Spotify playlister</h1>
-    <a href="javascript:void(0);" ng-click="logout()" ng-if="isLoggedIn()">Logout</a>
+    <div class="container">
+      <h1>Spotify playlister</h1>
+      <a href="javascript:void(0);" ng-click="logout()" ng-if="isLoggedIn()">Logout</a>
+    </div>
   </header>
-
-  <div ui-view=""></div>
+  <main>
+    <div class="main-content" ui-view=""></div>
+  </main>
 
   <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>

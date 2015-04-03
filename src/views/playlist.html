@@ -1,8 +1,16 @@
-<h3>{{ playlist.name }}</h3>
-<p>Owner: {{ playlist.owner.id }}</p>
-<a ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
-<ul>
-  <li ng-repeat="item in trackItems track by $index">
-    {{ item.track | track }}
-  </li>
-</ul>
+<div class="playlist-main-info">
+  <h3 class="playlist-name">{{ playlist.name }}</h3>
+  <span class="playlist-owner">Owner: {{ playlist.owner.id }}</span>
+  <a class="playlist-refresh" ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
+</div>
+<div class="playlist-tracks">
+  <ul class="tracks-list">
+    <li class="tracks-list-item" ng-repeat="item in trackItems track by $index">
+      <div class="track-info">
+        <div class="artists">{{ item.track.artists | artists }}</div>
+        <div class="title">{{ item.track.name }}</div>
+        <div class="album">{{ item.track.album.name }}</div>
+      </div>
+    </li>
+  </ul>
+</div>

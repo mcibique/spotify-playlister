@@ -1,0 +1,121 @@
+.playlists {
+  $playlists-header-height: 4rem;
+  @include border-left;
+  @include border-right;
+  height: 100%;
+  position: relative;
+  .playlists-header {
+    padding: 0.5rem 30px;
+    .user-info {
+      // desired height - padding-top - padding-bottom
+      line-height: $playlists-header-height - (2 * 0.5rem);
+      font-size: 1.8rem;
+    }
+  }
+  .playlist-sidebar {
+    position: absolute;
+    left: 0;
+    top: $playlists-header-height;
+    bottom: 0;
+    width: $sidebar-width;
+    overflow: auto;
+    @include border-top;
+    @include border-right;
+    .playlist-list {
+      $item-height: 3rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      line-height: $item-height;
+      font-size: 1.5rem;
+      .playlist-item {
+        @include border-bottom;
+        @include ellipsis;
+        padding: 0 25px 0 10px;
+        position: relative;
+        .playlist-name {
+          text-decoration: none;
+          &:link,
+          &:visited {
+            color: $font-color;
+          }
+        }
+        .playlist-tracks-badge {
+          position: absolute;
+          right: 5px;
+          top: 0.5rem;
+          font-size: 1.1rem;
+          display: inline-block;
+          background-color: #fafafa;
+          line-height: $item-height - (2 * 0.5rem);
+          padding: 0 3px;
+          border-radius: ($item-height - (2 * 0.5rem)) / 4;
+        }
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 3px;
+          background-color: #ffa500;
+        }
+        &.owned-by-user:before {
+          background-color: #008000;
+        }
+      }
+    }
+  }
+  .playlist-working-area {
+    @include border-top;
+    position: absolute;
+    left: $sidebar-width;
+    top: $playlists-header-height;
+    bottom: 0;
+    right: 0;
+    @include border-top;
+    .action-bar {
+      padding: 10px 20px;
+      @include border-bottom;
+    }
+  }
+  .playlist-detail {
+    height: 100%;
+    overflow: auto;
+    .playlist-main-info {
+      padding: 1rem 15px;
+      .playlist-name {
+        @include ellipsis;
+        line-height: 4rem;
+        font-size: 2.5rem;
+      }
+      .playlist-refresh,
+      .playlist-owner {
+        font-size: 1.3rem;
+      }
+    }
+  }
+  .playlist-tracks {
+    .tracks-list {
+      padding: 0;
+      list-style: none;
+      @include border-top;
+      .tracks-list-item {
+        @include border-bottom;
+        line-height: 3rem;
+        font-size: 1.5rem;
+      }
+    }
+  }
+  .track-info {
+    @include clearfix;
+    .artists,
+    .title,
+    .album {
+      @include ellipsis;
+      padding: 0 2%;
+      float: left;
+      width: percentage(1/3);
+    }
+  }
+}

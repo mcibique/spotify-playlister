@@ -9,7 +9,7 @@ var sources = {
   tmp: ['./.tmp'],
   html: ['./src/**/*.html'],
   js: ['./src/scripts/**/*.js'],
-  scss: ['./src/styles/main.scss']
+  scss: ['./src/styles/**/*.scss']
 };
 
 gulp.task('clean', function () {

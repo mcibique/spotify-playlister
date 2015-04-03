@@ -1,0 +1,17 @@
+.login {
+  width: 500px;
+  margin: 100px auto;
+  padding: 50px 20px;
+  @include border;
+  border-radius: 0.5rem;
+  text-align: center;
+  h2 {
+    font-size: 3rem;
+    line-height: 5rem;
+  }
+  .welcome-message {
+    font-size: 2rem;
+    line-height: 3rem;
+    margin-bottom: 2rem;
+  }
+}
