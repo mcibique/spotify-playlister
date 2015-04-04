@@ -18,9 +18,18 @@
     top: $playlists-header-height;
     bottom: 0;
     width: $sidebar-width;
-    overflow: auto;
+    overflow: hidden;
     @include border-top;
     @include border-right;
+    &.ps-active-y {
+      padding-right: 14px;
+      &.ps-container > .ps-scrollbar-y-rail {
+        opacity: 0.6;
+      }
+      .playlist-list {
+        @include border-right;
+      }
+    }
     .playlist-list {
       $item-height: 3rem;
       margin: 0;
@@ -80,8 +89,11 @@
     }
   }
   .playlist-detail {
-    height: 100%;
-    overflow: auto;
+    position: absolute;
+    top: 51px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     .playlist-main-info {
       padding: 1rem 15px;
       .playlist-name {
@@ -94,12 +106,30 @@
         font-size: 1.3rem;
       }
     }
+    .playlist-tracks {
+      position: absolute;
+      top: 76px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      &.ps-active-y {
+        padding-right: 14px;
+        &.ps-container > .ps-scrollbar-y-rail {
+          opacity: 0.6;
+        }
+        .tracks-list {
+          @include border-right;
+        }
+      }
+    }
   }
   .playlist-tracks {
+    @include border-top;
     .tracks-list {
       padding: 0;
+      margin: 0;
       list-style: none;
-      @include border-top;
       .tracks-list-item {
         @include border-bottom;
         line-height: 3rem;

@@ -3,7 +3,7 @@
   <span class="playlist-owner">Owner: {{ playlist.owner.id }}</span>
   <a class="playlist-refresh" ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
 </div>
-<div class="playlist-tracks">
+<div class="playlist-tracks" scrollbar>
   <ul class="tracks-list">
     <li class="tracks-list-item" ng-repeat="item in trackItems track by $index">
       <div class="track-info">

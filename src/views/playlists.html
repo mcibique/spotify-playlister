@@ -3,7 +3,7 @@
     <span class="user-info">{{ profile.id }} {{ profile.display_name }} ({{ profile.email }})</span>
   </div>
 
-  <div class="playlist-sidebar">
+  <div class="playlist-sidebar" scrollbar>
     <ul class="playlist-list">
       <li ng-repeat="playlist in playlists.items" class="playlist-item" ng-class="{ 'owned-by-user': playlist.owner.id === profile.id }">
         <input class="playlist-checker" type="checkbox" ng-click="selectPlaylist(selected, playlist)">

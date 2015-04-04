@@ -3,37 +3,6 @@ $max-content-width: 1280px;
 $min-content-width: 720px;
 $sidebar-width: 280px;
 $header-height: 6rem;
-html {
-  font-size: 62.5%;
-  font-family: 'Helvetica Neue';
-  color: $font-color;
-}
-body {
-  height: 100%;
-}
-* {
-  box-sizing: border-box;
-}
-h1,
-h2,
-h3 {
-  margin: 0;
-}
-.btn {
-  $btn-height: 3rem;
-  // desired height - paddings - borders
-  line-height: $btn-height - (2 * .5rem);
-  padding: 0.4rem 12px;
-  border-width: 0.1rem;
-  text-decoration: none;
-  &.large {
-    $btn-height: 4rem;
-    line-height: $btn-height - (2 * .5rem);
-    padding: 0.4rem 18px;
-    border-width: 0.1rem;
-    font-size: 1.6rem;
-  }
-}
 header {
   position: fixed;
   background-color: #fff;
