@@ -97,20 +97,53 @@
     .playlist-main-info {
       @include clearfix;
       padding: 1rem 15px;
+      position: relative;
+      &.with-image {
+        padding-left: 15px * 2 + 75px;
+      }
+      .playlist-image {
+        position: absolute;
+        top: 0;
+        left: 15px;
+        max-width: 4rem + 2 * 1rem + 1.5rem;
+        max-height: 4rem + 2 * 1rem + 1.5rem;
+      }
       .playlist-name {
         @include ellipsis;
+        padding-right: 100px;
         line-height: 4rem;
         font-size: 2.5rem;
       }
       .playlist-refresh,
       .playlist-owner,
-      .loading-tracks-info {
+      .loading-tracks-info,
+      .playlist-is-public,
+      .playlist-is-collaborative {
         font-size: 1.3rem;
+        line-height: 1.5rem;
       }
       .playlist-refresh,
       .loading-tracks-info {
         float: right;
         margin-left: 15px;
+      }
+      .playlist-is-public,
+      .playlist-is-collaborative {
+        margin: 0 25px;
+        font-weight: bold;
+        .sp-icon-ok {
+          margin: 0 4px;
+          color: #008000;
+          font-size: 1.6rem;
+        }
+      }
+      .playlist-tracks-total {
+        position: absolute;
+        top: 0;
+        right: 15px;
+        top: 1rem;
+        line-height: 4rem;
+        font-size: 2rem;
       }
     }
     .playlist-tracks {
@@ -153,6 +186,13 @@
       padding: 0 2%;
       float: left;
       width: percentage(1/3);
+    }
+    &.is-local {
+      position: relative;
+      .sp-icon-download {
+        position: absolute;
+        right: 4px;
+      }
     }
   }
 }
