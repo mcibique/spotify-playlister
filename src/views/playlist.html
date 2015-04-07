@@ -1,7 +1,7 @@
-<div class="playlist-main-info" ng-class="{ 'with-image': playlist.images && playlist.images.length }">
-  <img class="playlist-image" ng-if="playlist.images[0]" ng-src="{{ playlist.images[0].url }}" alt="Image {{ playlist.name }}">
-  <h3 class="playlist-name">{{ playlist.name }}</h3>
-  <span class="playlist-owner">Owner: {{ playlist.owner.id }}</span>
+<div class="playlist-main-info" ng-class="::{ 'with-image': playlist.images && playlist.images.length }">
+  <img class="playlist-image" ng-if="playlist.images[0]" ng-src="{{ ::playlist.images[0].url }}" alt="Image {{ playlist.name }}">
+  <h3 class="playlist-name">{{ ::playlist.name }}</h3>
+  <span class="playlist-owner">Owner: {{ ::playlist.owner.id }}</span>
   <a class="playlist-refresh" ng-if="!loadingProgress" ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
   <span class="playlist-is-collaborative" ng-if="playlist.collaborative">Collaborative<i class="sp-icon sp-icon-ok"></i></span>
   <span class="playlist-is-public" ng-if="playlist.public">Public<i class="sp-icon sp-icon-ok"></i></span>
@@ -12,9 +12,9 @@
   <ul class="tracks-list">
     <li class="tracks-list-item" ng-repeat="item in trackItems track by $index">
       <div class="track-info" ng-class="{ 'is-local': item.is_local }">
-        <div class="artists">{{ item.track.artists | artists }}</div>
-        <div class="title">{{ item.track.name }}</div>
-        <div class="album">{{ item.track.album.name }}</div>
+        <div class="artists">{{:: item.track.artists | artists }}</div>
+        <div class="title">{{:: item.track.name }}</div>
+        <div class="album">{{:: item.track.album.name }}</div>
         <i ng-if="item.is_local" class="sp-icon sp-icon-download"></i>
       </div>
     </li>
