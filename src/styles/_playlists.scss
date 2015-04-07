@@ -95,6 +95,7 @@
     right: 0;
     bottom: 0;
     .playlist-main-info {
+      @include clearfix;
       padding: 1rem 15px;
       .playlist-name {
         @include ellipsis;
@@ -102,8 +103,14 @@
         font-size: 2.5rem;
       }
       .playlist-refresh,
-      .playlist-owner {
+      .playlist-owner,
+      .loading-tracks-info {
         font-size: 1.3rem;
+      }
+      .playlist-refresh,
+      .loading-tracks-info {
+        float: right;
+        margin-left: 15px;
       }
     }
     .playlist-tracks {

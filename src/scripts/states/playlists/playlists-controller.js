@@ -62,19 +62,38 @@
         });
       };
     })
-    .controller('PlaylistController', function ($scope, playlist, tracksCache) {
+    .controller('PlaylistController', function ($scope, $timeout, playlist, tracksCache) {
       $scope.playlist = playlist;
 
-      tracksCache.get(playlist, 0).then(function (result) {
-        $scope.trackItems = result;
-      });
+      var loadItems = function (playlist) {
+        $scope.loadingProgress = {
+          current: 0,
+          total: playlist.tracks.total
+        };
 
-      $scope.refreshTracks = function (playlist) {
-        tracksCache.refresh(playlist);
+        var notificationsCount = 0;
 
         tracksCache.get(playlist, 0).then(function (result) {
           $scope.trackItems = result;
+          $scope.loadingProgress = null;
+        }, function () {
+          $scope.loadingProgress = null;
+        }, function (items) {
+          if (notificationsCount === 0 || !$scope.trackItems) {
+            $scope.trackItems = [];
+          }
+
+          notificationsCount++;
+          $scope.trackItems = $scope.trackItems.concat(items);
+          $scope.loadingProgress.current = $scope.trackItems.length;
         });
+      };
+
+      loadItems(playlist);
+
+      $scope.refreshTracks = function (playlist) {
+        tracksCache.refresh(playlist);
+        loadItems(playlist);
       };
     });
 

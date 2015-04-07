@@ -1,7 +1,8 @@
 <div class="playlist-main-info">
   <h3 class="playlist-name">{{ playlist.name }}</h3>
   <span class="playlist-owner">Owner: {{ playlist.owner.id }}</span>
-  <a class="playlist-refresh" ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
+  <a class="playlist-refresh" ng-if="!loadingProgress" ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
+  <strong class="loading-tracks-info" ng-if="loadingProgress">Loading items ({{ loadingProgress.current }} out of {{ loadingProgress.total }})</strong>
 </div>
 <div class="playlist-tracks" scrollbar>
   <ul class="tracks-list">
