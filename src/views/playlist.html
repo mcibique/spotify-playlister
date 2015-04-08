@@ -10,6 +10,7 @@
 </div>
 <div class="playlist-tracks" scrollbar>
   <ul class="tracks-list">
+    <li class="tracks-list-is-empty" ng-if="!trackItems.length">No tracks in this playlist.</li>
     <li class="tracks-list-item" ng-repeat="item in trackItems track by $index">
       <div class="track-info" ng-class="{ 'is-local': item.is_local }">
         <div class="artists">{{:: item.track.artists | artists }}</div>
