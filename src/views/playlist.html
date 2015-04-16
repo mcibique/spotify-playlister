@@ -5,7 +5,7 @@
   <a class="playlist-refresh" ng-if="!loadingProgress" ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>
   <span class="playlist-is-collaborative" ng-if="playlist.collaborative">Collaborative<i class="sp-icon sp-icon-ok"></i></span>
   <span class="playlist-is-public" ng-if="playlist.public">Public<i class="sp-icon sp-icon-ok"></i></span>
-  <span class="playlist-tracks-total" ng-if="playlist.tracks.total">{{ playlist.tracks.total }} Tracks</span>
+  <span class="playlist-tracks-total" ng-if="playlist.tracks.total">{{ trackItems.length }} Tracks</span>
   <strong class="loading-tracks-info" ng-if="loadingProgress">Loading tracks ({{ loadingProgress.current }} out of {{ loadingProgress.total }})</strong>
 </div>
 <div class="playlist-tracks" scrollbar>

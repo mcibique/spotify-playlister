@@ -3,7 +3,7 @@
 
   ng.module('playlister.states.playlists.controllers', ['playlister.filters', 'playlister.spotify.resources'])
     .controller('PlaylistsController', function ($scope, $log, $filter, profile, SpotifyPlaylist, duplicatesFinder,
-      playlistComparer, playlistMerge) {
+      playlistComparer, playlistMerge, tracksReplacement) {
       $scope.profile = profile;
       $scope.selected = [];
       $scope.duplicates = {};
@@ -40,7 +40,6 @@
         }
 
         playlistComparer.compare(selected[0], selected[1]).then(function (commonTracks) {
-          $log.debug('common tracks: ', commonTracks);
           $scope.commonTracks = commonTracks.ids.map(function (track) {
             return $filter('track')(track);
           });
@@ -49,6 +48,12 @@
             return $filter('track')(track.a) + ' vs. ' + $filter('track')(track.b);
           });
           $scope.similarTracks.sort();
+
+          $log.debug('common tracks: ', commonTracks);
+          $log.debug('ids:');
+          $log.debug($scope.commonTracks.join('\n'));
+          $log.debug('similar:');
+          $log.debug($scope.similarTracks.join('\n'));
         });
       };
 
@@ -59,6 +64,23 @@
 
         playlistMerge.merge(selected[0], selected[1]).then(function () {
           $log.debug('playlists merged');
+        });
+      };
+
+      $scope.findReplacements = function (selected) {
+        if (!selected.length || selected.length !== 1) {
+          return;
+        }
+
+        var playlist = selected[0];
+
+        tracksReplacement.replace(playlist, profile).then(function (numberOfReplaced) {
+          $log.debug('tracks replaced: ', numberOfReplaced);
+          if (numberOfReplaced) {
+            $scope.$broadcast('tracks-replaced', numberOfReplaced, playlist);
+          }
+        }, function () {
+          $log.debug('canceled');
         });
       };
     })
@@ -95,6 +117,12 @@
         tracksCache.refresh(playlist);
         loadItems(playlist);
       };
+
+      $scope.$on('tracks-replaced', function ($event, numberOfReplaced, inPlaylist) {
+        if (playlist.id === inPlaylist.id) {
+          $scope.refreshTracks(playlist);
+        }
+      });
     });
 
 })(angular, jQuery);

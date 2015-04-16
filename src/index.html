@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Spotify playlister</title>
   <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery.ui.slider.css">
 </head>
 
 <body ng-app="playlister" class="container">
@@ -20,9 +21,14 @@
   </main>
 
   <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/jquery-ui/ui/jquery.ui.core.js"></script>
+  <script src="bower_components/jquery-ui/ui/jquery.ui.widget.js"></script>
+  <script src="bower_components/jquery-ui/ui/jquery.ui.mouse.js"></script>
+  <script src="bower_components/jquery-ui/ui/jquery.ui.slider.js"></script>
   <script src="bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/angular-ui-slider/src/slider.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <!-- inject:js -->
@@ -32,16 +38,18 @@
   <script src="/src/scripts/filters/artists.js"></script>
   <script src="/src/scripts/filters/filters.js"></script>
   <script src="/src/scripts/filters/tracks.js"></script>
+  <script src="/src/scripts/resources/playlist.js"></script>
+  <script src="/src/scripts/resources/resources.js"></script>
+  <script src="/src/scripts/resources/search.js"></script>
+  <script src="/src/scripts/resources/user.js"></script>
   <script src="/src/scripts/services/auth.js"></script>
   <script src="/src/scripts/services/services.js"></script>
   <script src="/src/scripts/services/spotify-credentials-debug.js"></script>
   <script src="/src/scripts/services/spotify-playlist-tracks.js"></script>
+  <script src="/src/scripts/services/spotify-replacements.js"></script>
   <script src="/src/scripts/services/spotify-tracks-cache.js"></script>
   <script src="/src/scripts/services/spotify.js"></script>
   <script src="/src/scripts/services/user-settings.js"></script>
-  <script src="/src/scripts/resources/playlist.js"></script>
-  <script src="/src/scripts/resources/resources.js"></script>
-  <script src="/src/scripts/resources/user.js"></script>
   <script src="/src/scripts/states/states.js"></script>
   <script src="/src/scripts/states/login/login.js"></script>
   <script src="/src/scripts/states/playlists/playlists-controller.js"></script>

@@ -2,7 +2,7 @@
   'use strict';
 
   ng.module('playlister.spotify.resources', ['ngResource', 'playlister.spotify.resources.user',
-      'playlister.spotify.resources.playlist'
+      'playlister.spotify.resources.playlist', 'playlister.spotify.resources.search'
     ])
     .config(function ($httpProvider) {
       $httpProvider.interceptors.push('spotifyAuthHttpInterceptor');
