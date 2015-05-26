@@ -14,6 +14,8 @@ var rename = require('gulp-rename');
 var minifyCSS = require('gulp-minify-css');
 var minifyHTML = require('gulp-minify-html');
 var htmlreplace = require('gulp-html-replace');
+var html2js = require("gulp-ng-html2js");
+var wrap = require("gulp-wrap");
 
 var sources = {
   dist: ['./dist'],
@@ -23,6 +25,7 @@ var sources = {
   index: ['./src/index.html'],
   js: ['./src/scripts/**/*'],
   scss: ['./src/styles/**/*'],
+  templates: ['./src/views/modals/**/*'],
   jsVendor: [
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/ui/jquery.ui.core.js',
@@ -95,8 +98,14 @@ gulp.task('index:dev', function () {
   return gulp.src('./src/index.html')
     .pipe(inject(gulp.src(sources.js.concat(['!**/spotify-credentials.js', '!**/spotify-credentials-dist.js']), {
       read: false
-    })))
-    .pipe(inject(gulp.src(sources.jsVendor, { read: false }), { name: 'vendor' }))
+    }), {
+      relative: true
+    }))
+    .pipe(inject(gulp.src(sources.jsVendor, {
+      read: false
+    }), {
+      name: 'vendor'
+    }))
     .pipe(gulp.dest('./src/'));
 });
 
@@ -105,7 +114,11 @@ gulp.task('index:dist', function () {
     .pipe(inject(gulp.src(sources.js.concat(['!**/spotify-credentials.js', '!**/spotify-credentials-debug.js']), {
       read: false
     })))
-    .pipe(inject(gulp.src(sources.jsVendor, { read: false }), { name: 'vendor' }))
+    .pipe(inject(gulp.src(sources.jsVendor, {
+      read: false
+    }), {
+      name: 'vendor'
+    }))
     .pipe(gulp.dest('./src/'));
 });
 
@@ -116,9 +129,11 @@ gulp.task('watch', function () {
 });
 
 gulp.task('build-js', function () {
-  return gulp.src(sources.js.concat(['!**/spotify-credentials.js']))
+  return gulp.src(sources.js.concat(['!**/spotify-credentials.js', '!**/templates.js']))
     .pipe(concat('bundle.js'))
-    .pipe(ngAnnotate({ regexp: '^ng\\.module\\([^\\)]+\\)$' }))
+    .pipe(ngAnnotate({
+      regexp: '^ng\\.module\\([^\\)]+\\)$'
+    }))
     .pipe(uglify({
       output: {
         max_line_len: 1024
@@ -156,6 +171,42 @@ gulp.task('build-js-vendor', function () {
     .pipe(gulp.dest('./.tmp'));
 });
 
+gulp.task('build-js-templates', function () {
+  return gulp.src(sources.templates, {
+      base: './src/'
+    })
+    .pipe(minifyHTML({
+      empty: true,
+      spare: true,
+      quotes: true
+    }))
+    .pipe(html2js({
+      declareModule: false,
+      prefix: "",
+      template: "      $templateCache.put('<%= template.url %>', '<%= template.escapedContent %>');"
+    }))
+    .pipe(concat('templates.js'))
+    .pipe(wrap({
+      src: './templates.txt'
+    }))
+    .pipe(uglify({
+      output: {
+        max_line_len: 1024
+      },
+      compress: {
+        dead_code: true,
+        drop_debugger: true,
+        join_vars: true,
+        drop_console: true
+      }
+    }))
+    .pipe(gulp.dest('./dist/scripts/'))
+    .pipe(rev())
+    .pipe(gulp.dest('./dist/scripts/'))
+    .pipe(rev.manifest('templates.manifest'))
+    .pipe(gulp.dest('./.tmp'));
+});
+
 gulp.task('build-js-manifest', function () {
   return gulp.src('./dist/index.html')
     .pipe(revReplace({
@@ -163,6 +214,9 @@ gulp.task('build-js-manifest', function () {
     }))
     .pipe(revReplace({
       manifest: gulp.src('./.tmp/vendor.manifest')
+    }))
+    .pipe(revReplace({
+      manifest: gulp.src('./.tmp/templates.manifest')
     }))
     .pipe(gulp.dest('./dist/'));
 });
@@ -213,6 +267,10 @@ gulp.task('build-index', function () {
       'js-vendor': {
         src: 'vendor.js',
         tpl: '<script src="/scripts/%s"></script>'
+      },
+      'js-templates': {
+        src: 'templates.js',
+        tpl: '<script src="/scripts/%s"></script>'
       }
     }))
     .pipe(minifyHTML({
@@ -246,7 +304,9 @@ gulp.task('build:dev', function (cb) {
 });
 
 gulp.task('build:dist', function (cb) {
-  return sequence(['clean:dist', 'index:dist'], ['build-js', 'build-js-vendor', 'build-styles', 'build-fonts', 'build-views', 'build-index'], ['build-fonts-manifest', 'build-styles-manifest'], 'build-js-manifest', cb);
+  return sequence(['clean:dist', 'index:dist'], ['build-js', 'build-js-vendor', 'build-js-templates',
+    'build-styles', 'build-fonts', 'build-views', 'build-index'
+  ], ['build-fonts-manifest', 'build-styles-manifest'], 'build-js-manifest', cb);
 });
 
 gulp.task('serve:dev', function (cb) {

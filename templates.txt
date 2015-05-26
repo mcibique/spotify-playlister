@@ -1,0 +1,9 @@
+(function (ng, $) {
+  'use strict';
+
+  ng.module('playlister.templates', [])
+    .run(['$templateCache', function($templateCache) {
+<%= contents %>
+    }]);
+
+})(angular, jQuery);

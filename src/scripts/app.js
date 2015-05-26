@@ -2,7 +2,7 @@
   'use strict';
 
   ng.module('playlister', ['ui.bootstrap', 'playlister.states', 'playlister.filters', 'playlister.services',
-      'playlister.directives'
+      'playlister.directives', 'playlister.templates'
     ])
     .config(function ($urlRouterProvider, $httpProvider) {
       $urlRouterProvider.otherwise('/playlists/');
