@@ -1,12 +1,12 @@
 @font-face {
   font-family: 'spotify-playlister';
-  src: url("/fonts/spotify-playlister.eot?50563866");
-  src: url("/fonts/spotify-playlister.eot?50563866#iefix") format('embedded-opentype'), url("/fonts/spotify-playlister.woff?50563866") format('woff'), url("/fonts/spotify-playlister.ttf?50563866") format('truetype'), url("/fonts/spotify-playlister.svg?50563866#spotify-playlister") format('svg');
+  src: url('/fonts/spotify-playlister.eot?50563866');
+  src: url('/fonts/spotify-playlister.eot?50563866#iefix') format('embedded-opentype'), url('/fonts/spotify-playlister.woff?50563866') format('woff'), url('/fonts/spotify-playlister.ttf?50563866') format('truetype'), url('/fonts/spotify-playlister.svg?50563866#spotify-playlister') format('svg');
   font-weight: normal;
   font-style: normal;
 }
 .sp-icon:before {
-  font-family: "spotify-playlister";
+  font-family: 'spotify-playlister';
   font-style: normal;
   font-weight: normal;
   speak: none;

@@ -4,6 +4,7 @@ $min-content-width: 720px;
 $sidebar-width: 280px;
 $header-height: 6rem;
 header {
+  @include border-bottom(0.1rem);
   position: fixed;
   background-color: #fff;
   width: 100%;
@@ -13,7 +14,6 @@ header {
   line-height: $header-height - 0.1rem;
   font-size: 2rem;
   overflow: auto;
-  @include border-bottom(.1rem);
   .container {
     max-width: $max-content-width;
     min-width: $min-content-width;

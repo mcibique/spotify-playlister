@@ -8,14 +8,14 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var ngAnnotate = require('gulp-ng-annotate');
 var rev = require('gulp-rev');
-var revReplace = require("gulp-rev-replace");
+var revReplace = require('gulp-rev-replace');
 var sequence = require('gulp-run-sequence');
 var rename = require('gulp-rename');
 var minifyCSS = require('gulp-minify-css');
 var minifyHTML = require('gulp-minify-html');
 var htmlreplace = require('gulp-html-replace');
-var html2js = require("gulp-ng-html2js");
-var wrap = require("gulp-wrap");
+var html2js = require('gulp-ng-html2js');
+var wrap = require('gulp-wrap');
 
 var sources = {
   dist: ['./dist'],
@@ -182,8 +182,8 @@ gulp.task('build-js-templates', function () {
     }))
     .pipe(html2js({
       declareModule: false,
-      prefix: "",
-      template: "      $templateCache.put('<%= template.url %>', '<%= template.escapedContent %>');"
+      prefix: '',
+      template: '      $templateCache.put(\'<%= template.url %>\', \'<%= template.escapedContent %>\');'
     }))
     .pipe(concat('templates.js'))
     .pipe(wrap({

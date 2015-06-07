@@ -13,14 +13,14 @@
     }
   }
   .playlist-sidebar {
+    @include border-top;
+    @include border-right;
     position: absolute;
     left: 0;
     top: $playlists-header-height;
     bottom: 0;
     width: $sidebar-width;
     overflow: hidden;
-    @include border-top;
-    @include border-right;
     &.ps-active-y {
       padding-right: 14px;
       &.ps-container > .ps-scrollbar-y-rail {
@@ -82,10 +82,9 @@
     top: $playlists-header-height;
     bottom: 0;
     right: 0;
-    @include border-top;
     .action-bar {
-      padding: 10px 20px;
       @include border-bottom;
+      padding: 10px 20px;
     }
   }
   .playlist-detail {
@@ -139,7 +138,6 @@
       }
       .playlist-tracks-total {
         position: absolute;
-        top: 0;
         right: 15px;
         top: 1rem;
         line-height: 4rem;

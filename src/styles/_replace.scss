@@ -45,12 +45,12 @@
     }
   }
   .replacements {
+    @include border-top;
     padding: 0;
     list-style: none;
     margin: 2rem -15px 0;
     height: 521px;
     overflow: auto;
-    @include border-top;
     .no-replacements {
       @include border-bottom;
       font-size: 2rem;
