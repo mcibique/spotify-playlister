@@ -14,6 +14,7 @@ var connect = require('gulp-connect');
 var html2js = require('gulp-ng-html2js');
 var htmlhint = require('gulp-htmlhint');
 var htmlreplace = require('gulp-html-replace');
+var imagemin = require('gulp-imagemin');
 var inject = require('gulp-inject');
 var jscs = require('gulp-jscs');
 var jshint = require('gulp-jshint');
@@ -43,6 +44,7 @@ var paths = {
   index: './src/index.html',
   js: './src/scripts/**/*.js',
   scss: './src/styles/**/*.scss',
+  images: './src/images/**/*',
   templates: './src/views/modals/**/*.html',
   jsVendor: [
     'bower_components/jquery/dist/jquery.js',
@@ -374,6 +376,30 @@ gulp.task('build-fonts-manifest', function () {
 });
 
 /**
+ * dist build: images
+ */
+gulp.task('build-images', function () {
+  return gulp.src(paths.images)
+    .pipe(imagemin({
+      progressive: true,
+      optimizationLevel: 7,
+      svgoPlugins: [{removeViewBox: false}]
+    }))
+    .pipe(rev())
+    .pipe(gulp.dest(path.join(paths.dist, 'images')))
+    .pipe(rev.manifest('images.manifest'))
+    .pipe(gulp.dest(paths.manifests));
+});
+
+gulp.task('build-images-manifest', function () {
+  return gulp.src(path.join(paths.dist, 'styles', '**/*.css'))
+    .pipe(revReplace({
+      manifest: gulp.src(path.join(paths.manifests, 'images.manifest'))
+    }))
+    .pipe(gulp.dest(path.join(paths.dist, 'styles')));
+});
+
+/**
  * dev build main task
  */
 gulp.task('build:dev', function (cb) {
@@ -386,9 +412,12 @@ gulp.task('build:dev', function (cb) {
 gulp.task('build:dist', function (cb) {
   return sequence(
     'clean:dist',
-    ['build-js', 'build-js-vendor', 'build-js-templates', 'build-styles', 'build-fonts', 'build-views', 'build-index'],
-    ['build-fonts-manifest', 'build-styles-manifest'],
+    ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts', 'build-views',
+     'build-index'],
+    'build-fonts-manifest',
+    'build-styles-manifest',
     'build-js-manifest',
+    'build-images-manifest',
     cb);
 });
 
