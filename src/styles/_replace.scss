@@ -1,9 +1,9 @@
 .replace-tracks-modal {
   .current-track-item-wrapper {
+    @include ellipsis;
     text-align: center;
     line-height: 3rem;
     font-size: 2.4rem;
-    @include ellipsis;
     position: relative;
     padding: 0 40px;
     .previous-button {

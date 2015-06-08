@@ -16,10 +16,16 @@ var minifyHTML = require('gulp-minify-html');
 var htmlreplace = require('gulp-html-replace');
 var html2js = require('gulp-ng-html2js');
 var wrap = require('gulp-wrap');
+var htmlhint = require('gulp-htmlhint');
+var jscs = require('gulp-jscs');
+var jshint = require('gulp-jshint');
+var scsslint = require('gulp-scss-lint');
 
 var sources = {
+  root: ['.'],
   dist: ['./dist'],
   tmp: ['./.tmp'],
+  src: ['./src'],
   fonts: ['./src/fonts/**/*'],
   views: ['./src/views/**/*'],
   index: ['./src/index.html'],
@@ -60,7 +66,7 @@ gulp.task('clean:dist', ['clean:dev'], function () {
 
 gulp.task('connect:dev', function () {
   connect.server({
-    root: ['src', '.', '.tmp'],
+    root: sources.src.concat(sources.tmp).concat(sources.root),
     port: 8082,
     livereload: true
   });
@@ -95,7 +101,7 @@ gulp.task('styles', function () {
 });
 
 gulp.task('index:dev', function () {
-  return gulp.src('./src/index.html')
+  return gulp.src(sources.index)
     .pipe(inject(gulp.src(sources.js.concat(['!**/spotify-credentials.js', '!**/spotify-credentials-dist.js']), {
       read: false
     }), {
@@ -110,7 +116,7 @@ gulp.task('index:dev', function () {
 });
 
 gulp.task('index:dist', function () {
-  return gulp.src('./src/index.html')
+  return gulp.src(sources.index)
     .pipe(inject(gulp.src(sources.js.concat(['!**/spotify-credentials.js', '!**/spotify-credentials-debug.js']), {
       read: false
     })))
@@ -126,6 +132,32 @@ gulp.task('watch', function () {
   gulp.watch(sources.views.concat(sources.index), ['html']);
   gulp.watch(sources.js, ['js']);
   gulp.watch(sources.scss, ['styles']);
+});
+
+gulp.task('linter-html', function () {
+  return gulp.src(['./src/**/*.html'])
+    .pipe(htmlhint('./../.htmlhintrc'))
+    .pipe(htmlhint.reporter());
+});
+
+gulp.task('linter-jscs', function () {
+  return gulp.src('./src/**/*.js')
+    .pipe(jscs({
+      configPath: './../.jscsrc'
+    }));
+});
+
+gulp.task('linter-jshint', function () {
+  return gulp.src('./src/**/*.js')
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
+});
+
+gulp.task('linter-scss', function () {
+  return gulp.src('./src/styles/**/*.scss')
+    .pipe(scsslint({
+      config: './../.scss-lint.yml'
+    }));
 });
 
 gulp.task('build-js', function () {
@@ -316,3 +348,5 @@ gulp.task('serve:dev', function (cb) {
 gulp.task('serve:dist', function (cb) {
   return sequence('build:dist', 'connect:dist', cb);
 });
+
+gulp.task('linters', ['linter-html', 'linter-jscs', 'linter-jshint', 'linter-scss']);
