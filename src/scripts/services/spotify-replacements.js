@@ -8,7 +8,7 @@
         var fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
 
         var modal = $modal.open({
-          templateUrl: 'views/modals/replace.html',
+          templateUrl: '/views/modals/replace.html',
           size: 'lg',
           resolve: {
             trackItems: function () {

@@ -22,8 +22,7 @@ var minifyCSS = require('gulp-minify-css');
 var minifyHTML = require('gulp-minify-html');
 var ngAnnotate = require('gulp-ng-annotate');
 var rename = require('gulp-rename');
-var rev = require('gulp-rev');
-var revReplace = require('gulp-rev-replace');
+var rev = require('gulp-rev-all');
 var sass = require('gulp-sass');
 var scsslint = require('gulp-scss-lint');
 var sequence = require('gulp-run-sequence');
@@ -37,6 +36,7 @@ var paths = {
   root: '.',
   dist: './dist',
   tmp: './.tmp',
+  tmpDist: './.tmp/dist',
   manifests: './.tmp/manifests',
   src: './src',
   fonts: './src/fonts/**/*',
@@ -131,7 +131,8 @@ gulp.task('index:dev', function () {
     .pipe(inject(gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'], {
       read: false
     }), {
-      relative: true
+      relative: true,
+      addRootSlash: true
     }))
     .pipe(inject(gulp.src(paths.jsVendor, {
       read: false
@@ -199,10 +200,7 @@ gulp.task('build-js', function () {
         drop_console: true
       }
     }))
-    .pipe(rev())
-    .pipe(gulp.dest(path.join(paths.dist, 'scripts')))
-    .pipe(rev.manifest('app.manifest'))
-    .pipe(gulp.dest(paths.manifests));
+    .pipe(gulp.dest(path.join(paths.tmpDist, 'scripts')));
 });
 
 /**
@@ -222,10 +220,7 @@ gulp.task('build-js-vendor', function () {
         drop_console: true
       }
     }))
-    .pipe(rev())
-    .pipe(gulp.dest(path.join(paths.dist, 'scripts')))
-    .pipe(rev.manifest('vendor.manifest'))
-    .pipe(gulp.dest(paths.manifests));
+    .pipe(gulp.dest(path.join(paths.tmpDist, 'scripts')));
 });
 
 /**
@@ -260,25 +255,7 @@ gulp.task('build-js-templates', function () {
         drop_console: true
       }
     }))
-    .pipe(gulp.dest(path.join(paths.tmp, 'scripts')))
-    .pipe(rev())
-    .pipe(gulp.dest(path.join(paths.dist, 'scripts')))
-    .pipe(rev.manifest('templates.manifest'))
-    .pipe(gulp.dest(paths.manifests));
-});
-
-gulp.task('build-js-manifest', function () {
-  return gulp.src(path.join(paths.dist, 'index.html'))
-    .pipe(revReplace({
-      manifest: gulp.src(path.join(paths.manifests, 'app.manifest'))
-    }))
-    .pipe(revReplace({
-      manifest: gulp.src(path.join(paths.manifests, 'vendor.manifest'))
-    }))
-    .pipe(revReplace({
-      manifest: gulp.src(path.join(paths.manifests, 'templates.manifest'))
-    }))
-    .pipe(gulp.dest(paths.dist));
+    .pipe(gulp.dest(path.join(paths.tmpDist, 'scripts')));
 });
 
 /**
@@ -294,18 +271,7 @@ gulp.task('build-styles', function () {
     .pipe(minifyCSS({
       keepSpecialComments: false
     }))
-    .pipe(rev())
-    .pipe(gulp.dest(path.join(paths.dist, 'styles')))
-    .pipe(rev.manifest('styles.manifest'))
-    .pipe(gulp.dest(paths.manifests));
-});
-
-gulp.task('build-styles-manifest', function () {
-  return gulp.src(path.join(paths.dist, 'index.html'))
-    .pipe(revReplace({
-      manifest: gulp.src(path.join(paths.manifests, 'styles.manifest'))
-    }))
-    .pipe(gulp.dest(paths.dist));
+    .pipe(gulp.dest(path.join(paths.tmpDist, 'styles')));
 });
 
 /**
@@ -318,7 +284,7 @@ gulp.task('build-views', function () {
       spare: true,
       quotes: true
     }))
-    .pipe(gulp.dest(path.join(paths.dist, 'views')));
+    .pipe(gulp.dest(path.join(paths.tmpDist, 'views')));
 });
 
 /**
@@ -353,7 +319,7 @@ gulp.task('build-index', function () {
       spare: true,
       quotes: true
     }))
-    .pipe(gulp.dest(paths.dist));
+    .pipe(gulp.dest(paths.tmpDist));
 });
 
 /**
@@ -361,18 +327,7 @@ gulp.task('build-index', function () {
  */
 gulp.task('build-fonts', function () {
   return gulp.src(paths.fonts)
-    .pipe(rev())
-    .pipe(gulp.dest(path.join(paths.dist, 'fonts')))
-    .pipe(rev.manifest('fonts.manifest'))
-    .pipe(gulp.dest(paths.manifests));
-});
-
-gulp.task('build-fonts-manifest', function () {
-  return gulp.src(path.join(paths.dist, 'styles', '**/*.css'))
-    .pipe(revReplace({
-      manifest: gulp.src(path.join(paths.manifests, 'fonts.manifest'))
-    }))
-    .pipe(gulp.dest(path.join(paths.dist, 'styles')));
+    .pipe(gulp.dest(path.join(paths.tmpDist, 'fonts')));
 });
 
 /**
@@ -385,18 +340,24 @@ gulp.task('build-images', function () {
       optimizationLevel: 7,
       svgoPlugins: [{removeViewBox: false}]
     }))
-    .pipe(rev())
-    .pipe(gulp.dest(path.join(paths.dist, 'images')))
-    .pipe(rev.manifest('images.manifest'))
-    .pipe(gulp.dest(paths.manifests));
+    .pipe(gulp.dest(path.join(paths.tmpDist, 'images')));
 });
 
-gulp.task('build-images-manifest', function () {
-  return gulp.src(path.join(paths.dist, 'styles', '**/*.css'))
-    .pipe(revReplace({
-      manifest: gulp.src(path.join(paths.manifests, 'images.manifest'))
-    }))
-    .pipe(gulp.dest(path.join(paths.dist, 'styles')));
+gulp.task('build-rev', function () {
+  var builder = new rev({
+    dontRenameFile: ['.*.html'],
+    dontUpdateReference: ['.*.html'],
+    dontSearchFile: ['.*vendor.js']
+  });
+
+  gulp.src(path.join(paths.tmpDist, '**'))
+    .pipe(builder.revision())
+    .pipe(gulp.dest(paths.dist))
+    .pipe(builder.manifestFile())
+    .pipe(gulp.dest(paths.manifests));
+
+  return gulp.src(path.join(paths.tmpDist, '**/*.html'))
+    .pipe(gulp.dest(paths.dist));
 });
 
 /**
@@ -414,10 +375,7 @@ gulp.task('build:dist', function (cb) {
     'clean:dist',
     ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts', 'build-views',
      'build-index'],
-    'build-fonts-manifest',
-    'build-styles-manifest',
-    'build-js-manifest',
-    'build-images-manifest',
+     'build-rev',
     cb);
 });
 

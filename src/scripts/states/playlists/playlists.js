@@ -8,7 +8,7 @@
       $stateProvider
         .state('playlists', {
           url: '/playlists/',
-          templateUrl: 'views/playlists.html',
+          templateUrl: '/views/playlists.html',
           controller: 'PlaylistsController',
           resolve: {
             profile: function (SpotifyUser) {
@@ -18,7 +18,7 @@
         })
         .state('playlists.detail', {
           url: ':userId/playlist/:id',
-          templateUrl: 'views/playlist.html',
+          templateUrl: '/views/playlist.html',
           controller: 'PlaylistController',
           resolve: {
             playlist: function ($stateParams, SpotifyPlaylist) {
@@ -203,7 +203,7 @@
         var fields = 'items(added_at,track(name,id,uri,album(name,id),artists(id,name)))';
 
         $modal.open({
-          templateUrl: 'views/modals/merge.html',
+          templateUrl: '/views/modals/merge.html',
           resolve: {
             fromTracks: function () {
               return tracksCache.get(fromPlaylist, 0, fields);
