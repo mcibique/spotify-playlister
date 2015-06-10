@@ -1,10 +1,12 @@
 (function (ng, $) {
   'use strict';
 
-  ng.module('playlister', ['ui.bootstrap', 'playlister.states', 'playlister.filters', 'playlister.services',
-      'playlister.directives', 'playlister.templates'
+  ng.module('playlister', ['ui.bootstrap', 'playlister.config', 'playlister.states', 'playlister.filters',
+      'playlister.services', 'playlister.directives', 'playlister.templates'
     ])
-    .config(function ($urlRouterProvider, $httpProvider) {
+    .config(function ($urlRouterProvider, $httpProvider, $logProvider, config) {
+      $logProvider.debugEnabled(config.debug);
+
       $urlRouterProvider.otherwise('/playlists/');
 
       $httpProvider.defaults.useXDomain = true;

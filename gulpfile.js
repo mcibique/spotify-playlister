@@ -3,11 +3,14 @@
  */
 var gulp = require('gulp');
 var path = require('path');
+var fs = require('fs');
+var extend = require('node.extend');
 
 /**
  * gulp
  */
 var autoprefixer = require('gulp-autoprefixer');
+var beautify = require('gulp-jsbeautifier');
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var connect = require('gulp-connect');
@@ -21,6 +24,7 @@ var jshint = require('gulp-jshint');
 var minifyCSS = require('gulp-minify-css');
 var minifyHTML = require('gulp-minify-html');
 var ngAnnotate = require('gulp-ng-annotate');
+var ngConstanst = require('gulp-ng-constant');
 var rename = require('gulp-rename');
 var rev = require('gulp-rev-all');
 var sass = require('gulp-sass');
@@ -39,6 +43,7 @@ var paths = {
   tmpDist: './.tmp/dist',
   manifests: './.tmp/manifests',
   src: './src',
+  config: './src/config.json',
   fonts: './src/fonts/**/*',
   views: './src/views/**/*.html',
   index: './src/index.html',
@@ -79,6 +84,45 @@ gulp.task('clean:dist', ['clean:dev'], function () {
   }).pipe(clean({
     force: true
   }));
+});
+
+/**
+ * config.js
+ */
+var generateConfig = function (environment) {
+  var defaultConfigPath = paths.config;
+  var envConfigPath = defaultConfigPath.replace(/\.json$/i, '.' + environment + '.json');
+  var defaultConfig = require(defaultConfigPath);
+
+  if (fs.existsSync(envConfigPath)) {
+    var envConfig = require(envConfigPath);
+    extend(true, defaultConfig, envConfig);
+  }
+
+  return ngConstanst({
+    stream: true,
+    name: 'playlister.config',
+    space: ' ',
+    templatePath: './templates/config.ejs',
+    constants: {
+      config: defaultConfig
+    }
+  })
+  .pipe(rename('config.js'))
+  .pipe(beautify({
+    indentSize: 2,
+    maxPreserveNewlines: 2,
+    jslintHappy: true
+  }))
+  .pipe(gulp.dest(path.join(paths.src, 'scripts')));
+};
+
+gulp.task('config:dev', function () {
+  return generateConfig('dev');
+});
+
+gulp.task('config:dist', function () {
+  return generateConfig('dist');
 });
 
 /**
@@ -242,7 +286,7 @@ gulp.task('build-js-templates', function () {
     }))
     .pipe(concat('templates.js'))
     .pipe(wrap({
-      src: './templates.txt'
+      src: './templates/html2js.txt'
     }))
     .pipe(uglify({
       output: {
@@ -343,6 +387,9 @@ gulp.task('build-images', function () {
     .pipe(gulp.dest(path.join(paths.tmpDist, 'images')));
 });
 
+/**
+ * dist build: revisions
+ */
 gulp.task('build-rev', function () {
   var builder = new rev({
     dontRenameFile: ['.*.html'],
@@ -364,7 +411,7 @@ gulp.task('build-rev', function () {
  * dev build main task
  */
 gulp.task('build:dev', function (cb) {
-  return sequence('clean:dev', ['styles', 'index:dev'], cb);
+  return sequence('clean:dev', 'config:dev', ['styles', 'index:dev'], cb);
 });
 
 /**
@@ -373,6 +420,7 @@ gulp.task('build:dev', function (cb) {
 gulp.task('build:dist', function (cb) {
   return sequence(
     'clean:dist',
+    'config:dist',
     ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts', 'build-views',
      'build-index'],
      'build-rev',

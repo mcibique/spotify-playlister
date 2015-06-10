@@ -38,6 +38,9 @@
     "gulp-jscs": "~1.6.0",
     "gulp-scss-lint": "~0.2.0",
     "gulp-imagemin": "~2.2.1",
-    "gulp-rev-all": "~0.8.21"
+    "gulp-rev-all": "~0.8.21",
+    "gulp-ng-constant": "~0.3.0",
+    "gulp-jsbeautifier": "0.0.8",
+    "node.extend": "~1.1.5"
   }
 }
