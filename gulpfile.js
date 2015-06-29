@@ -71,11 +71,11 @@ var paths = {
  */
 gulp.task('clean:dev', function () {
   return gulp.src(paths.tmp, {
-    read: false
-  })
-  .pipe(clean({
-    force: true
-  }));
+      read: false
+    })
+    .pipe(clean({
+      force: true
+    }));
 });
 
 gulp.task('clean:dist', ['clean:dev'], function () {
@@ -100,21 +100,21 @@ var generateConfig = function (environment) {
   }
 
   return ngConstanst({
-    stream: true,
-    name: 'playlister.config',
-    space: ' ',
-    templatePath: './templates/config.ejs',
-    constants: {
-      config: defaultConfig
-    }
-  })
-  .pipe(rename('config.js'))
-  .pipe(beautify({
-    indentSize: 2,
-    maxPreserveNewlines: 2,
-    jslintHappy: true
-  }))
-  .pipe(gulp.dest(path.join(paths.src, 'scripts')));
+      stream: true,
+      name: 'playlister.config',
+      space: ' ',
+      templatePath: './templates/config.ejs',
+      constants: {
+        config: defaultConfig
+      }
+    })
+    .pipe(rename('config.js'))
+    .pipe(beautify({
+      indentSize: 2,
+      maxPreserveNewlines: 2,
+      jslintHappy: true
+    }))
+    .pipe(gulp.dest(path.join(paths.src, 'scripts')));
 };
 
 gulp.task('config:dev', function () {
@@ -382,7 +382,9 @@ gulp.task('build-images', function () {
     .pipe(imagemin({
       progressive: true,
       optimizationLevel: 7,
-      svgoPlugins: [{removeViewBox: false}]
+      svgoPlugins: [{
+        removeViewBox: false
+      }]
     }))
     .pipe(gulp.dest(path.join(paths.tmpDist, 'images')));
 });
@@ -420,10 +422,10 @@ gulp.task('build:dev', function (cb) {
 gulp.task('build:dist', function (cb) {
   return sequence(
     'clean:dist',
-    'config:dist',
-    ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts', 'build-views',
-     'build-index'],
-     'build-rev',
+    'config:dist', ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts',
+      'build-views', 'build-index'
+    ],
+    'build-rev',
     cb);
 });
 
