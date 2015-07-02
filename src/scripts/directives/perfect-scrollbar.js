@@ -7,16 +7,18 @@
         restict: 'A',
         link: function (scope, element, attrs) {
           var options = scope.$eval(attrs.scrollbar);
-          scope.$evalAsync(function () {
-            angular.element(element).perfectScrollbar(options);
+          setTimeout(function () {
+            element.perfectScrollbar(options);
           });
 
           scope.$on('updateScrollbar', function () {
-            angular.element(element).perfectScrollbar('update');
+            setTimeout(function () {
+              element.perfectScrollbar('update');
+            });
           });
 
           scope.$on('$destroy', function () {
-            angular.element(element).perfectScrollbar('destroy');
+            element.perfectScrollbar('destroy');
           });
         }
       };

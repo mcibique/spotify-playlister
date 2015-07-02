@@ -39,11 +39,13 @@
       font-size: 1.5rem;
       .playlist-item {
         @include border-bottom;
-        @include ellipsis;
-        padding: 0 25px 0 10px;
+        padding: 0 35px 0 10px;
         position: relative;
         .playlist-name {
+          @include ellipsis;
+          display: block;
           text-decoration: none;
+          width: 100%;
           &:link,
           &:visited {
             color: $font-color;

@@ -9,6 +9,8 @@
       $scope.playlists = SpotifyPlaylist.get({
         userId: profile.id,
         limit: 50
+      }, function () {
+        $scope.$broadcast('updateScrollbar');
       });
     })
     .controller('PlaylistController', function ($scope, $timeout, $modal, $log, profile, playlist, tracksCache,
@@ -36,6 +38,7 @@
           notificationsCount++;
           $scope.trackItems = $scope.trackItems.concat(items);
           $scope.loadingProgress.current = $scope.trackItems.length;
+          $scope.$broadcast('updateScrollbar');
         });
       };
 
