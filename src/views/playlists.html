@@ -6,52 +6,10 @@
   <div class="playlist-sidebar" scrollbar>
     <ul class="playlist-list">
       <li ng-repeat="playlist in playlists.items" class="playlist-item" ng-class="::{ 'owned-by-user': playlist.owner.id === profile.id }">
-        <input class="playlist-checker" type="checkbox" ng-click="selectPlaylist(selected, playlist)">
         <a class="playlist-name" ui-sref="playlists.detail({ userId: playlist.owner.id, id: playlist.id })">{{ ::playlist.name }}</a>
         <span class="playlist-tracks-badge">{{ playlist.tracks.total }}</span>
       </li>
     </ul>
   </div>
-  <div class="playlist-working-area">
-    <div class="action-bar">
-      <button class="btn btn-default" ng-click="findPlaylistDuplicates(selected)">Find duplicates</button>
-      <button class="btn btn-default" ng-click="comparePlaylists(selected)">Compare playlists</button>
-      <button class="btn btn-default" ng-click="mergePlaylists(selected)">Merge playlists</button>
-      <button class="btn btn-default" ng-click="findReplacements(selected)">Find replacements</button>
-    </div>
-    <div class="playlist-detail" ui-view=""></div>
-  </div>
+  <div class="playlist-detail" ui-view=""></div>
 </div>
-
-<!-- <div ng-if="duplicates.ids.length">
-  <strong>Duplicate IDs:</strong>
-  <ul>
-    <li ng-repeat="pair in duplicates.ids">
-      {{ pair[0] | track }} vs {{ pair | track }}
-    </li>
-  </ul>
-</div>
-<div ng-if="duplicates.titles.length">
-  <strong>Duplicate titles:</strong>
-  <ul>
-    <li ng-repeat="title in duplicates.titles">
-      {{ title.key }} - {{ title.name }} ({{ title.filtered.join(', ') }})
-    </li>
-  </ul>
-</div>
-<div ng-if="commonTracks.length">
-  <strong>Common tracks:</strong>
-  <ul>
-    <li ng-repeat="commonTrack in commonTracks">
-      {{ commonTrack }}
-    </li>
-  </ul>
-</div>
-<div ng-if="similarTracks.length">
-  <strong>Similar tracks:</strong>
-  <ul>
-    <li ng-repeat="similarTrack in similarTracks">
-      {{ similarTrack }}
-    </li>
-  </ul>
-</div> -->

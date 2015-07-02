@@ -75,22 +75,11 @@
       }
     }
   }
-  .playlist-working-area {
+  .playlist-detail {
     @include border-top;
     position: absolute;
     left: $sidebar-width;
     top: $playlists-header-height;
-    bottom: 0;
-    right: 0;
-    .action-bar {
-      @include border-bottom;
-      padding: 10px 20px;
-    }
-  }
-  .playlist-detail {
-    position: absolute;
-    top: 51px;
-    left: 0;
     right: 0;
     bottom: 0;
     .playlist-main-info {
@@ -144,9 +133,13 @@
         font-size: 2rem;
       }
     }
+    .playlist-action-bar {
+      @include border-top;
+      padding: 0.5rem;
+    }
     .playlist-tracks {
       position: absolute;
-      top: 76px;
+      top: 116px;
       left: 0;
       right: 0;
       bottom: 0;

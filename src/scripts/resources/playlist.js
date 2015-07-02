@@ -15,6 +15,10 @@
         addTracks: {
           method: 'POST',
           url: playlistUrl + '/tracks'
+        },
+        removeTracks: {
+          method: 'DELETE',
+          url: playlistUrl + '/tracks'
         }
       });
     });

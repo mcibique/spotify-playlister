@@ -51,7 +51,6 @@
       });
       $scope.playlist = playlist;
       $scope.profile = profile;
-      // $scope.onlyLocal = false;
 
       $scope.currentIndex = 0;
       $scope.currentTrackItem = $scope.trackItems[$scope.currentIndex];
@@ -181,12 +180,6 @@
       $scope.save = function () {
         saveCurrentTrackItem();
         var items = $scope.trackItems;
-        // if ($scope.onlyLocal) {
-        //   items = items.filter(function (item) {
-        //     return item.is_local;
-        //   });
-        // }
-
         var selectedItems = items.filter(function (item) {
           return item.replacement && item.replacement.length;
         });

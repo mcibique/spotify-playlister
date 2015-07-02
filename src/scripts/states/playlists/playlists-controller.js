@@ -2,8 +2,7 @@
   'use strict';
 
   ng.module('playlister.states.playlists.controllers', ['playlister.filters', 'playlister.spotify.resources'])
-    .controller('PlaylistsController', function ($scope, $log, $filter, profile, SpotifyPlaylist, duplicatesFinder,
-      playlistComparer, playlistMerge, tracksReplacement) {
+    .controller('PlaylistsController', function ($scope, $log, $filter, profile, SpotifyPlaylist) {
       $scope.profile = profile;
       $scope.selected = [];
       $scope.duplicates = {};
@@ -11,80 +10,9 @@
         userId: profile.id,
         limit: 50
       });
-
-      $scope.selectPlaylist = function (selected, playlist) {
-        var index = selected.indexOf(playlist);
-        if (index === -1) {
-          selected.push(playlist);
-        } else {
-          selected.splice(index, 1);
-        }
-      };
-
-      $scope.findPlaylistDuplicates = function (selected) {
-        $scope.duplicates = {};
-        if (!selected.length || selected.length !== 1) {
-          return;
-        }
-
-        duplicatesFinder.find(selected[0]).then(function (duplicates) {
-          $log.debug('duplicates found: ', duplicates);
-          $scope.duplicates = duplicates;
-        });
-      };
-
-      $scope.comparePlaylists = function (selected) {
-        $scope.commonTracks = [];
-        if (!selected.length || selected.length !== 2) {
-          return;
-        }
-
-        playlistComparer.compare(selected[0], selected[1]).then(function (commonTracks) {
-          $scope.commonTracks = commonTracks.ids.map(function (track) {
-            return $filter('track')(track);
-          });
-          $scope.commonTracks.sort();
-          $scope.similarTracks = commonTracks.titles.map(function (track) {
-            return $filter('track')(track.a) + ' vs. ' + $filter('track')(track.b);
-          });
-          $scope.similarTracks.sort();
-
-          $log.debug('common tracks: ', commonTracks);
-          $log.debug('ids:');
-          $log.debug($scope.commonTracks.join('\n'));
-          $log.debug('similar:');
-          $log.debug($scope.similarTracks.join('\n'));
-        });
-      };
-
-      $scope.mergePlaylists = function (selected) {
-        if (!selected.length || selected.length !== 2) {
-          return;
-        }
-
-        playlistMerge.merge(selected[0], selected[1]).then(function () {
-          $log.debug('playlists merged');
-        });
-      };
-
-      $scope.findReplacements = function (selected) {
-        if (!selected.length || selected.length !== 1) {
-          return;
-        }
-
-        var playlist = selected[0];
-
-        tracksReplacement.replace(playlist, profile).then(function (numberOfReplaced) {
-          $log.debug('tracks replaced: ', numberOfReplaced);
-          if (numberOfReplaced) {
-            $scope.$broadcast('tracks-replaced', numberOfReplaced, playlist);
-          }
-        }, function () {
-          $log.debug('canceled');
-        });
-      };
     })
-    .controller('PlaylistController', function ($scope, $timeout, playlist, tracksCache) {
+    .controller('PlaylistController', function ($scope, $timeout, $modal, $log, profile, playlist, tracksCache,
+      tracksComparer, tracksReplacement, choosePlaylist, playlistsMerge) {
       $scope.playlist = playlist;
 
       var loadItems = function (playlist) {
@@ -118,11 +46,114 @@
         loadItems(playlist);
       };
 
-      $scope.$on('tracks-replaced', function ($event, numberOfReplaced, inPlaylist) {
-        if (playlist.id === inPlaylist.id) {
-          $scope.refreshTracks(playlist);
+      /**
+       * find duplicates button logic
+       */
+      $scope.findPlaylistDuplicates = function () {
+        var trackItems = $scope.trackItems;
+        var result = tracksComparer.compare(trackItems);
+        $log.debug('duplicates', result);
+
+        if (!result.ids.length && !result.titles.length) {
+          $log.debug('No duplicates found.');
+          return;
         }
-      });
+
+        displayComparisonResult(playlist, trackItems, result);
+      };
+
+      /**
+       * Find replacements logic
+       */
+      $scope.findReplacements = function () {
+        tracksReplacement.replace($scope.playlist, profile).then(function (numberOfReplaced) {
+          $log.debug('tracks replaced: ', numberOfReplaced);
+          if (numberOfReplaced) {
+            $scope.refreshTracks($scope.playlist);
+          }
+        }, function () {
+          $log.debug('canceled');
+        });
+      };
+
+      /**
+       * Compare playlists logic
+       */
+      $scope.comparePlaylists = function () {
+        choosePlaylist.show(playlist, profile).then(function (selectedPlaylist) {
+          var currentTracks = $scope.trackItems;
+          tracksCache.get(selectedPlaylist, 0).then(function (trackItems) {
+            var tracksToCompare = trackItems;
+            var result = tracksComparer.compare(currentTracks, tracksToCompare);
+            $log.debug('duplicates', result);
+
+            if (!result.ids.length && !result.titles.length) {
+              $log.debug('No duplicates found.');
+              return;
+            }
+
+            displayComparisonResult(playlist, $scope.trackItems, result);
+          });
+        }, function () {
+          $log.debug('Choose playlist canceled.');
+        });
+      };
+
+      /**
+       * Merge playlists logic
+       */
+      $scope.mergePlaylists = function () {
+        choosePlaylist.show(playlist, profile).then(function (selectedPlaylist) {
+          playlistsMerge.merge(playlist, selectedPlaylist).then(function () {
+            $log.debug('playlists merged');
+          });
+        });
+      };
+
+      /**
+       * Duplicates result
+       */
+      var displayComparisonResult = function (playlist, trackItems, result) {
+        $modal.open({
+          templateUrl: '/views/modals/playlist-duplicates.html',
+          resolve: {
+            duplicates: function () {
+              return result;
+            },
+            playlist: function () {
+              return playlist;
+            },
+            trackItems: function () {
+              return trackItems;
+            }
+          },
+          controller: function FindCuplicatesModalController ($scope, $modalInstance, duplicates, playlist, trackItems,
+            SpotifyPlaylist) {
+            $scope.duplicates = duplicates;
+            $scope.playlist = playlist;
+            $scope.trackItems = trackItems;
+
+            $scope.close = function () {
+              $modalInstance.dismiss('ok');
+            };
+
+            $scope.removeDuplicate = function (duplicate) {
+              // TODO  http delete doesn't support params in angular
+              // var item = duplicate.b.item;
+              // SpotifyPlaylist.removeTracks({
+              //   userId: playlist.owner.id,
+              //   playlistId: playlist.id
+              // }, {
+              //   tracks: [{
+              //     uri: item.track.uri
+              //   }]
+              // }, function (response) {
+              //   $log.debug('response', response);
+              // });
+            };
+          }
+        });
+      };
     });
 
 })(angular, jQuery);

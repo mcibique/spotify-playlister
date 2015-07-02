@@ -1,0 +1,11 @@
+<div class="modal-header">
+  <h3 class="modal-title">Select playlist</h3>
+</div>
+<div class="modal-body replace-tracks-modal">
+  <select name="selectedPlaylist" id="selected-playlist" ng-options="item as item.name for item in playlists track by item.id" ng-model="selectedPlaylist">
+  </select>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" ng-click="select(selectedPlaylist)">Select</button>
+  <button class="btn btn-warning" ng-click="close()">Close</button>
+</div>

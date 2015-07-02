@@ -8,6 +8,12 @@
   <span class="playlist-tracks-total" ng-if="playlist.tracks.total">{{ trackItems.length }} Tracks</span>
   <strong class="loading-tracks-info" ng-if="loadingProgress">Loading tracks ({{ loadingProgress.current }} out of {{ loadingProgress.total }})</strong>
 </div>
+<div class="playlist-action-bar">
+  <button class="btn btn-default" ng-click="findPlaylistDuplicates()">Find duplicates</button>
+  <button class="btn btn-default" ng-click="comparePlaylists()">Compare playlists</button>
+  <button class="btn btn-default" ng-click="mergePlaylists()">Merge playlists</button>
+  <button class="btn btn-default" ng-click="findReplacements()">Find replacements</button>
+</div>
 <div class="playlist-tracks" scrollbar>
   <ul class="tracks-list">
     <li class="tracks-list-is-empty" ng-if="!trackItems.length">No tracks in this playlist.</li>

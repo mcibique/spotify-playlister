@@ -6,6 +6,10 @@
     ])
     .config(function ($httpProvider) {
       $httpProvider.interceptors.push('spotifyAuthHttpInterceptor');
+
+      $httpProvider.defaults.headers.delete = {
+        'Content-Type': 'application/json;charset=utf-8'
+      };
     })
     .factory('spotifyAuthHttpInterceptor', function ($injector, auth, spotifyApiUrl) {
       return {

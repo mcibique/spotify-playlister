@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <h3 class="modal-title">Duplicates for {{:: playlist.name }} ({{:: trackItems.length }} tracks)</h3>
+</div>
+<div class="modal-body replace-tracks-modal">
+  <section ng-if="duplicates.ids.length">
+    <h3>Tracks with same ID:</h3>
+    <ul class="duplicates">
+      <li class="duplicate" ng-repeat="duplicate in duplicates.ids">
+        <div class="track original-track" ng-init="trackA = duplicate.a.item.track;">
+          {{:: trackA.artists | artists }} - {{:: trackA.name }} ({{:: trackA.album.name }})
+        </div>
+        <a href="#" ng-click="removeDuplicate(duplicate)">Remove track</a>
+      </li>
+    </ul>
+  </section>
+  <section ng-if="duplicates.titles.length">
+    <h3>Tracks with same title:</h3>
+    <ul class="duplicates">
+      <li class="duplicate" ng-repeat="duplicate in duplicates.titles">
+        <div class="track original-track" ng-init="trackA = duplicate.a.item.track;">
+          {{:: trackA.artists | artists }} - {{:: trackA.name }} ({{:: trackA.album.name }})
+        </div>
+        <div class="versus">vs.</div>
+        <div class="track duplicate-track" ng-init="trackB = duplicate.b.item.track;">
+          {{:: trackB.artists | artists }} - {{:: trackB.name }} ({{:: trackB.album.name }})
+        </div>
+        <a href="#" ng-click="removeDuplicate(duplicate)">Remove track</a>
+      </li>
+    </ul>
+  </section>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-warning" ng-click="close()">Close</button>
+</div>
