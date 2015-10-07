@@ -2,7 +2,7 @@
   'use strict';
 
   ng.module('playlister.states.playlists.controllers', ['playlister.filters', 'playlister.spotify.resources'])
-    .controller('PlaylistsController', function ($scope, $log, $filter, profile, SpotifyPlaylist) {
+    .controller('PlaylistsController', function ($scope, profile, SpotifyPlaylist) {
       $scope.profile = profile;
       $scope.selected = [];
       $scope.duplicates = {};
@@ -13,8 +13,8 @@
         $scope.$broadcast('updateScrollbar');
       });
     })
-    .controller('PlaylistController', function ($scope, $timeout, $modal, $log, profile, playlist, tracksCache,
-      tracksComparer, tracksReplacement, choosePlaylist, playlistsMerge) {
+    .controller('PlaylistController', function ($scope, $modal, $log, profile, playlist, tracksCache, tracksComparer,
+      tracksReplacement, choosePlaylist, playlistsMerge) {
       $scope.playlist = playlist;
 
       var loadItems = function (playlist) {
