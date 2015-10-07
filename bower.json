@@ -22,7 +22,8 @@
     "bootstrap-sass": "3.*",
     "perfect-scrollbar": "~0.6.1",
     "angular-ui-slider": "~0.1.0",
-    "lodash": "~3.9.3"
+    "lodash": "~3.9.3",
+    "jquery-ui": "~1.11.4"
   },
   "resolutions": {
     "jquery-ui": "~1.11.4"
