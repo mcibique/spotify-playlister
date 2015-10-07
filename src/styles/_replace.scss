@@ -51,54 +51,54 @@
     margin: 2rem -15px 0;
     height: 521px;
     overflow: auto;
-    .no-replacements {
-      @include border-bottom;
-      font-size: 2rem;
-      line-height: 6rem;
+  }
+  .no-replacements {
+    @include border-bottom;
+    font-size: 2rem;
+    line-height: 6rem;
+    text-align: center;
+  }
+  .replacement-item {
+    @include border-bottom;
+    @include clearfix;
+    line-height: 2.5rem;
+    &.not-available {
+      .replacement-column {
+        opacity: 0.5;
+      }
+    }
+  }
+  .replacement-column {
+    @include ellipsis;
+    float: left;
+    &.selected {
+      width: 5%;
       text-align: center;
-    }
-    .replacement-item {
-      @include border-bottom;
-      @include clearfix;
-      line-height: 2.5rem;
-      &.not-available {
-        .replacement-column {
-          opacity: 0.5;
-        }
+      input {
+        vertical-align: middle;
       }
     }
-    .replacement-column {
-      @include ellipsis;
-      float: left;
-      &.selected {
-        width: 5%;
-        text-align: center;
-        input {
-          vertical-align: middle;
-        }
-      }
-      &.artist,
-      &.title,
-      &.album {
-        width: 30%;
-      }
-      &.duration-diff {
-        width: 5%;
-      }
+    &.artist,
+    &.title,
+    &.album {
+      width: 30%;
     }
-    .duration-diff {
-      &.diff-exact {
-        color: #0c0;
-      }
-      &.diff-very-similiar {
-        color: #080;
-      }
-      &.diff-similiar {
-        color: #800;
-      }
-      &.diff {
-        color: #c00;
-      }
+    &.duration-diff {
+      width: 5%;
+    }
+  }
+  .duration-diff {
+    &.diff-exact {
+      color: #0c0;
+    }
+    &.diff-very-similiar {
+      color: #080;
+    }
+    &.diff-similiar {
+      color: #800;
+    }
+    &.diff {
+      color: #c00;
     }
   }
 }
