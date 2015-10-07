@@ -30,6 +30,7 @@ var rev = require('gulp-rev-all');
 var sass = require('gulp-sass');
 var scsslint = require('gulp-scss-lint');
 var sequence = require('gulp-run-sequence');
+var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var wrap = require('gulp-wrap');
 
@@ -158,11 +159,13 @@ gulp.task('js', function () {
 
 gulp.task('styles', function () {
   return gulp.src(paths.scss)
+    .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({
       cascade: false,
       browsers: ['last 2 versions']
     }))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(path.join(paths.tmp, 'styles')))
     .pipe(connect.reload());
 });
