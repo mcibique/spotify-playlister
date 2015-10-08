@@ -3,7 +3,7 @@
 
   ng.module('playlister.services.auth', [])
     .run(function ($log, $rootScope, $state, auth) {
-      $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+      $rootScope.$on('$stateChangeStart', function (event, toState) {
         if (toState.name === 'login') {
           return;
         }

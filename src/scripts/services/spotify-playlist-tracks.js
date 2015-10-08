@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.spotify.playlistTracks', ['playlister.spotify.resources'])
@@ -46,4 +46,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);

@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.spotify.tracksCache', ['playlister.settings', 'playlister.spotify.playlistTracks'])
@@ -51,4 +51,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);

@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.spotify.replacements', ['ui.slider', 'playlister.spotify.resources'])
@@ -206,7 +206,7 @@
             playlistId: playlist.id
           }, {
             uris: toAdd
-          }, function (response) {
+          }, function (/*response*/) {
             $modalInstance.close(toAdd.length);
           });
         }
@@ -232,4 +232,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);

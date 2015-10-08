@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.states.playlists', ['ui.router', 'playlister.states.playlists.controllers',
@@ -31,4 +31,4 @@
         });
     });
 
-})(angular, jQuery);
+})(angular);

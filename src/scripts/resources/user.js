@@ -6,4 +6,4 @@
       return $resource(spotifyApiUrl + '/me');
     });
 
-})(angular, jQuery);
+})(angular);

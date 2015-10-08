@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.spotify.playlists-merge', [])
@@ -96,7 +96,7 @@
                   playlistId: toPlaylist.id
                 }, {
                   uris: selected
-                }, function (response) {
+                }, function (/*response*/) {
                   $log.debug('success');
                   $scope.ok();
                 });
@@ -113,4 +113,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);

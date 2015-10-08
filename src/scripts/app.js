@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister', ['ui.bootstrap', 'playlister.config', 'playlister.states', 'playlister.filters',
@@ -15,4 +15,4 @@
       $log.debug('Playlister is running.');
     });
 
-})(angular, jQuery);
+})(angular);

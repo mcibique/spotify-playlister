@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.spotify.choose-playlist', [])
@@ -60,4 +60,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);

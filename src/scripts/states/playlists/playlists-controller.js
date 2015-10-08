@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.states.playlists.controllers', ['playlister.filters', 'playlister.spotify.resources'])
@@ -130,8 +130,8 @@
               return trackItems;
             }
           },
-          controller: function FindCuplicatesModalController ($scope, $modalInstance, duplicates, playlist, trackItems,
-            SpotifyPlaylist) {
+          controller: function FindCuplicatesModalController ($scope, $modalInstance, duplicates, playlist, trackItems
+            /*, SpotifyPlaylist*/) {
             $scope.duplicates = duplicates;
             $scope.playlist = playlist;
             $scope.trackItems = trackItems;
@@ -140,7 +140,7 @@
               $modalInstance.dismiss('ok');
             };
 
-            $scope.removeDuplicate = function (duplicate) {
+            $scope.removeDuplicate = function (/*duplicate*/) {
               // TODO  http delete doesn't support params in angular
               // var item = duplicate.b.item;
               // SpotifyPlaylist.removeTracks({
@@ -159,4 +159,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);

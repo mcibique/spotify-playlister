@@ -35,4 +35,4 @@
     })
     .constant('spotifyApiUrl', 'https://api.spotify.com/v1');
 
-})(angular, jQuery);
+})(angular);

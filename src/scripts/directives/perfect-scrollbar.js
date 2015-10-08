@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.directives.perfectScrollbar', [])
@@ -24,4 +24,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);

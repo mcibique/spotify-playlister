@@ -1,4 +1,4 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('playlister.filters.artists', [])
@@ -13,4 +13,4 @@
       };
     });
 
-})(angular, jQuery);
+})(angular);
