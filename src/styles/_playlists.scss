@@ -42,6 +42,18 @@
       @include border-bottom;
       padding: 0 35px 0 10px;
       position: relative;
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 3px;
+        background-color: #ffa500;
+      }
+      &.owned-by-user:before {
+        background-color: #008000;
+      }
     }
     .playlist-name {
       @include ellipsis;
@@ -63,18 +75,6 @@
       line-height: $item-height - (2 * 0.5rem);
       padding: 0 3px;
       border-radius: ($item-height - (2 * 0.5rem)) / 4;
-    }
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 3px;
-      background-color: #ffa500;
-    }
-    &.owned-by-user:before {
-      background-color: #008000;
     }
   }
   .playlist-detail {
