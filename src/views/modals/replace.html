@@ -19,7 +19,7 @@
     </div>
     <div class="replace-search-box">
       <label for="replace-search-string">Search string:</label>
-      <input type="text" id="replace-search-string" ng-model="searchString" ng-model-options="{ debounce: 300 }">
+      <input type="text" id="replace-search-string" ng-model="searchString" ng-model-options="{ debounce: 300 }" />
     </div>
   </div>
 
@@ -27,7 +27,7 @@
     <li class="no-replacements" ng-if="!possibleReplacements.length">No suitable tracks found. Try change search string.</li>
     <li class="replacement-item" ng-class="::{ 'not-available': isAvailableForMarket(replacement) }" ng-repeat="replacement in possibleReplacements">
       <div class="replacement-column selected">
-        <input type="checkbox" ng-model="replacement.selected">
+        <input type="checkbox" ng-model="replacement.selected" />
       </div>
       <div class="replacement-column artist">{{:: replacement.artists | artists }}</div>
       <div class="replacement-column title">{{:: replacement.name }}</div>

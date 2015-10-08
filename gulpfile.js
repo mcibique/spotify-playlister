@@ -203,14 +203,14 @@ gulp.task('watch', function () {
  */
 gulp.task('linter-html', function () {
   return gulp.src([paths.views, paths.index])
-    .pipe(htmlhint('./../.htmlhintrc'))
+    .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter());
 });
 
 gulp.task('linter-jscs', function () {
   return gulp.src(paths.js)
     .pipe(jscs({
-      configPath: './../.jscsrc'
+      configPath: '.jscsrc'
     }));
 });
 
@@ -223,7 +223,7 @@ gulp.task('linter-jshint', function () {
 gulp.task('linter-scss', function () {
   return gulp.src(paths.scss)
     .pipe(scsslint({
-      config: './../.scss-lint.yml'
+      config: '.scss-lint.yml'
     }));
 });
 

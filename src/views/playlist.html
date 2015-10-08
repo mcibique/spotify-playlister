@@ -1,5 +1,5 @@
 <div class="playlist-main-info" ng-class="::{ 'with-image': playlist.images && playlist.images.length }">
-  <img class="playlist-image" ng-if="playlist.images[0]" ng-src="{{ ::playlist.images[0].url }}" alt="Image {{ playlist.name }}">
+  <img class="playlist-image" ng-if="playlist.images[0]" ng-src="{{ ::playlist.images[0].url }}" alt="Image {{ playlist.name }}" />
   <h3 class="playlist-name">{{ ::playlist.name }}</h3>
   <span class="playlist-owner">Owner: {{ ::playlist.owner.id }}</span>
   <a class="playlist-refresh" ng-if="!loadingProgress" ng-click="refreshTracks(playlist)" href="javascript:void(0)">Refresh</a>

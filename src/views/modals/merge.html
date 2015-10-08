@@ -4,16 +4,16 @@
 <div class="modal-body">
   {{ fromPlaylist.name }} ({{ fromTracks.length }}) -&gt; {{ toPlaylist.name }} ({{ toTracks.length }})
 
-  <input type="number" ng-model="lastXDays">
+  <input type="number" ng-model="lastXDays" />
 
   <ul>
     <li ng-repeat="item in getUniqueTracks(filteredFromTracks) | limitTo:50">
-      <input type="checkbox" ng-model="item.selected" ng-init="item.selected = true;"> {{ item.track | track }}
+      <input type="checkbox" ng-model="item.selected" ng-init="item.selected = true;" /> {{ item.track | track }}
       <a href="javascript:void(0);" ng-if="item.track.isCommon" ng-click="item.userOverride = false; item.selected = false;">[duplicate]</a>
     </li>
   </ul>
   <button ng-click="addSelectedToPlaylist()">Add to playlist</button>
-  <hr>
+  <hr />
   <ul>
     <li ng-repeat="item in getDuplicateTracks(filteredFromTracks) | limitTo:50">{{ item.track | track }}
       <a href="javascript:void(0);" ng-click="item.userOverride = true; item.selected = true;">[duplicate]</a>
