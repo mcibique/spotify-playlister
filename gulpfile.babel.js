@@ -3,59 +3,59 @@
 /**
  * node
  */
-var gulp = require('gulp');
-var path = require('path');
-var fs = require('fs');
-var extend = require('node.extend');
+import gulp from 'gulp';
+import path from 'path';
+import fs from 'fs';
+import extend from 'node.extend';
 
 /**
  * gulp
  */
-var autoprefixer = require('gulp-autoprefixer');
-var beautify = require('gulp-jsbeautifier');
-var clean = require('gulp-clean');
-var concat = require('gulp-concat');
-var connect = require('gulp-connect');
-var html2js = require('gulp-ng-html2js');
-var htmlhint = require('gulp-htmlhint');
-var htmlreplace = require('gulp-html-replace');
-var imagemin = require('gulp-imagemin');
-var inject = require('gulp-inject');
-var jscs = require('gulp-jscs');
-var jscsStylish = require('gulp-jscs-stylish');
-var jshint = require('gulp-jshint');
-var minifyCSS = require('gulp-minify-css');
-var minifyHTML = require('gulp-minify-html');
-var ngAnnotate = require('gulp-ng-annotate');
-var ngConstanst = require('gulp-ng-constant');
-var rename = require('gulp-rename');
-var rev = require('gulp-rev-all');
-var sass = require('gulp-sass');
-var scsslint = require('gulp-scss-lint');
-var scsslintStylish = require('gulp-scss-lint-stylish');
-var sequence = require('gulp-run-sequence');
-var sourcemaps = require('gulp-sourcemaps');
-var uglify = require('gulp-uglify');
-var wrap = require('gulp-wrap');
+import autoprefixer from 'gulp-autoprefixer';
+import beautify from 'gulp-jsbeautifier';
+import clean from 'gulp-clean';
+import concat from 'gulp-concat';
+import connect from 'gulp-connect';
+import html2js from 'gulp-ng-html2js';
+import htmlhint from 'gulp-htmlhint';
+import htmlreplace from 'gulp-html-replace';
+import imagemin from 'gulp-imagemin';
+import inject from 'gulp-inject';
+import jscs from 'gulp-jscs';
+import jscsStylish from 'gulp-jscs-stylish';
+import jshint from 'gulp-jshint';
+import minifyCSS from 'gulp-minify-css';
+import minifyHTML from 'gulp-minify-html';
+import ngAnnotate from 'gulp-ng-annotate';
+import ngConstanst from 'gulp-ng-constant';
+import rename from 'gulp-rename';
+import rev from 'gulp-rev-all';
+import sass from 'gulp-sass';
+import scsslint from 'gulp-scss-lint';
+import scsslintStylish from 'gulp-scss-lint-stylish';
+import sequence from 'gulp-run-sequence';
+import sourcemaps from 'gulp-sourcemaps';
+import uglify from 'gulp-uglify';
+import wrap from 'gulp-wrap';
 
 /**
  * paths
  */
-var paths = {
+const paths = {
   root: '.',
-  dist: './dist',
-  tmp: './.tmp',
-  tmpDist: './.tmp/dist',
-  manifests: './.tmp/manifests',
-  src: './src',
-  config: './src/config.json',
-  fonts: './src/fonts/**/*',
-  views: './src/views/**/*.html',
-  index: './src/index.html',
-  js: './src/scripts/**/*.js',
-  scss: './src/styles/**/*.scss',
-  images: './src/images/**/*',
-  templates: './src/views/modals/**/*.html',
+  dist: 'dist',
+  tmp: '.tmp',
+  tmpDist: '.tmp/dist',
+  manifests: '.tmp/manifests',
+  src: 'src',
+  config: 'src/config.json',
+  fonts: 'src/fonts/**/*',
+  views: 'src/views/**/*.html',
+  index: 'src/index.html',
+  js: 'src/scripts/**/*.js',
+  scss: 'src/styles/**/*.scss',
+  images: 'src/images/**/*',
+  templates: 'src/views/modals/**/*.html',
   jsVendor: [
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/ui/core.js',
@@ -74,7 +74,7 @@ var paths = {
 /**
  * cleaning
  */
-gulp.task('clean:dev', function () {
+gulp.task('clean:dev', () => {
   return gulp.src(paths.tmp, {
       read: false
     })
@@ -83,7 +83,7 @@ gulp.task('clean:dev', function () {
     }));
 });
 
-gulp.task('clean:dist', ['clean:dev'], function () {
+gulp.task('clean:dist', ['clean:dev'], () => {
   return gulp.src(paths.dist, {
     read: false
   }).pipe(clean({
@@ -94,13 +94,13 @@ gulp.task('clean:dist', ['clean:dev'], function () {
 /**
  * config.js
  */
-var generateConfig = function (environment) {
-  var defaultConfigPath = paths.config;
-  var envConfigPath = defaultConfigPath.replace(/\.json$/i, '.' + environment + '.json');
-  var defaultConfig = require(defaultConfigPath);
+var generateConfig = (environment) => {
+  const defaultConfigPath = paths.config;
+  const envConfigPath = defaultConfigPath.replace(/\.json$/i, '.' + environment + '.json');
+  let defaultConfig = require('./' + defaultConfigPath);
 
   if (fs.existsSync(envConfigPath)) {
-    var envConfig = require(envConfigPath);
+    let envConfig = require('./' + envConfigPath);
     extend(true, defaultConfig, envConfig);
   }
 
@@ -122,18 +122,18 @@ var generateConfig = function (environment) {
     .pipe(gulp.dest(path.join(paths.src, 'scripts')));
 };
 
-gulp.task('config:dev', function () {
+gulp.task('config:dev', () => {
   return generateConfig('dev');
 });
 
-gulp.task('config:dist', function () {
+gulp.task('config:dist', () => {
   return generateConfig('dist');
 });
 
 /**
  * server
  */
-gulp.task('connect:dev', function () {
+gulp.task('connect:dev', () => {
   connect.server({
     root: [paths.src, paths.tmp, paths.root],
     port: 8082,
@@ -141,7 +141,7 @@ gulp.task('connect:dev', function () {
   });
 });
 
-gulp.task('connect:dist', function () {
+gulp.task('connect:dist', () => {
   connect.server({
     root: paths.dist,
     port: 8083
@@ -151,14 +151,14 @@ gulp.task('connect:dist', function () {
 /**
  * livereload
  */
-gulp.task('html', function () {
+gulp.task('html', () => {
   return gulp.src([paths.views, paths.index])
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'))
     .pipe(connect.reload());
 });
 
-gulp.task('js', function () {
+gulp.task('js', () => {
   return gulp.src(paths.js)
     .pipe(jshint())
     .pipe(jscs({
@@ -169,7 +169,7 @@ gulp.task('js', function () {
     .pipe(connect.reload());
 });
 
-gulp.task('styles', function () {
+gulp.task('styles', () => {
   return gulp.src(paths.scss)
     .pipe(sourcemaps.init())
     .pipe(scsslint({
@@ -189,7 +189,7 @@ gulp.task('styles', function () {
 /**
  * scripts synchronization
  */
-gulp.task('index:dev', function () {
+gulp.task('index:dev', () => {
   return gulp.src(paths.index)
     .pipe(inject(gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'], {
       read: false
@@ -208,7 +208,7 @@ gulp.task('index:dev', function () {
 /**
  * watchers
  */
-gulp.task('watch', function () {
+gulp.task('watch', () => {
   gulp.watch([paths.views, paths.index], ['html']);
   gulp.watch(paths.js, ['js']);
   gulp.watch(paths.scss, ['styles']);
@@ -217,13 +217,13 @@ gulp.task('watch', function () {
 /**
  * linters
  */
-gulp.task('linter-html', function () {
+gulp.task('linter-html', () => {
   return gulp.src([paths.views, paths.index])
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'));
 });
 
-gulp.task('linter-js', function () {
+gulp.task('linter-js', () => {
   return gulp.src(paths.js)
     .pipe(jshint())
     .pipe(jscs({
@@ -233,7 +233,7 @@ gulp.task('linter-js', function () {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('linter-scss', function () {
+gulp.task('linter-scss', () => {
   return gulp.src(paths.scss)
     .pipe(scsslint({
       config: '.scss-lint.yml',
@@ -244,7 +244,7 @@ gulp.task('linter-scss', function () {
 /**
  * dist build: main application
  */
-gulp.task('build-js', function () {
+gulp.task('build-js', () => {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/templates.js'])
     .pipe(concat('app.js'))
     .pipe(ngAnnotate({
@@ -267,7 +267,7 @@ gulp.task('build-js', function () {
 /**
  * dist build: vendor scripts
  */
-gulp.task('build-js-vendor', function () {
+gulp.task('build-js-vendor', () => {
   return gulp.src(paths.jsVendor)
     .pipe(concat('vendor.js'))
     .pipe(uglify({
@@ -287,7 +287,7 @@ gulp.task('build-js-vendor', function () {
 /**
  * dist build: html -> js templates
  */
-gulp.task('build-js-templates', function () {
+gulp.task('build-js-templates', () => {
   return gulp.src(paths.templates, {
       base: paths.src
     })
@@ -322,7 +322,7 @@ gulp.task('build-js-templates', function () {
 /**
  * dist build: styles
  */
-gulp.task('build-styles', function () {
+gulp.task('build-styles', () => {
   return gulp.src(paths.scss)
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({
@@ -338,7 +338,7 @@ gulp.task('build-styles', function () {
 /**
  * dist build: html
  */
-gulp.task('build-views', function () {
+gulp.task('build-views', () => {
   return gulp.src(paths.views)
     .pipe(minifyHTML({
       empty: true,
@@ -351,7 +351,7 @@ gulp.task('build-views', function () {
 /**
  * dist build: index.html
  */
-gulp.task('build-index', function () {
+gulp.task('build-index', () => {
   return gulp.src(paths.index)
     .pipe(inject(gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js'], {
       read: false
@@ -386,7 +386,7 @@ gulp.task('build-index', function () {
 /**
  * dist build: fonts
  */
-gulp.task('build-fonts', function () {
+gulp.task('build-fonts', () => {
   return gulp.src(paths.fonts)
     .pipe(gulp.dest(path.join(paths.tmpDist, 'fonts')));
 });
@@ -394,7 +394,7 @@ gulp.task('build-fonts', function () {
 /**
  * dist build: images
  */
-gulp.task('build-images', function () {
+gulp.task('build-images', () => {
   return gulp.src(paths.images)
     .pipe(imagemin({
       progressive: true,
@@ -409,8 +409,8 @@ gulp.task('build-images', function () {
 /**
  * dist build: revisions
  */
-gulp.task('build-rev', function () {
-  var builder = new rev({
+gulp.task('build-rev', () => {
+  let builder = new rev({
     dontRenameFile: ['.*.html'],
     dontUpdateReference: ['.*.html'],
     dontSearchFile: ['.*vendor.js']
@@ -429,14 +429,14 @@ gulp.task('build-rev', function () {
 /**
  * dev build main task
  */
-gulp.task('build:dev', function (cb) {
+gulp.task('build:dev', (cb) => {
   return sequence('clean:dev', 'config:dev', ['styles', 'index:dev'], cb);
 });
 
 /**
  * dist main build task
  */
-gulp.task('build:dist', function (cb) {
+gulp.task('build:dist', (cb) => {
   return sequence(
     'clean:dist',
     'config:dist', ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts',
@@ -449,18 +449,18 @@ gulp.task('build:dist', function (cb) {
 /**
  * serve dev main task
  */
-gulp.task('serve:dev', function (cb) {
+gulp.task('serve:dev', (cb) => {
   return sequence('build:dev', ['connect:dev', 'watch'], cb);
 });
 
 /**
  * serve dist main task
  */
-gulp.task('serve:dist', function (cb) {
+gulp.task('serve:dist', (cb) => {
   return sequence('build:dist', 'connect:dist', cb);
 });
 
 /**
- * all linters task
+ * all linter tasks
  */
 gulp.task('linters', ['linter-html', 'linter-js', 'linter-scss']);
