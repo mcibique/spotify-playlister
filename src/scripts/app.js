@@ -11,8 +11,9 @@
 
       $httpProvider.defaults.useXDomain = true;
     })
-    .run(function ($log) {
-      $log.debug('Playlister is running.');
+    .run(function ($log, config) {
+      let version = config.version;
+      $log.debug('Playlister is running.', version);
     });
 
 })(angular);

@@ -1,7 +1,7 @@
-(function (ng, $) {
+(function (ng) {
   'use strict';
 
   ng.module('<%- moduleName %>'<% if (deps) { %>, <%= JSON.stringify(deps) %><% } %>)
     .constant('config', <%= constants[0].value.replace(/\"/g, '\'') %>);
 
-})(angular, jQuery);
+})(angular);

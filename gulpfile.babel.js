@@ -12,6 +12,7 @@ import extend from 'node.extend';
  * gulp
  */
 import autoprefixer from 'gulp-autoprefixer';
+import babel from 'gulp-babel';
 import beautify from 'gulp-jsbeautifier';
 import clean from 'gulp-clean';
 import concat from 'gulp-concat';
@@ -159,13 +160,20 @@ gulp.task('html', () => {
 });
 
 gulp.task('js', () => {
-  return gulp.src(paths.js)
+  return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'])
     .pipe(jshint())
     .pipe(jscs({
       configPath: '.jscsrc'
     }))
     .pipe(jscsStylish.combineWithHintResults())
     .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(concat('all.js'))
+    .pipe(sourcemaps.write('.', {
+      sourceRoot: paths.src
+    }))
+    .pipe(gulp.dest(path.join(paths.tmp, 'scripts')))
     .pipe(connect.reload());
 });
 
@@ -181,7 +189,9 @@ gulp.task('styles', () => {
       cascade: false,
       browsers: ['last 2 versions']
     }))
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('.', {
+      sourceRoot: paths.root
+    }))
     .pipe(gulp.dest(path.join(paths.tmp, 'styles')))
     .pipe(connect.reload());
 });
@@ -191,12 +201,6 @@ gulp.task('styles', () => {
  */
 gulp.task('index:dev', () => {
   return gulp.src(paths.index)
-    .pipe(inject(gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'], {
-      read: false
-    }), {
-      relative: true,
-      addRootSlash: true
-    }))
     .pipe(inject(gulp.src(paths.jsVendor, {
       read: false
     }), {
@@ -245,7 +249,8 @@ gulp.task('linter-scss', () => {
  * dist build: main application
  */
 gulp.task('build-js', () => {
-  return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/templates.js'])
+  return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js', '!**/templates.js'])
+    .pipe(babel())
     .pipe(concat('app.js'))
     .pipe(ngAnnotate({
       regexp: '^ng\\.module\\([^\\)]+\\)$'
@@ -430,7 +435,7 @@ gulp.task('build-rev', () => {
  * dev build main task
  */
 gulp.task('build:dev', (cb) => {
-  return sequence('clean:dev', 'config:dev', ['styles', 'index:dev'], cb);
+  return sequence('clean:dev', 'config:dev', ['html', 'styles', 'js', 'index:dev'], cb);
 });
 
 /**
