@@ -1,6 +1,3 @@
-(function (ng) {
-  'use strict';
+'use strict';
 
-  ng.module('playlister.directives', ['playlister.directives.perfectScrollbar']);
-
-})(angular);
+angular.module('playlister.directives', ['playlister.directives.perfectScrollbar']);

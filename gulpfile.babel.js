@@ -37,7 +37,7 @@ import scsslintStylish from 'gulp-scss-lint-stylish';
 import sequence from 'gulp-run-sequence';
 import sourcemaps from 'gulp-sourcemaps';
 import uglify from 'gulp-uglify';
-import wrap from 'gulp-wrap';
+import wrap from 'gulp-wrap-js';
 
 /**
  * paths
@@ -170,6 +170,15 @@ gulp.task('js', () => {
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat('all.js'))
+    .pipe(wrap(fs.readFileSync('./templates/all.scripts.txt', 'utf8'), {
+      indent: {
+        style: '  ',
+        base: 2,
+        adjustMultilineComment: false
+      },
+      newline: '\n',
+      space: ' '
+    }))
     .pipe(sourcemaps.write('.', {
       sourceRoot: paths.src
     }))
@@ -253,9 +262,8 @@ gulp.task('build-js', () => {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js', '!**/templates.js'])
     .pipe(babel())
     .pipe(concat('app.js'))
-    .pipe(ngAnnotate({
-      regexp: '^ng\\.module\\([^\\)]+\\)$'
-    }))
+    .pipe(wrap(fs.readFileSync('./templates/all.scripts.txt', 'utf8')))
+    .pipe(ngAnnotate())
     .pipe(uglify({
       output: {
         max_line_len: 1024
@@ -308,9 +316,7 @@ gulp.task('build-js-templates', () => {
       template: '      $templateCache.put(\'<%= template.url %>\', \'<%= template.escapedContent %>\');'
     }))
     .pipe(concat('templates.js'))
-    .pipe(wrap({
-      src: './templates/html2js.txt'
-    }))
+    .pipe(wrap(fs.readFileSync('./templates/html2js.txt', 'utf8')))
     .pipe(uglify({
       output: {
         max_line_len: 1024
