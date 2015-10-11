@@ -98,10 +98,10 @@ gulp.task('clean:dist', ['clean:dev'], () => {
 var generateConfig = (environment) => {
   const defaultConfigPath = paths.config;
   const envConfigPath = defaultConfigPath.replace(/\.json$/i, '.' + environment + '.json');
-  let defaultConfig = require('./' + defaultConfigPath);
+  let defaultConfig = JSON.parse(fs.readFileSync('./' + defaultConfigPath, 'utf8'));
 
   if (fs.existsSync(envConfigPath)) {
-    let envConfig = require('./' + envConfigPath);
+    let envConfig = JSON.parse(fs.readFileSync('./' + envConfigPath, 'utf8'));
     extend(true, defaultConfig, envConfig);
   }
 
@@ -215,6 +215,7 @@ gulp.task('index:dev', () => {
 gulp.task('watch', () => {
   gulp.watch([paths.views, paths.index], ['html']);
   gulp.watch(paths.js, ['js']);
+  gulp.watch([paths.config, 'config.dev.json'], ['config:dev']);
   gulp.watch(paths.scss, ['styles']);
 });
 
