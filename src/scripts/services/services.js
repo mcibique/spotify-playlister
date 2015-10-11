@@ -1,6 +1,3 @@
-(function (ng) {
-  'use strict';
+'use strict';
 
-  ng.module('playlister.services', ['playlister.services.auth', 'playlister.spotify', 'playlister.settings']);
-
-})(angular);
+angular.module('playlister.services', ['playlister.services.auth', 'playlister.spotify', 'playlister.settings']);

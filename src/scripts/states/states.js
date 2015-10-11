@@ -1,6 +1,3 @@
-(function (ng) {
-  'use strict';
+'use strict';
 
-  ng.module('playlister.states', ['playlister.states.login', 'playlister.states.playlists']);
-
-})(angular);
+angular.module('playlister.states', ['playlister.states.login', 'playlister.states.playlists']);

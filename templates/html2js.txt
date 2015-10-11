@@ -1,9 +1,9 @@
-(function (ng, $) {
+(function (angular) {
   'use strict';
 
-  ng.module('playlister.templates', [])
+  angular.module('playlister.templates', [])
     .run(['$templateCache', function($templateCache) {
-<%= contents %>
+%= body %
     }]);
 
-})(angular, jQuery);
+})(window.angular);

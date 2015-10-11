@@ -1,6 +1,3 @@
-(function (ng) {
-  'use strict';
+'use strict';
 
-  ng.module('playlister.filters', ['playlister.filters.artists', 'playlister.filters.tracks']);
-
-})(angular);
+angular.module('playlister.filters', ['playlister.filters.artists', 'playlister.filters.tracks']);

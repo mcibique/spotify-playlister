@@ -1,0 +1,3 @@
+(function (window, document, angular, $, undefined) {
+%= body %
+})(window, document, window.angular, window.jQuery);

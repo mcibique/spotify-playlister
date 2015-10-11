@@ -1,6 +1,3 @@
-(function (ng) {
-  'use strict';
+'use strict';
 
-  ng.module('playlister.templates', []);
-
-})(angular);
+angular.module('playlister.templates', []);
