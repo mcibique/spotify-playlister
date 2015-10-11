@@ -29,7 +29,7 @@ gulp.task('build-js', () => {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js', '!**/templates.js'])
     .pipe(babel())
     .pipe(concat('app.js'))
-    .pipe(wrap(fs.readFileSync('./templates/all.scripts.txt', 'utf8')))
+    .pipe(wrap(fs.readFileSync('./templates/all.scripts.template', 'utf8')))
     .pipe(ngAnnotate())
     .pipe(uglify({
       output: {
@@ -83,7 +83,7 @@ gulp.task('build-js-templates', () => {
       template: '      $templateCache.put(\'<%= template.url %>\', \'<%= template.escapedContent %>\');'
     }))
     .pipe(concat('templates.js'))
-    .pipe(wrap(fs.readFileSync('./templates/html2js.txt', 'utf8')))
+    .pipe(wrap(fs.readFileSync('./templates/html2js.template', 'utf8')))
     .pipe(uglify({
       output: {
         max_line_len: 1024

@@ -41,7 +41,7 @@ gulp.task('js', () => {
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat('all.js'))
-    .pipe(wrap(fs.readFileSync('./templates/all.scripts.txt', 'utf8'), {
+    .pipe(wrap(fs.readFileSync('./templates/all.scripts.template', 'utf8'), {
       indent: {
         style: '  ',
         base: 2,

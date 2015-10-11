@@ -17,10 +17,10 @@ import paths from './paths';
 var generateConfig = (environment) => {
   const defaultConfigPath = paths.config;
   const envConfigPath = defaultConfigPath.replace(/\.json$/i, '.' + environment + '.json');
-  let defaultConfig = JSON.parse(fs.readFileSync('./' + defaultConfigPath, 'utf8'));
+  let defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf8'));
 
   if (fs.existsSync(envConfigPath)) {
-    let envConfig = JSON.parse(fs.readFileSync('./' + envConfigPath, 'utf8'));
+    let envConfig = JSON.parse(fs.readFileSync(envConfigPath, 'utf8'));
     extend(true, defaultConfig, envConfig);
   }
 
@@ -28,7 +28,7 @@ var generateConfig = (environment) => {
       stream: true,
       name: 'playlister.config',
       space: ' ',
-      templatePath: './templates/config.ejs',
+      templatePath: './templates/config.template',
       constants: {
         config: defaultConfig
       }

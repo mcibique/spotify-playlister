@@ -19,8 +19,9 @@ gulp.task('clean:dev', () => {
 
 gulp.task('clean:dist', ['clean:dev'], () => {
   return gulp.src(paths.dist, {
-    read: false
-  }).pipe(clean({
-    force: true
-  }));
+      read: false
+    })
+    .pipe(clean({
+      force: true
+    }));
 });
