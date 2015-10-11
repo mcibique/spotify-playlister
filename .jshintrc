@@ -91,6 +91,7 @@
     // Custom Globals
     "globals"       : {
       "angular"     : false,
-      "require"     : false
+      "require"     : false,
+      "module"      : false
     }                           // additional predefined global variables
 }
