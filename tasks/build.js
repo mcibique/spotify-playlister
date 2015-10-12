@@ -14,7 +14,7 @@ import inject from 'gulp-inject';
 import minifyCSS from 'gulp-minify-css';
 import minifyHTML from 'gulp-minify-html';
 import ngAnnotate from 'gulp-ng-annotate';
-import rev from 'gulp-rev-all';
+import Rev from 'gulp-rev-all';
 import sass from 'gulp-sass';
 import sequence from 'gulp-run-sequence';
 import uglify from 'gulp-uglify';
@@ -69,7 +69,8 @@ gulp.task('build-js-vendor', () => {
  * dist build: html -> js templates
  */
 gulp.task('build-js-templates', () => {
-  return gulp.src(paths.templates, {
+  return gulp
+    .src(paths.templates, {
       base: paths.src
     })
     .pipe(minifyHTML({
@@ -189,7 +190,7 @@ gulp.task('build-images', () => {
  * dist build: revisions
  */
 gulp.task('build-rev', () => {
-  let builder = new rev({
+  let builder = new Rev({
     dontRenameFile: ['.*.html'],
     dontUpdateReference: ['.*.html'],
     dontSearchFile: ['.*vendor.js']

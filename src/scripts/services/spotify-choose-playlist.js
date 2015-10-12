@@ -2,13 +2,13 @@
 
 angular
   .module('playlister.spotify.choose-playlist', [])
-  .factory('choosePlaylist', function ($modal, $q, SpotifyPlaylist) {
-    var show = function (currentPlaylist, profile) {
-      var defer = $q.defer();
+  .factory('choosePlaylist', ($modal, $q, SpotifyPlaylist) => {
+    function show(currentPlaylist, profile) {
+      const defer = $q.defer();
       SpotifyPlaylist.get({
         userId: profile.id,
         limit: 50
-      }, function (playlists) {
+      }, (playlists) => {
         if (playlists.items && playlists.items.length <= 1) {
           defer.reject();
           return;
@@ -16,10 +16,10 @@ angular
         $modal.open({
           templateUrl: '/views/modals/choose-playlist.html',
           resolve: {
-            playlists: function () {
+            playlists() {
               return playlists.items;
             },
-            currentPlaylist: function () {
+            currentPlaylist() {
               return currentPlaylist;
             }
           },
@@ -29,7 +29,7 @@ angular
             $scope.selectedPlaylist = null;
 
             if (currentPlaylist) {
-              $scope.playlists = playlists.filter(function (playlist) {
+              $scope.playlists = playlists.filter((playlist) => {
                 return playlist.id !== currentPlaylist.id;
               });
             }
@@ -53,9 +53,7 @@ angular
       });
 
       return defer.promise;
-    };
+    }
 
-    return {
-      show: show
-    };
+    return { show };
   });

@@ -16,35 +16,35 @@ angular
       compareNames: true
     }
   })
-  .factory('tracksComparerSettings', function (userSettingsStorage) {
+  .factory('tracksComparerSettings', (userSettingsStorage) => {
     return userSettingsStorage.get('tracksComparer');
   })
-  .factory('artistsComparerSettings', function (userSettingsStorage) {
+  .factory('artistsComparerSettings', (userSettingsStorage) => {
     return userSettingsStorage.get('artistsComparer');
   })
-  .factory('tracksCacheSettings', function (userSettingsStorage) {
+  .factory('tracksCacheSettings', (userSettingsStorage) => {
     return userSettingsStorage.get('tracksCache');
   })
-  .factory('userSettingsStorage', function ($window, settingsDefaults) {
-    var localStorage = $window.localStorage;
+  .factory('userSettingsStorage', ($window, settingsDefaults) => {
+    let localStorage = $window.localStorage;
 
-    var getSettings = function (settingsGroup) {
-      var key = 'settings-' + settingsGroup;
-      var item = localStorage.getItem(key);
+    function getSettings(settingsGroup) {
+      let key = `settings-${settingsGroup}`;
+      let item = localStorage.getItem(key);
       if (item) {
-        var settings = angular.parseJson(item);
+        let settings = angular.parseJson(item);
         if (settings) {
           return settings;
         }
       }
 
       return settingsDefaults[settingsGroup];
-    };
+    }
 
-    var saveSettings = function (settingsGroup, settings) {
-      var key = 'settings-' + settingsGroup;
+    function saveSettings(settingsGroup, settings) {
+      let key = `settings-${settingsGroup}`;
       localStorage.setItem(key, angular.toJson(settings));
-    };
+    }
 
     return {
       get: getSettings,

@@ -4,14 +4,14 @@ angular
   .module('playlister.states.playlists', ['ui.router', 'playlister.states.playlists.controllers',
     'playlister.filters', 'playlister.spotify.resources', 'playlister.spotify.tracksCache'
   ])
-  .config(function ($stateProvider) {
+  .config(($stateProvider) => {
     $stateProvider
       .state('playlists', {
         url: '/playlists/',
         templateUrl: '/views/playlists.html',
         controller: 'PlaylistsController',
         resolve: {
-          profile: function (SpotifyUser) {
+          profile(SpotifyUser) {
             return SpotifyUser.get().$promise;
           }
         }
@@ -21,7 +21,7 @@ angular
         templateUrl: '/views/playlist.html',
         controller: 'PlaylistController',
         resolve: {
-          playlist: function ($stateParams, SpotifyPlaylist) {
+          playlist($stateParams, SpotifyPlaylist) {
             return SpotifyPlaylist.get({
               userId: $stateParams.userId,
               playlistId: $stateParams.id

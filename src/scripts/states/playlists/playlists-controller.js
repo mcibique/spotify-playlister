@@ -2,35 +2,35 @@
 
 angular
   .module('playlister.states.playlists.controllers', ['playlister.filters', 'playlister.spotify.resources'])
-  .controller('PlaylistsController', function ($scope, profile, SpotifyPlaylist) {
+  .controller('PlaylistsController', ($scope, profile, SpotifyPlaylist) => {
     $scope.profile = profile;
     $scope.selected = [];
     $scope.duplicates = {};
     $scope.playlists = SpotifyPlaylist.get({
       userId: profile.id,
       limit: 50
-    }, function () {
+    }, () => {
       $scope.$broadcast('updateScrollbar');
     });
   })
-  .controller('PlaylistController', function ($scope, $modal, $log, profile, playlist, tracksCache, tracksComparer,
-    tracksReplacement, choosePlaylist, playlistsMerge) {
+  .controller('PlaylistController', ($scope, $modal, $log, profile, playlist, tracksCache, tracksComparer,
+    tracksReplacement, choosePlaylist, playlistsMerge) => {
     $scope.playlist = playlist;
 
-    var loadItems = function (playlist) {
+    function loadItems(playlist) {
       $scope.loadingProgress = {
         current: 0,
         total: playlist.tracks.total
       };
 
-      var notificationsCount = 0;
+      let notificationsCount = 0;
 
-      tracksCache.get(playlist, 0).then(function (result) {
+      tracksCache.get(playlist, 0).then((result) => {
         $scope.trackItems = result;
         $scope.loadingProgress = null;
-      }, function () {
+      }, () => {
         $scope.loadingProgress = null;
-      }, function (items) {
+      }, (items) => {
         if (notificationsCount === 0 || !$scope.trackItems) {
           $scope.trackItems = [];
         }
@@ -40,7 +40,7 @@ angular
         $scope.loadingProgress.current = $scope.trackItems.length;
         $scope.$broadcast('updateScrollbar');
       });
-    };
+    }
 
     loadItems(playlist);
 
@@ -49,12 +49,10 @@ angular
       loadItems(playlist);
     };
 
-    /**
-     * find duplicates button logic
-     */
+    // find duplicates button logic
     $scope.findPlaylistDuplicates = function () {
-      var trackItems = $scope.trackItems;
-      var result = tracksComparer.compare(trackItems);
+      let trackItems = $scope.trackItems;
+      let result = tracksComparer.compare(trackItems);
       $log.debug('duplicates', result);
 
       if (!result.ids.length && !result.titles.length) {
@@ -65,29 +63,25 @@ angular
       displayComparisonResult(playlist, trackItems, result);
     };
 
-    /**
-     * Find replacements logic
-     */
+    // Find replacements logic
     $scope.findReplacements = function () {
-      tracksReplacement.replace($scope.playlist, profile).then(function (numberOfReplaced) {
+      tracksReplacement.replace($scope.playlist, profile).then((numberOfReplaced) => {
         $log.debug('tracks replaced: ', numberOfReplaced);
         if (numberOfReplaced) {
           $scope.refreshTracks($scope.playlist);
         }
-      }, function () {
+      }, () => {
         $log.debug('canceled');
       });
     };
 
-    /**
-     * Compare playlists logic
-     */
+    // Compare playlists logic
     $scope.comparePlaylists = function () {
-      choosePlaylist.show(playlist, profile).then(function (selectedPlaylist) {
-        var currentTracks = $scope.trackItems;
-        tracksCache.get(selectedPlaylist, 0).then(function (trackItems) {
-          var tracksToCompare = trackItems;
-          var result = tracksComparer.compare(currentTracks, tracksToCompare);
+      choosePlaylist.show(playlist, profile).then((selectedPlaylist) => {
+        let currentTracks = $scope.trackItems;
+        tracksCache.get(selectedPlaylist, 0).then((trackItems) => {
+          let tracksToCompare = trackItems;
+          let result = tracksComparer.compare(currentTracks, tracksToCompare);
           $log.debug('duplicates', result);
 
           if (!result.ids.length && !result.titles.length) {
@@ -97,41 +91,37 @@ angular
 
           displayComparisonResult(playlist, $scope.trackItems, result);
         });
-      }, function () {
+      }, () => {
         $log.debug('Choose playlist canceled.');
       });
     };
 
-    /**
-     * Merge playlists logic
-     */
+    // Merge playlists logic
     $scope.mergePlaylists = function () {
-      choosePlaylist.show(playlist, profile).then(function (selectedPlaylist) {
-        playlistsMerge.merge(playlist, selectedPlaylist).then(function () {
+      choosePlaylist.show(playlist, profile).then((selectedPlaylist) => {
+        playlistsMerge.merge(playlist, selectedPlaylist).then(() => {
           $log.debug('playlists merged');
         });
       });
     };
 
-    /**
-     * Duplicates result
-     */
-    var displayComparisonResult = function (playlist, trackItems, result) {
+    // Duplicates result
+    function displayComparisonResult(playlist, trackItems, result) {
       $modal.open({
         templateUrl: '/views/modals/playlist-duplicates.html',
         resolve: {
-          duplicates: function () {
+          duplicates() {
             return result;
           },
-          playlist: function () {
+          playlist() {
             return playlist;
           },
-          trackItems: function () {
+          trackItems() {
             return trackItems;
           }
         },
         controller: function FindCuplicatesModalController($scope, $modalInstance, duplicates, playlist, trackItems
-          /*, SpotifyPlaylist*/) {
+          /* , SpotifyPlaylist */) {
           $scope.duplicates = duplicates;
           $scope.playlist = playlist;
           $scope.trackItems = trackItems;
@@ -140,7 +130,7 @@ angular
             $modalInstance.dismiss('ok');
           };
 
-          $scope.removeDuplicate = function (/*duplicate*/) {
+          $scope.removeDuplicate = function (/* duplicate */) {
             // TODO  http delete doesn't support params in angular
             // var item = duplicate.b.item;
             // SpotifyPlaylist.removeTracks({
@@ -156,5 +146,5 @@ angular
           };
         }
       });
-    };
+    }
   });

@@ -2,44 +2,42 @@
 
 angular
   .module('playlister.spotify.replacements', ['ui.slider', 'playlister.spotify.resources'])
-  .factory('tracksReplacement', function ($q, $modal, tracksCache) {
-    var replace = function (playlist, profile) {
-      var defer = $q.defer();
-      var fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
+  .factory('tracksReplacement', ($q, $modal, tracksCache) => {
+    function replace(playlist, profile) {
+      const defer = $q.defer();
+      let fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
 
-      var modal = $modal.open({
+      const modal = $modal.open({
         templateUrl: '/views/modals/replace.html',
         size: 'lg',
         resolve: {
-          trackItems: function () {
+          trackItems() {
             return tracksCache.get(playlist, 0, fields);
           },
-          playlist: function () {
+          playlist() {
             return playlist;
           },
-          profile: function () {
+          profile() {
             return profile;
           }
         },
         controller: 'TracksReplacementModalController'
       });
 
-      modal.result.then(function (result) {
+      modal.result.then((result) => {
         defer.resolve(result);
-      }, function (reason) {
+      }, (reason) => {
         defer.reject(reason);
       });
 
       return defer.promise;
-    };
+    }
 
-    return {
-      replace: replace
-    };
+    return { replace };
   })
-  .controller('TracksReplacementModalController', function ($scope, $modalInstance, $filter, trackItems, playlist,
-    profile, SpotifySearch, SpotifyPlaylist) {
-    $scope.trackItems = trackItems.slice().sort(function (t1, t2) {
+  .controller('TracksReplacementModalController', ($scope, $modalInstance, $filter, trackItems, playlist, profile,
+    SpotifySearch, SpotifyPlaylist) => {
+    $scope.trackItems = trackItems.slice().sort((t1, t2) => {
       if (t1.is_local && t2.is_local) {
         return 0;
       }
@@ -65,31 +63,33 @@ angular
       return 'N/A';
     };
 
-    var getSearchString = function (trackItem) {
-      var track = trackItem.track;
-      var result = $filter('artists')(trackItem.track.artists);
+    let slidingInProgress = false;
+    let slidingState = 0;
+
+    function getSearchString(trackItem) {
+      let track = trackItem.track;
+      let result = $filter('artists')(trackItem.track.artists);
 
       if (result) {
         result += ' - ';
       }
       result += track.name;
       return result;
-    };
+    }
 
-    var doSearch = function (searchString) {
+    function doSearch(searchString) {
       if (slidingInProgress) {
         return;
       }
       if (searchString) {
         SpotifySearch.tracks({
           q: searchString
-        }, function (response) {
-          console.log('response', response);
+        }, (response) => {
           $scope.possibleReplacements = response.tracks.items;
 
-          for (var i = 0, len = $scope.possibleReplacements.length; i < len; i++) {
-            var replacement = $scope.possibleReplacements[i];
-            var available = !$scope.isAvailableForMarket(replacement);
+          for (let i = 0, len = $scope.possibleReplacements.length; i < len; i++) {
+            let replacement = $scope.possibleReplacements[i];
+            let available = !$scope.isAvailableForMarket(replacement);
             if (available) {
               replacement.selected = true;
               break;
@@ -99,14 +99,14 @@ angular
       } else {
         $scope.possibleReplacements = [];
       }
-    };
+    }
 
     $scope.searchString = getSearchString($scope.currentTrackItem);
     doSearch($scope.searchString);
 
-    $scope.$watch(function (scope) {
+    $scope.$watch((scope) => {
       return scope.searchString;
-    }, function (newValue, oldValue) {
+    }, (newValue, oldValue) => {
       if (newValue === oldValue || !newValue) {
         return;
       }
@@ -119,7 +119,7 @@ angular
     };
 
     $scope.getDurationDiffClass = function (diff) {
-      var abs = Math.round(Math.abs(diff));
+      const abs = Math.round(Math.abs(diff));
       if (abs === 0) {
         return 'diff-exact';
       } else if (abs < 5) {
@@ -131,8 +131,8 @@ angular
       }
     };
 
-    var saveCurrentTrackItem = function () {
-      var selected = $scope.possibleReplacements.filter(function (replacement) {
+    function saveCurrentTrackItem() {
+      let selected = $scope.possibleReplacements.filter((replacement) => {
         return replacement.selected;
       });
       if (selected.length) {
@@ -142,20 +142,15 @@ angular
       }
 
       $scope.currentTrackItem.searchString = $scope.searchString;
-    };
-
-    var slidingInProgress = false;
-    var slidingState;
+    }
 
     $scope.sliderOptions = {
-      start: function () {
-        console.log('start');
+      start() {
         saveCurrentTrackItem();
         slidingState = $scope.currentIndex;
         slidingInProgress = true;
       },
-      stop: function () {
-        console.log('stop');
+      stop() {
         slidingInProgress = false;
 
         if (slidingState !== $scope.currentIndex) {
@@ -164,11 +159,11 @@ angular
       }
     };
 
-    $scope.$watch(function (scope) {
+    $scope.$watch((scope) => {
       return scope.currentIndex;
-    }, function (newValue, oldValue) {
+    }, (newValue, oldValue) => {
       if (newValue !== oldValue) {
-        var trackItem = $scope.trackItems[newValue];
+        let trackItem = $scope.trackItems[newValue];
         if (trackItem) {
           $scope.currentTrackItem = trackItem;
           $scope.searchString = $scope.currentTrackItem.searchString || getSearchString($scope.currentTrackItem);
@@ -179,8 +174,8 @@ angular
     // buttons
     $scope.save = function () {
       saveCurrentTrackItem();
-      var items = $scope.trackItems;
-      var selectedItems = items.filter(function (item) {
+      let items = $scope.trackItems;
+      let selectedItems = items.filter((item) => {
         return item.replacement && item.replacement.length;
       });
 
@@ -188,14 +183,14 @@ angular
         return;
       }
 
-      var toDelete = [];
-      var toAdd = [];
+      let toDelete = [];
+      let toAdd = [];
 
-      selectedItems.forEach(function (selectedItem) {
+      selectedItems.forEach((selectedItem) => {
         if (!selectedItem.keep) {
           toDelete.push(selectedItem.track.uri);
         }
-        toAdd = toAdd.concat(selectedItem.replacement.map(function (replacement) {
+        toAdd = toAdd.concat(selectedItem.replacement.map((replacement) => {
           return replacement.uri;
         }));
       });
@@ -206,7 +201,7 @@ angular
           playlistId: playlist.id
         }, {
           uris: toAdd
-        }, function (/*response*/) {
+        }, () => {
           $modalInstance.close(toAdd.length);
         });
       }

@@ -2,22 +2,22 @@
 
 angular
   .module('playlister.directives.perfectScrollbar', [])
-  .directive('scrollbar', function () {
+  .directive('scrollbar', () => {
     return {
       restict: 'A',
-      link: function (scope, element, attrs) {
-        var options = scope.$eval(attrs.scrollbar);
-        setTimeout(function () {
+      link(scope, element, attrs) {
+        const options = scope.$eval(attrs.scrollbar);
+        setTimeout(() => {
           element.perfectScrollbar(options);
         });
 
-        scope.$on('updateScrollbar', function () {
-          setTimeout(function () {
+        scope.$on('updateScrollbar', () => {
+          setTimeout(() => {
             element.perfectScrollbar('update');
           });
         });
 
-        scope.$on('$destroy', function () {
+        scope.$on('$destroy', () => {
           element.perfectScrollbar('destroy');
         });
       }

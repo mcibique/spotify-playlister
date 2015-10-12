@@ -11,12 +11,9 @@ import rename from 'gulp-rename';
 
 import paths from './paths';
 
-/**
- * config.js
- */
-var generateConfig = (environment) => {
+function generateConfig(environment) {
   const defaultConfigPath = paths.config;
-  const envConfigPath = defaultConfigPath.replace(/\.json$/i, '.' + environment + '.json');
+  const envConfigPath = defaultConfigPath.replace(/\.json$/i, `.${environment}.json`);
   let defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf8'));
 
   if (fs.existsSync(envConfigPath)) {
@@ -25,23 +22,26 @@ var generateConfig = (environment) => {
   }
 
   return ngConstanst({
-      stream: true,
-      name: 'playlister.config',
-      space: ' ',
-      templatePath: './templates/config.template',
-      constants: {
-        config: defaultConfig
-      }
-    })
-    .pipe(rename('config.js'))
-    .pipe(beautify({
-      indentSize: 2,
-      maxPreserveNewlines: 2,
-      jslintHappy: true
-    }))
-    .pipe(gulp.dest(path.join(paths.src, 'scripts')));
-};
+    stream: true,
+    name: 'playlister.config',
+    space: ' ',
+    templatePath: './templates/config.template',
+    constants: {
+      config: defaultConfig
+    }
+  })
+  .pipe(rename('config.js'))
+  .pipe(beautify({
+    indentSize: 2,
+    maxPreserveNewlines: 2,
+    jslintHappy: true
+  }))
+  .pipe(gulp.dest(path.join(paths.src, 'scripts')));
+}
 
+/**
+ * config.js
+ */
 gulp.task('config:dev', () => {
   return generateConfig('dev');
 });
