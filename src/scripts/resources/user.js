@@ -2,6 +2,6 @@
 
 angular
   .module('playlister.spotify.resources.user', ['ngResource'])
-  .factory('SpotifyUser', function ($resource, spotifyApiUrl) {
-    return $resource(spotifyApiUrl + '/me');
+  .factory('SpotifyUser', ($resource, spotifyApiUrl) => {
+    return $resource(`${spotifyApiUrl}/me`);
   });

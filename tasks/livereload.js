@@ -9,9 +9,7 @@ import babel from 'gulp-babel';
 import concat from 'gulp-concat';
 import connect from 'gulp-connect';
 import htmlhint from 'gulp-htmlhint';
-import jscs from 'gulp-jscs';
-import jscsStylish from 'gulp-jscs-stylish';
-import jshint from 'gulp-jshint';
+import eslint from 'gulp-eslint';
 import sass from 'gulp-sass';
 import scsslint from 'gulp-scss-lint';
 import scsslintStylish from 'gulp-scss-lint-stylish';
@@ -32,12 +30,8 @@ gulp.task('html', () => {
 
 gulp.task('js', () => {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'])
-    .pipe(jshint())
-    .pipe(jscs({
-      configPath: '.jscsrc'
-    }))
-    .pipe(jscsStylish.combineWithHintResults())
-    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(eslint())
+    .pipe(eslint.format())
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(concat('all.js'))

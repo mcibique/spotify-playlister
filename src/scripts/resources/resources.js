@@ -4,26 +4,26 @@ angular
   .module('playlister.spotify.resources', ['ngResource', 'playlister.spotify.resources.user',
     'playlister.spotify.resources.playlist', 'playlister.spotify.resources.search'
   ])
-  .config(function ($httpProvider) {
+  .config(($httpProvider) => {
     $httpProvider.interceptors.push('spotifyAuthHttpInterceptor');
 
     $httpProvider.defaults.headers.delete = {
       'Content-Type': 'application/json;charset=utf-8'
     };
   })
-  .factory('spotifyAuthHttpInterceptor', function ($injector, auth, spotifyApiUrl) {
+  .factory('spotifyAuthHttpInterceptor', ($injector, auth, spotifyApiUrl) => {
     return {
-      request: function (config) {
+      request(config) {
         if (config.url.indexOf(spotifyApiUrl) === 0) {
-          var key = auth.getKey();
+          const key = auth.getKey();
           if (key) {
-            config.headers.Authorization = 'Bearer ' + key;
+            config.headers.Authorization = `Bearer ${key}`;
           }
         }
 
         return config;
       },
-      responseError: function (rejection) {
+      responseError(rejection) {
         if (rejection.config.url.indexOf(spotifyApiUrl) === 0) {
           if (rejection.status === 401) {
             auth.clearKey();

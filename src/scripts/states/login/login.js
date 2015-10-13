@@ -2,7 +2,7 @@
 
 angular
   .module('playlister.states.login', ['ui.router', 'playlister.services.auth', 'playlister.spotify.credentials'])
-  .config(function ($stateProvider) {
+  .config(($stateProvider) => {
     $stateProvider
       .state('login', {
         url: '/login/',
@@ -10,19 +10,19 @@ angular
         controller: 'LoginController'
       });
   })
-  .run(function ($window, $state, auth) {
-    var search = $window.location.hash;
-    var matches = /access_token=([^&]*)/g.exec(search);
+  .run(($window, $state, auth) => {
+    let search = $window.location.hash;
+    let matches = (/access_token=([^&]*)/g).exec(search);
     if (matches) {
-      var code = matches[1];
+      let code = matches[1];
       if (code) {
         auth.setKey(code);
         $state.go('playlists');
       }
     }
   })
-  .controller('LoginController', function ($scope, spotifyCredentials) {
-    var params = {
+  .controller('LoginController', ($scope, spotifyCredentials) => {
+    let params = {
       client_id: spotifyCredentials.clientId,
       response_type: 'token',
       redirect_uri: spotifyCredentials.redirectUri,
@@ -30,9 +30,9 @@ angular
       show_dialog: false
     };
 
-    $scope.spotifyAuthorizeUrl = spotifyCredentials.authorizeUrl + '/?' + $.param(params);
+    $scope.spotifyAuthorizeUrl = `${spotifyCredentials.authorizeUrl}/?${$.param(params)}`;
   })
-  .controller('LogoutController', function ($scope, $state, auth) {
+  .controller('LogoutController', ($scope, $state, auth) => {
     $scope.logout = function () {
       auth.clearKey();
       $state.go('login');

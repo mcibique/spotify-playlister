@@ -2,117 +2,105 @@
 
 angular
   .module('playlister.spotify.comparer', [])
-  .factory('sanitize', function () {
-    return function sanitize (name) {
+  .factory('sanitize', () => {
+    return function sanitize(name) {
       return name.replace(/[\W]+/g, '').toLowerCase();
     };
   })
-  .factory('tracksComparer', function (sanitize) {
+  .factory('tracksComparer', (sanitize) => {
+    function generateTrackUniqueIds(item) {
+      let track = item.track;
+      let id = track.id;
+      let title = sanitize(track.name);
+      let local = item.is_local;
 
-    var generateTrackUniqueIds = function (item) {
-      var track = item.track;
-      var id = track.id;
-      var title = sanitize(track.name);
-      var local = item.is_local;
-
-      var artistsMap = track.artists.map(function (artist) {
+      let artistsMap = track.artists.map((artist) => {
         return artist.id;
       }).sort();
-      var artists = artistsMap.join(';');
-      return {
-        id: id,
-        title: title,
-        artists: artists,
-        local: local
-      };
-    };
 
-    var comapareTwoTrackLists = function (itemsA, itemsB) {
-      var result = {
+      let artists = artistsMap.join(';');
+      return { id, title, artists, local };
+    }
+
+    function comapareTwoTrackLists(itemsToCompareA, itemsToCompareB) {
+      let result = {
         ids: [],
         titles: []
       };
 
-      if (itemsA.length > itemsB.length) {
-        var tempC = itemsA;
-        itemsA = itemsB;
-        itemsB = tempC;
+      let itemsA = itemsToCompareA;
+      let itemsB = itemsToCompareB;
+
+      if (itemsToCompareA.length > itemsToCompareB.length) {
+        itemsA = itemsToCompareB;
+        itemsB = itemsToCompareA;
       }
 
-      var hashSet = {};
+      let hashSet = {};
 
-      itemsA.forEach(function (item) {
-        var ids = generateTrackUniqueIds(item);
-        var value = {
-          ids: ids,
-          item: item
-        };
+      itemsA.forEach((item) => {
+        let ids = generateTrackUniqueIds(item);
+        let value = { ids, item };
+        const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local) {
           hashSet[ids.id] = value;
         }
-        hashSet[ids.title + '-' + ids.artists] = value;
+        hashSet[hashKey] = value;
       });
 
-      itemsB.forEach(function (item) {
-        var ids = generateTrackUniqueIds(item);
+      itemsB.forEach((item) => {
+        let ids = generateTrackUniqueIds(item);
+        const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local && hashSet.hasOwnProperty(ids.id)) {
           result.ids.push({
             a: hashSet[ids.id],
-            b: {
-              ids: ids,
-              item: item
-            }
+            b: { ids, item }
           });
-        } else if (hashSet.hasOwnProperty(ids.title + '-' + ids.artists)) {
+        } else if (hashSet.hasOwnProperty(hashKey)) {
           result.titles.push({
-            a: hashSet[ids.title + '-' + ids.artists],
-            b: {
-              ids: ids,
-              item: item
-            }
+            a: hashSet[hashKey],
+            b: { ids, item }
           });
         }
       });
 
       return result;
-    };
+    }
 
-    var compareSingleTrackList = function (items) {
-      var result = {
+    function compareSingleTrackList(items) {
+      let result = {
         ids: [],
         titles: []
       };
 
-      var hashSet = {};
+      let hashSet = {};
 
-      items.forEach(function (item) {
-        var ids = generateTrackUniqueIds(item);
-        var value = {
-          ids: ids,
-          item: item
-        };
+      items.forEach((item) => {
+        let ids = generateTrackUniqueIds(item);
+        let value = { ids, item };
+        const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local && hashSet.hasOwnProperty(ids.id)) {
           result.ids.push({
             a: hashSet[ids.id],
             b: value
           });
-        } else if (hashSet.hasOwnProperty(ids.title + '-' + ids.artists)) {
+        } else if (hashSet.hasOwnProperty(hashKey)) {
           result.titles.push({
-            a: hashSet[ids.title + '-' + ids.artists],
+            a: hashSet[hashKey],
             b: value
           });
         } else {
           if (!ids.local) {
             hashSet[ids.id] = value;
           }
-          hashSet[ids.title + '-' + ids.artists] = value;
+          hashSet[hashKey] = value;
         }
       });
 
       return result;
-    };
+    }
 
-    var compare = function (itemsA, itemsB) {
+    function compare(itemsA, itemsB) {
       if (!itemsA && !itemsB) {
         return {
           ids: [],
@@ -123,9 +111,7 @@ angular
         return compareSingleTrackList(itemsA);
       }
       return comapareTwoTrackLists(itemsA, itemsB);
-    };
+    }
 
-    return {
-      compare: compare
-    };
+    return { compare };
   });

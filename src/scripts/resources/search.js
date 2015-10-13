@@ -2,8 +2,8 @@
 
 angular
   .module('playlister.spotify.resources.search', ['ngResource'])
-  .factory('SpotifySearch', function ($resource, spotifyApiUrl) {
-    var playlistUrl = spotifyApiUrl + '/search';
+  .factory('SpotifySearch', ($resource, spotifyApiUrl) => {
+    const playlistUrl = `${spotifyApiUrl}/search`;
     return $resource(playlistUrl, {
       q: '@q',
       type: '@type'

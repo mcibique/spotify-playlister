@@ -2,18 +2,18 @@
 
 angular
   .module('playlister.spotify.playlists-merge', [])
-  .factory('playlistsMerge', function ($q, $modal, tracksCache) {
-    var merge = function (fromPlaylist, toPlaylist) {
-      var defer = $q.defer();
-      var fields = 'items(added_at,track(name,id,uri,album(name,id),artists(id,name)))';
+  .factory('playlistsMerge', ($q, $modal, tracksCache) => {
+    function merge(fromPlaylist, toPlaylist) {
+      const defer = $q.defer();
+      const fields = 'items(added_at,track(name,id,uri,album(name,id),artists(id,name)))';
 
       $modal.open({
         templateUrl: '/views/modals/merge.html',
         resolve: {
-          fromTracks: function () {
+          fromTracks() {
             return tracksCache.get(fromPlaylist, 0, fields);
           },
-          toTracks: function () {
+          toTracks() {
             return tracksCache.get(toPlaylist, 0, fields);
           }
         },
@@ -35,19 +35,19 @@ angular
           };
 
           // filtering
-          var filterTracks = function (tracks, days) {
-            var fromDate = new Date();
+          function filterTracks(tracks, days) {
+            let fromDate = new Date();
             fromDate.setDate(fromDate.getDate() - days);
-            return tracks.filter(function (item) {
+            return tracks.filter((item) => {
               return new Date(item.added_at) >= fromDate;
             });
-          };
+          }
 
           $scope.filteredFromTracks = filterTracks(fromTracks, $scope.lastXDays);
 
-          $scope.$watch(function (scope) {
+          $scope.$watch((scope) => {
             return scope.lastXDays;
-          }, function (newValue, oldValue) {
+          }, (newValue, oldValue) => {
             if (newValue !== oldValue && !isNaN(newValue) && newValue >= 0) {
               $scope.filteredFromTracks = filterTracks(fromTracks, newValue);
             }
@@ -56,37 +56,37 @@ angular
           // compare
           // $scope.commonTracks = [];
 
-          /*tracksComparer.compare(fromTracks, toTracks).then(function (commonTracks) {
-            $scope.commonTracks = commonTracks.ids;
-            $scope.commonTracks.forEach(function (track) {
-              track.isCommon = true;
-            });
-          });*/
-          var compareResult = tracksComparer.compare(fromTracks, toTracks);
-          compareResult.ids.forEach(function (result) {
+          // tracksComparer.compare(fromTracks, toTracks).then(function (commonTracks) {
+          //   $scope.commonTracks = commonTracks.ids;
+          //   $scope.commonTracks.forEach(function (track) {
+          //     track.isCommon = true;
+          //   });
+          // });
+          let compareResult = tracksComparer.compare(fromTracks, toTracks);
+          compareResult.ids.forEach((result) => {
             result.a.isCommon = true;
           });
 
-          compareResult.titles.forEach(function (result) {
+          compareResult.titles.forEach((result) => {
             result.a.isCommon = true;
           });
 
           $scope.getUniqueTracks = function (tracks) {
-            return tracks.filter(function (item) {
+            return tracks.filter((item) => {
               return !item.track.isCommon || item.userOverride;
             });
           };
 
           $scope.getDuplicateTracks = function (tracks) {
-            return tracks.filter(function (item) {
+            return tracks.filter((item) => {
               return item.track.isCommon && !item.userOverride;
             });
           };
 
           $scope.addSelectedToPlaylist = function () {
-            var selected = $scope.filteredFromTracks.filter(function (item) {
+            let selected = $scope.filteredFromTracks.filter((item) => {
               return item.selected;
-            }).map(function (item) {
+            }).map((item) => {
               return item.track.uri;
             });
 
@@ -96,7 +96,7 @@ angular
                 playlistId: toPlaylist.id
               }, {
                 uris: selected
-              }, function () {
+              }, () => {
                 $log.debug('success');
                 $scope.ok();
               });
@@ -106,9 +106,7 @@ angular
       });
 
       return defer.promise;
-    };
+    }
 
-    return {
-      merge: merge
-    };
+    return { merge };
   });

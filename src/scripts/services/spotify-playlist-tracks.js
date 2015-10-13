@@ -2,16 +2,15 @@
 
 angular
   .module('playlister.spotify.playlistTracks', ['playlister.spotify.resources'])
-  .factory('playlistTracks', function ($q, SpotifyPlaylist) {
-    var defaultLimit = 100;
+  .factory('playlistTracks', ($q, SpotifyPlaylist) => {
+    const defaultLimit = 100;
 
-    var getTracksResponse = function (response, playlist, offset, fields) {
-      var defer = $q.defer();
+    function getTracksResponse(response, playlist, offset, fields) {
+      const defer = $q.defer();
       if (response.items.length && response.items.length === defaultLimit) {
-
-        getTracks(playlist, offset + defaultLimit, fields).then(function (tracks) {
+        getTracks(playlist, offset + defaultLimit, fields).then((tracks) => {
           defer.resolve(response.items.concat(tracks));
-        }, null, function (items) {
+        }, null, (items) => {
           defer.notify(items);
         });
       } else {
@@ -19,27 +18,27 @@ angular
       }
 
       return defer.promise;
-    };
+    }
 
-    var getTracks = function (playlist, offset, fields) {
-      var defer = $q.defer();
+    function getTracks(playlist, offset, fields) {
+      const defer = $q.defer();
       SpotifyPlaylist.tracks({
         userId: playlist.owner.id,
         playlistId: playlist.id,
         limit: defaultLimit,
-        offset: offset,
-        fields: fields
-      }, function (response) {
+        offset,
+        fields
+      }, (response) => {
         defer.notify(response.items);
-        getTracksResponse(response, playlist, offset, fields).then(function (tracks) {
+        getTracksResponse(response, playlist, offset, fields).then((tracks) => {
           defer.resolve(tracks);
-        }, null, function (items) {
+        }, null, (items) => {
           defer.notify(items);
         });
       });
 
       return defer.promise;
-    };
+    }
 
     return {
       get: getTracks

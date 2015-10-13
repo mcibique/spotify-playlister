@@ -1,10 +1,8 @@
 'use strict';
 
 import gulp from 'gulp';
+import eslint from 'gulp-eslint';
 import htmlhint from 'gulp-htmlhint';
-import jscs from 'gulp-jscs';
-import jscsStylish from 'gulp-jscs-stylish';
-import jshint from 'gulp-jshint';
 import scsslint from 'gulp-scss-lint';
 import scsslintStylish from 'gulp-scss-lint-stylish';
 
@@ -20,13 +18,9 @@ gulp.task('linter-html', () => {
 });
 
 gulp.task('linter-js', () => {
-  return gulp.src(paths.js)
-    .pipe(jshint())
-    .pipe(jscs({
-      configPath: '.jscsrc'
-    }))
-    .pipe(jscsStylish.combineWithHintResults())
-    .pipe(jshint.reporter('jshint-stylish'));
+  return gulp.src([paths.js].concat(['gulpfile.babel.js', 'tasks/**/*.js', '!src/scripts/config.js']))
+    .pipe(eslint())
+    .pipe(eslint.format());
 });
 
 gulp.task('linter-scss', () => {
