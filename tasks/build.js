@@ -1,3 +1,5 @@
+/* eslint-disable angular/no-inline-template */
+
 'use strict';
 
 import path from 'path';

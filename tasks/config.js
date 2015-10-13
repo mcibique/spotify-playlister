@@ -1,3 +1,5 @@
+/* eslint-disable angular/json-functions */
+
 'use strict';
 
 import extend from 'node.extend';
