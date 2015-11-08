@@ -10,6 +10,7 @@ angular
         url: '/playlists/',
         templateUrl: '/views/playlists.html',
         controller: 'PlaylistsController',
+        controllerAs: 'vm',
         resolve: {
           profile(SpotifyUser) {
             return SpotifyUser.get().$promise;
@@ -20,6 +21,7 @@ angular
         url: ':userId/playlist/:id',
         templateUrl: '/views/playlist.html',
         controller: 'PlaylistController',
+        controllerAs: 'vm',
         resolve: {
           playlist($stateParams, SpotifyPlaylist) {
             return SpotifyPlaylist.get({

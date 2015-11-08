@@ -10,10 +10,10 @@
 </head>
 
 <body ng-app="playlister" class="container" ng-csp>
-  <header ng-controller="LogoutController">
+  <header ng-controller="LogoutController as vm">
     <div class="container">
       <h1>Spotify playlister</h1>
-      <a href="javascript:void(0);" ng-click="logout()" ng-if="isLoggedIn()">Logout</a>
+      <a href="javascript:void(0);" ng-click="vm.logout()" ng-if="vm.isLoggedIn()">Logout</a>
     </div>
   </header>
   <main>

@@ -1,13 +1,16 @@
 'use strict';
 
 angular
-  .module('playlister.states.login', ['ui.router', 'playlister.services.auth', 'playlister.spotify.credentials'])
+  .module('playlister.states.login', ['ui.router', 'playlister.states.login.controllers',
+    'playlister.services.auth'
+  ])
   .config(($stateProvider) => {
     $stateProvider
       .state('login', {
         url: '/login/',
         templateUrl: '/views/login.html',
-        controller: 'LoginController'
+        controller: 'LoginController',
+        controllerAs: 'vm'
       });
   })
   .run(($window, $state, auth) => {
@@ -20,25 +23,4 @@ angular
         $state.go('playlists');
       }
     }
-  })
-  .controller('LoginController', ($scope, spotifyCredentials) => {
-    let params = {
-      client_id: spotifyCredentials.clientId,
-      response_type: 'token',
-      redirect_uri: spotifyCredentials.redirectUri,
-      scope: spotifyCredentials.scopes.join(' '),
-      show_dialog: false
-    };
-
-    $scope.spotifyAuthorizeUrl = `${spotifyCredentials.authorizeUrl}/?${$.param(params)}`;
-  })
-  .controller('LogoutController', ($scope, $state, auth) => {
-    $scope.logout = function () {
-      auth.clearKey();
-      $state.go('login');
-    };
-
-    $scope.isLoggedIn = function () {
-      return !!auth.getKey();
-    };
   });
