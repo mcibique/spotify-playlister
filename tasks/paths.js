@@ -25,6 +25,7 @@ const paths = {
     'bower_components/jquery-ui/ui/mouse.js',
     'bower_components/jquery-ui/ui/slider.js',
     'bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.js',
+    'bower_components/sweetalert/dist/sweetalert-dev.js',
     'bower_components/angular/angular.js',
     'bower_components/angular-ui-router/release/angular-ui-router.js',
     'bower_components/angular-ui-slider/src/slider.js',

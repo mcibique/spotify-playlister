@@ -15,7 +15,7 @@ angular
     });
   })
   .controller('PlaylistController', function PlaylistController($scope, $modal, $log, profile, playlist, tracksCache,
-    tracksComparer, tracksReplacement, choosePlaylist, playlistsMerge) {
+    tracksComparer, tracksReplacement, choosePlaylist, playlistsMerge, alerts) {
     const vm = this;
     vm.playlist = playlist;
     vm.refreshTracks = refreshTracks;
@@ -32,20 +32,23 @@ angular
 
       let notificationsCount = 0;
 
-      tracksCache.get(playlist, 0).then((result) => {
+      return tracksCache.get(playlist, 0).then((result) => {
         vm.trackItems = result;
         vm.loadingProgress = null;
-      }, () => {
+        return result;
+      }, (error) => {
         vm.loadingProgress = null;
+        return error;
       }, (items) => {
-        if (notificationsCount === 0 || !$scope.trackItems) {
+        if (notificationsCount === 0 || !vm.trackItems) {
           vm.trackItems = [];
         }
 
         notificationsCount++;
-        vm.trackItems = $scope.trackItems.concat(items);
-        $scope.loadingProgress.current = $scope.trackItems.length;
+        vm.trackItems = vm.trackItems.concat(items);
+        vm.loadingProgress.current = vm.trackItems.length;
         $scope.$broadcast('updateScrollbar');
+        return items;
       });
     }
 
@@ -53,17 +56,18 @@ angular
 
     function refreshTracks(playlist) {
       tracksCache.refresh(playlist);
-      loadItems(playlist);
+      return loadItems(playlist);
     }
 
     // find duplicates button logic
     function findPlaylistDuplicates() {
-      let trackItems = $scope.trackItems;
+      let trackItems = vm.trackItems;
       let result = tracksComparer.compare(trackItems);
       $log.debug('duplicates', result);
 
       if (!result.ids.length && !result.titles.length) {
         $log.debug('No duplicates found.');
+        alerts.info('No duplicates found.');
         return;
       }
 
@@ -72,10 +76,12 @@ angular
 
     // Find replacements logic
     function findReplacements() {
-      tracksReplacement.replace($scope.playlist, profile).then((numberOfReplaced) => {
+      tracksReplacement.replace(vm.playlist, profile).then((numberOfReplaced) => {
         $log.debug('tracks replaced: ', numberOfReplaced);
         if (numberOfReplaced) {
-          vm.refreshTracks($scope.playlist);
+          vm.refreshTracks(vm.playlist).then(() => {
+            alerts.info('Tracks has been replaced.');
+          });
         }
       }, () => {
         $log.debug('canceled');
@@ -85,7 +91,7 @@ angular
     // Compare playlists logic
     function comparePlaylists() {
       choosePlaylist.show(playlist, profile).then((selectedPlaylist) => {
-        let currentTracks = $scope.trackItems;
+        let currentTracks = vm.trackItems;
         tracksCache.get(selectedPlaylist, 0).then((trackItems) => {
           let tracksToCompare = trackItems;
           let result = tracksComparer.compare(currentTracks, tracksToCompare);
@@ -93,10 +99,11 @@ angular
 
           if (!result.ids.length && !result.titles.length) {
             $log.debug('No duplicates found.');
+            alerts.info('No duplicates found.');
             return;
           }
 
-          displayComparisonResult(playlist, $scope.trackItems, result);
+          displayComparisonResult(playlist, vm.trackItems, result);
         });
       }, () => {
         $log.debug('Choose playlist canceled.');
@@ -107,7 +114,8 @@ angular
     function mergePlaylists() {
       choosePlaylist.show(playlist, profile).then((selectedPlaylist) => {
         playlistsMerge.merge(playlist, selectedPlaylist).then(() => {
-          $log.debug('playlists merged');
+          $log.debug('Playlists has been merged successfully.');
+          alerts.info('Playlists has been merged successfully.');
         });
       });
     }
@@ -127,7 +135,8 @@ angular
             return trackItems;
           }
         },
-        controller: 'FindCuplicatesModalController'
+        controller: 'FindCuplicatesModalController',
+        controllerAs: 'vm'
       });
     }
   })
