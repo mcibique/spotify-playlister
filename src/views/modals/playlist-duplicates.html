@@ -1,22 +1,22 @@
 <div class="modal-header">
-  <h3 class="modal-title">Duplicates for {{:: playlist.name }} ({{:: trackItems.length }} tracks)</h3>
+  <h3 class="modal-title">Duplicates for {{:: vm.playlist.name }} ({{:: vm.trackItems.length }} tracks)</h3>
 </div>
 <div class="modal-body replace-tracks-modal">
-  <section ng-if="duplicates.ids.length">
+  <section ng-if="vm.duplicates.ids.length">
     <h3>Tracks with same ID:</h3>
     <ul class="duplicates">
-      <li class="duplicate" ng-repeat="duplicate in duplicates.ids">
+      <li class="duplicate" ng-repeat="duplicate in ::vm.duplicates.ids">
         <div class="track original-track" ng-init="trackA = duplicate.a.item.track;">
           {{:: trackA.artists | artists }} - {{:: trackA.name }} ({{:: trackA.album.name }})
         </div>
-        <a href="#" ng-click="removeDuplicate(duplicate)">Remove track</a>
+        <a href="#" ng-click="vm.removeDuplicate(duplicate)">Remove track</a>
       </li>
     </ul>
   </section>
-  <section ng-if="duplicates.titles.length">
+  <section ng-if="vm.duplicates.titles.length">
     <h3>Tracks with same title:</h3>
     <ul class="duplicates">
-      <li class="duplicate" ng-repeat="duplicate in duplicates.titles">
+      <li class="duplicate" ng-repeat="duplicate in vm.duplicates.titles">
         <div class="track original-track" ng-init="trackA = duplicate.a.item.track;">
           {{:: trackA.artists | artists }} - {{:: trackA.name }} ({{:: trackA.album.name }})
         </div>
@@ -24,11 +24,11 @@
         <div class="track duplicate-track" ng-init="trackB = duplicate.b.item.track;">
           {{:: trackB.artists | artists }} - {{:: trackB.name }} ({{:: trackB.album.name }})
         </div>
-        <a href="#" ng-click="removeDuplicate(duplicate)">Remove track</a>
+        <a href="#" ng-click="vm.removeDuplicate(duplicate)">Remove track</a>
       </li>
     </ul>
   </section>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-warning" ng-click="close()">Close</button>
+  <button class="btn btn-warning" ng-click="vm.close()">Close</button>
 </div>
