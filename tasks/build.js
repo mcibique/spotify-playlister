@@ -9,6 +9,7 @@ import gulp from 'gulp';
 import autoprefixer from 'gulp-autoprefixer';
 import babel from 'gulp-babel';
 import concat from 'gulp-concat';
+import filesort from 'gulp-angular-filesort';
 import html2js from 'gulp-ng-html2js';
 import htmlreplace from 'gulp-html-replace';
 import imagemin from 'gulp-imagemin';
@@ -30,6 +31,7 @@ import paths from './paths';
 gulp.task('build-js', () => {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js', '!**/templates.js'])
     .pipe(babel())
+    .pipe(filesort())
     .pipe(concat('app.js'))
     .pipe(wrap(fs.readFileSync('./templates/all.scripts.template', 'utf8')))
     .pipe(ngAnnotate())
