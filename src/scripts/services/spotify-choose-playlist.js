@@ -2,58 +2,54 @@
 
 angular
   .module('playlister.spotify.choose-playlist', [])
-  .factory('choosePlaylist', ($modal, $q, SpotifyPlaylist) => {
+  .factory('choosePlaylist', function choosePlaylist($uibModal, $q, playlistService) {
     function show(currentPlaylist, profile) {
-      const defer = $q.defer();
-      SpotifyPlaylist.get({
-        userId: profile.id,
-        limit: 50
-      }, (playlists) => {
-        if (playlists.items && playlists.items.length <= 1) {
-          defer.reject();
-          return;
-        }
-        $modal.open({
-          templateUrl: '/views/modals/choose-playlist.html',
-          resolve: {
-            playlists() {
-              return playlists.items;
-            },
-            currentPlaylist() {
-              return currentPlaylist;
-            }
-          },
-          controller: function ChoosePlaylistModalController($scope, $modalInstance, playlists, currentPlaylist) {
-            $scope.playlists = playlists;
-            $scope.currentPlaylist = currentPlaylist;
-            $scope.selectedPlaylist = null;
+      return $q(function (resolve, reject) {
+        playlistService.getPlaylists(profile.id, { limit: 50 }).then(response => response.data).then(onPlaylistsLoaded);
 
-            if (currentPlaylist) {
-              $scope.playlists = playlists.filter((playlist) => {
-                return playlist.id !== currentPlaylist.id;
-              });
-            }
-
-            $scope.close = function () {
-              $modalInstance.dismiss('ok');
-              defer.reject();
-            };
-
-            $scope.select = function (playlist) {
-              if (playlist) {
-                if (currentPlaylist && playlist.id === currentPlaylist.id) {
-                  return;
-                }
-                $modalInstance.dismiss();
-                defer.resolve(playlist);
-              }
-            };
+        function onPlaylistsLoaded(playlists) {
+          if (playlists.items && playlists.items.length <= 1) {
+            reject();
+            return;
           }
-        });
-      });
+          const modalInstance = $uibModal.open({
+            templateUrl: '/views/modals/choose-playlist.html',
+            resolve: {
+              playlists: () => playlists.items,
+              currentPlaylist: () => currentPlaylist
+            },
+            controller: 'ChoosePlaylistModalController',
+            controllerAs: 'vm'
+          });
 
-      return defer.promise;
+          modalInstance.result.then(resolve, reject);
+        }
+      });
     }
 
     return { show };
+  })
+  .controller('ChoosePlaylistModalController', function ChoosePlaylistModalController($uibModalInstance, playlists, currentPlaylist) {
+    const vm = this;
+    vm.playlists = playlists;
+    vm.currentPlaylist = currentPlaylist;
+    vm.selectedPlaylist = null;
+
+    if (currentPlaylist) {
+      vm.playlists = playlists.filter(playlist => playlist.id !== currentPlaylist.id);
+    }
+
+    vm.close = function () {
+      $uibModalInstance.dismiss();
+    };
+
+    vm.select = function (playlist) {
+      if (!playlist) {
+        return;
+      }
+      if (currentPlaylist && playlist.id === currentPlaylist.id) {
+        return;
+      }
+      $uibModalInstance.close(playlist);
+    };
   });

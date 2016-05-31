@@ -2,22 +2,18 @@
 
 angular
   .module('playlister.spotify.comparer', [])
-  .factory('sanitize', () => {
+  .factory('sanitize', function sanitizeFactory() {
     return function sanitize(name) {
       return name.replace(/[\W]+/g, '').toLowerCase();
     };
   })
-  .factory('tracksComparer', (sanitize) => {
+  .factory('tracksComparer', function tracksComparer(sanitize) {
     function generateTrackUniqueIds(item) {
       let track = item.track;
       let id = track.id;
       let title = sanitize(track.name);
       let local = item.is_local;
-
-      let artistsMap = track.artists.map((artist) => {
-        return artist.id;
-      }).sort();
-
+      let artistsMap = track.artists.map(artist => artist.id).sort();
       let artists = artistsMap.join(';');
       return { id, title, artists, local };
     }
@@ -38,7 +34,7 @@ angular
 
       let hashSet = {};
 
-      itemsA.forEach((item) => {
+      itemsA.forEach(item => {
         let ids = generateTrackUniqueIds(item);
         let value = { ids, item };
         const hashKey = `${ids.title}-${ids.artists}`;
@@ -48,7 +44,7 @@ angular
         hashSet[hashKey] = value;
       });
 
-      itemsB.forEach((item) => {
+      itemsB.forEach(item => {
         let ids = generateTrackUniqueIds(item);
         const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local && hashSet.hasOwnProperty(ids.id)) {
@@ -75,7 +71,7 @@ angular
 
       let hashSet = {};
 
-      items.forEach((item) => {
+      items.forEach(item => {
         let ids = generateTrackUniqueIds(item);
         let value = { ids, item };
         const hashKey = `${ids.title}-${ids.artists}`;

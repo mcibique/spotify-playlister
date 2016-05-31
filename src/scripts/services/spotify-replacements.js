@@ -1,70 +1,134 @@
 'use strict';
 
 angular
-  .module('playlister.spotify.replacements', ['ui.slider', 'playlister.spotify.resources'])
-  .factory('tracksReplacement', ($q, $modal, tracksCache) => {
+  .module('playlister.spotify.replacements', ['ui.slider', 'playlister.spotify.api'])
+  .factory('tracksReplacement', function tracksReplacement($uibModal) {
     function replace(playlist, profile) {
-      const defer = $q.defer();
       let fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
 
-      const modal = $modal.open({
+      const modalInstance = $uibModal.open({
         templateUrl: '/views/modals/replace.html',
         size: 'lg',
         resolve: {
-          trackItems() {
-            return tracksCache.get(playlist, 0, fields);
-          },
-          playlist() {
-            return playlist;
-          },
-          profile() {
-            return profile;
-          }
+          trackItems: tracksCache => tracksCache.get(playlist, 0, fields),
+          playlist: () => playlist,
+          profile: () => profile
         },
-        controller: 'TracksReplacementModalController'
+        controller: 'TracksReplacementModalController',
+        controllerAs: 'vm'
       });
 
-      modal.result.then((result) => {
-        defer.resolve(result);
-      }, (reason) => {
-        defer.reject(reason);
-      });
-
-      return defer.promise;
+      return modalInstance.result;
     }
 
     return { replace };
   })
-  .controller('TracksReplacementModalController', ($scope, $modalInstance, $filter, trackItems, playlist, profile,
-    SpotifySearch, SpotifyPlaylist) => {
-    $scope.trackItems = trackItems.slice().sort((t1, t2) => {
-      if (t1.is_local && t2.is_local) {
-        return 0;
-      }
-      if (t1.is_local && !t2.is_local) {
-        return -1;
-      }
+  .controller('TracksReplacementModalController', function TracksReplacementModalController($scope, $uibModalInstance, $filter, trackItems, playlist, profile, searchService, playlistService) {
+    const vm = this;
 
-      return 1;
+    // resolves
+    vm.trackItems = trackItems.slice().sort(tracksSorting);
+    vm.playlist = playlist;
+    vm.profile = profile;
+
+    // currentIndex
+    vm.currentIndex = 0;
+    vm.currentTrackItem = vm.trackItems[vm.currentIndex];
+
+    $scope.$watch(() => vm.currentIndex, (newValue, oldValue) => {
+      if (newValue === oldValue) {
+        return;
+      }
+      let trackItem = vm.trackItems[newValue];
+      if (trackItem) {
+        vm.currentTrackItem = trackItem;
+        vm.searchString = vm.currentTrackItem.searchString || getSearchString(vm.currentTrackItem);
+      }
     });
-    $scope.playlist = playlist;
-    $scope.profile = profile;
 
-    $scope.currentIndex = 0;
-    $scope.currentTrackItem = $scope.trackItems[$scope.currentIndex];
+    // availability
+    vm.isAvailableForMarket = isAvailableForMarket.bind(vm, vm.profile);
 
-    $scope.possibleReplacements = [];
+    // duration diffs
+    vm.getDurationDiff = getDurationDiff;
+    vm.getDurationDiffClass = getDurationDiffClass;
 
-    $scope.isAvailableForMarket = function (track) {
-      if (track.available_markets && track.available_markets.indexOf($scope.profile.country) >= 0) {
-        return '';
-      }
-
-      return 'N/A';
-    };
+    // possible replacements
+    vm.possibleReplacements = [];
 
     let slidingInProgress = false;
     let slidingState = 0;
+
+    vm.searchString = getSearchString(vm.currentTrackItem);
+    $scope.$watch(() => vm.searchString, (newValue, oldValue) => {
+      if (newValue === oldValue || !newValue) {
+        return;
+      }
+      doSearch(newValue);
+    });
+
+    doSearch(vm.searchString);
+
+    // slider
+    vm.sliderOptions = {
+      start() {
+        saveCurrentTrackItem();
+        slidingState = vm.currentIndex;
+        slidingInProgress = true;
+      },
+      stop() {
+        slidingInProgress = false;
+
+        if (slidingState !== vm.currentIndex) {
+          doSearch(vm.searchString);
+        }
+      }
+    };
+
+    // buttons
+    vm.save = function () {
+      saveCurrentTrackItem();
+      let items = vm.trackItems;
+      let selectedItems = items.filter(item => item.replacement && item.replacement.length);
+      if (!selectedItems.length) {
+        return;
+      }
+
+      let toDelete = [];
+      let toAdd = [];
+
+      selectedItems.forEach(selectedItem => {
+        if (!selectedItem.keep) {
+          toDelete.push(selectedItem.track.uri);
+        }
+        toAdd = toAdd.concat(selectedItem.replacement.map(replacement => replacement.uri));
+      });
+
+      if (toAdd.length) {
+        playlistService
+          .addTracks(playlist.owner.id, playlist.id, { uris: toAdd })
+          .then(() => $uibModalInstance.close(toAdd.length));
+      }
+      // TODO: toDelete
+    };
+
+    vm.next = function () {
+      if (vm.currentIndex < vm.trackItems.length - 1) {
+        saveCurrentTrackItem();
+        vm.currentIndex++;
+      }
+    };
+
+    vm.previous = function () {
+      if (vm.currentIndex > 0) {
+        saveCurrentTrackItem();
+        vm.currentIndex--;
+      }
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss();
+    };
 
     function getSearchString(trackItem) {
       let track = trackItem.track;
@@ -82,14 +146,12 @@ angular
         return;
       }
       if (searchString) {
-        SpotifySearch.tracks({
-          q: searchString
-        }, (response) => {
-          $scope.possibleReplacements = response.tracks.items;
+        searchService.tracks(searchString).then(response => {
+          vm.possibleReplacements = response.data.tracks.items;
 
-          for (let i = 0, len = $scope.possibleReplacements.length; i < len; i++) {
-            let replacement = $scope.possibleReplacements[i];
-            let available = !$scope.isAvailableForMarket(replacement);
+          for (let i = 0, len = vm.possibleReplacements.length; i < len; i++) {
+            let replacement = vm.possibleReplacements[i];
+            let available = !vm.isAvailableForMarket(replacement);
             if (available) {
               replacement.selected = true;
               break;
@@ -97,28 +159,15 @@ angular
           }
         });
       } else {
-        $scope.possibleReplacements = [];
+        vm.possibleReplacements = [];
       }
     }
 
-    $scope.searchString = getSearchString($scope.currentTrackItem);
-    doSearch($scope.searchString);
-
-    $scope.$watch((scope) => {
-      return scope.searchString;
-    }, (newValue, oldValue) => {
-      if (newValue === oldValue || !newValue) {
-        return;
-      }
-
-      doSearch(newValue);
-    });
-
-    $scope.getDurationDiff = function (trackA, trackB) {
+    function getDurationDiff(trackA, trackB) {
       return ((trackA.duration_ms - trackB.duration_ms) / 1000).toFixed(1);
-    };
+    }
 
-    $scope.getDurationDiffClass = function (diff) {
+    function getDurationDiffClass(diff) {
       const abs = Math.round(Math.abs(diff));
       if (abs === 0) {
         return 'diff-exact';
@@ -129,100 +178,33 @@ angular
       } else {
         return 'diff';
       }
-    };
-
-    function saveCurrentTrackItem() {
-      let selected = $scope.possibleReplacements.filter((replacement) => {
-        return replacement.selected;
-      });
-      if (selected.length) {
-        $scope.currentTrackItem.replacement = selected;
-      } else {
-        $scope.currentTrackItem.replacement = null;
-      }
-
-      $scope.currentTrackItem.searchString = $scope.searchString;
     }
 
-    $scope.sliderOptions = {
-      start() {
-        saveCurrentTrackItem();
-        slidingState = $scope.currentIndex;
-        slidingInProgress = true;
-      },
-      stop() {
-        slidingInProgress = false;
-
-        if (slidingState !== $scope.currentIndex) {
-          doSearch($scope.searchString);
-        }
-      }
-    };
-
-    $scope.$watch((scope) => {
-      return scope.currentIndex;
-    }, (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        let trackItem = $scope.trackItems[newValue];
-        if (trackItem) {
-          $scope.currentTrackItem = trackItem;
-          $scope.searchString = $scope.currentTrackItem.searchString || getSearchString($scope.currentTrackItem);
-        }
-      }
-    });
-
-    // buttons
-    $scope.save = function () {
-      saveCurrentTrackItem();
-      let items = $scope.trackItems;
-      let selectedItems = items.filter((item) => {
-        return item.replacement && item.replacement.length;
-      });
-
-      if (!selectedItems.length) {
-        return;
+    function saveCurrentTrackItem() {
+      let selected = vm.possibleReplacements.filter(replacement => replacement.selected);
+      if (selected.length) {
+        vm.currentTrackItem.replacement = selected;
+      } else {
+        vm.currentTrackItem.replacement = null;
       }
 
-      let toDelete = [];
-      let toAdd = [];
+      vm.currentTrackItem.searchString = vm.searchString;
+    }
 
-      selectedItems.forEach((selectedItem) => {
-        if (!selectedItem.keep) {
-          toDelete.push(selectedItem.track.uri);
-        }
-        toAdd = toAdd.concat(selectedItem.replacement.map((replacement) => {
-          return replacement.uri;
-        }));
-      });
-
-      if (toAdd.length) {
-        SpotifyPlaylist.addTracks({
-          userId: playlist.owner.id,
-          playlistId: playlist.id
-        }, {
-          uris: toAdd
-        }, () => {
-          $modalInstance.close(toAdd.length);
-        });
+    function isAvailableForMarket(profile, track) {
+      if (track.available_markets && track.available_markets.indexOf(profile.country) >= 0) {
+        return '';
       }
-      // TODO: toDelete
-    };
+      return 'N/A';
+    }
 
-    $scope.next = function () {
-      if ($scope.currentIndex < $scope.trackItems.length - 1) {
-        saveCurrentTrackItem();
-        $scope.currentIndex++;
+    function tracksSorting(t1, t2) {
+      if (t1.is_local && t2.is_local) {
+        return 0;
       }
-    };
-
-    $scope.previous = function () {
-      if ($scope.currentIndex > 0) {
-        saveCurrentTrackItem();
-        $scope.currentIndex--;
+      if (t1.is_local && !t2.is_local) {
+        return -1;
       }
-    };
-
-    $scope.cancel = function () {
-      $modalInstance.dismiss(0);
-    };
+      return 1;
+    }
   });

@@ -1,0 +1,13 @@
+<div class="playlist-tracks">
+  <ul class="tracks-list">
+    <li class="tracks-list-is-empty" ng-if="!vm.trackItems.length">No tracks in this playlist.</li>
+    <li class="tracks-list-item" ng-repeat="item in vm.trackItems track by $index">
+      <div class="track-info" ng-class="{ 'is-local': item.is_local }">
+        <div class="artists">{{:: item.track.artists | artists }}</div>
+        <div class="title">{{:: item.track.name }}</div>
+        <div class="album">{{:: item.track.album.name }}</div>
+        <i ng-if="item.is_local" class="sp-icon sp-icon-download"></i>
+      </div>
+    </li>
+  </ul>
+</div>

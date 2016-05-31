@@ -2,7 +2,7 @@
 
 angular
   .module('playlister.spotify.tracksCache', ['playlister.settings', 'playlister.spotify.playlistTracks'])
-  .factory('tracksCache', ($q, playlistTracks, tracksCacheSettings) => {
+  .factory('tracksCache', function tracksCache($q, playlistTracks, tracksCacheSettings) {
     let memory = {};
 
     function isEntryValid(entry) {
@@ -21,19 +21,20 @@ angular
       if (entry && isEntryValid(entry) && areSettingsMatch(entry, offset, fields)) {
         defer.resolve(entry.result);
       } else {
-        playlistTracks.get(playlist, offset, fields).then((result) => {
-          memory[playlist.id] = {
-            offset,
-            fields,
-            result,
-            added: new Date()
-          };
-          defer.resolve(result);
-        }, (reason) => {
-          defer.reject(reason);
-        }, (notify) => {
-          defer.notify(notify);
-        });
+        playlistTracks
+          .get(playlist, offset, fields)
+          .then(result => {
+            memory[playlist.id] = {
+              offset,
+              fields,
+              result,
+              added: new Date()
+            };
+            defer.resolve(result);
+          },
+          reason => defer.reject(reason),
+          notify => defer.notify(notify)
+        );
       }
 
       return defer.promise;

@@ -1,34 +1,16 @@
 'use strict';
 
 angular
-  .module('playlister.states.playlists', ['ui.router', 'playlister.states.playlists.controllers',
-    'playlister.filters', 'playlister.spotify.resources', 'playlister.spotify.tracksCache'
-  ])
-  .config(($stateProvider) => {
+  .module('playlister.states.playlists', ['ui.router', 'playlister.states.playlists.detail', 'playlister.states.playlists.controller', 'playlister.states.playlists.playlistList'])
+  .config(function playlistStateConfig($stateProvider) {
     $stateProvider
       .state('playlists', {
         url: '/playlists/',
-        templateUrl: '/views/playlists.html',
+        templateUrl: '/scripts/states/playlists/playlists.html',
         controller: 'PlaylistsController',
         controllerAs: 'vm',
         resolve: {
-          profile(SpotifyUser) {
-            return SpotifyUser.get().$promise;
-          }
-        }
-      })
-      .state('playlists.detail', {
-        url: ':userId/playlist/:id',
-        templateUrl: '/views/playlist.html',
-        controller: 'PlaylistController',
-        controllerAs: 'vm',
-        resolve: {
-          playlist($stateParams, SpotifyPlaylist) {
-            return SpotifyPlaylist.get({
-              userId: $stateParams.userId,
-              playlistId: $stateParams.id
-            }).$promise;
-          }
+          profile: userService => userService.get().then(response => response.data)
         }
       });
   });

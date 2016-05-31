@@ -2,7 +2,7 @@
 
 angular
   .module('playlister.services.alerts', [])
-  .factory('alerts', ($window) => {
+  .factory('alerts', function alerts($window) {
     let sweetAlert = $window.swal;
 
     function info(title, message) {

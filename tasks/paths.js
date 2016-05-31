@@ -17,7 +17,7 @@ const paths = {
   js: 'src/scripts/**/*.js',
   scss: 'src/styles/**/*.scss',
   images: 'src/images/**/*',
-  templates: 'src/views/modals/**/*.html',
+  templates: ['src/states/**/*.html', 'src/views/**/*.html'],
   jsVendor: [
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/ui/core.js',
@@ -29,7 +29,6 @@ const paths = {
     'bower_components/angular/angular.js',
     'bower_components/angular-ui-router/release/angular-ui-router.js',
     'bower_components/angular-ui-slider/src/slider.js',
-    'bower_components/angular-resource/angular-resource.js',
     'bower_components/angular-bootstrap/ui-bootstrap-tpls.js'
   ]
 };

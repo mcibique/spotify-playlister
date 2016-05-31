@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-  .module('playlister.states.login.controllers', ['playlister.services.auth', 'playlister.spotify.credentials'])
+  .module('playlister.states.login.controller', ['playlister.services.auth', 'playlister.spotify.credentials'])
   .controller('LoginController', function LoginController($scope, spotifyCredentials) {
     const vm = this;
     const params = {

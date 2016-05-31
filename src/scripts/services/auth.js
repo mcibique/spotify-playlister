@@ -2,8 +2,8 @@
 
 angular
   .module('playlister.services.auth', [])
-  .run(($log, $rootScope, $state, auth) => {
-    $rootScope.$on('$stateChangeStart', (event, toState) => {
+  .run(function authRun($log, $rootScope, $state, auth) {
+    $rootScope.$on('$stateChangeStart', function onStateChange(event, toState) {
       if (toState.name === 'login') {
         return;
       }
@@ -15,7 +15,7 @@ angular
       }
     });
   })
-  .factory('auth', ($window, $log) => {
+  .factory('auth', function auth($window, $log) {
     let localStorage = $window.localStorage;
     function getKey() {
       let key = localStorage.getItem('authKey') || '';

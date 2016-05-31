@@ -2,9 +2,9 @@
 
 angular
   .module('playlister.filters.tracks', ['playlister.filters.artists'])
-  .filter('track', ($filter) => {
+  .filter('track', function trackFilterFactory($filter) {
     const artistsFilter = $filter('artists');
-    return function (track) {
+    return function trackFilter(track) {
       if (!track) {
         return '';
       }

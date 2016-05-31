@@ -1,0 +1,10 @@
+<div class="playlists">
+  <div class="playlists-header">
+    <span class="user-info">{{ ::vm.profile.id }} {{ ::vm.profile.display_name }} ({{ ::vm.profile.email }})</span>
+  </div>
+
+  <div class="playlist-sidebar" scrollbar>
+    <playlist-list playlists="vm.playlists" profile="vm.profile"></playlist-list>
+  </div>
+  <div class="playlist-detail" ui-view=""></div>
+</div>

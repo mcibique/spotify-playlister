@@ -1,17 +1,15 @@
 'use strict';
 
 angular
-  .module('playlister.spotify.resources', ['ngResource', 'playlister.spotify.resources.user',
-    'playlister.spotify.resources.playlist', 'playlister.spotify.resources.search'
-  ])
-  .config(($httpProvider) => {
+  .module('playlister.spotify.api', ['playlister.spotify.api.playlist', 'playlister.spotify.api.search', 'playlister.spotify.api.user'])
+  .config(function apiConfig($httpProvider) {
     $httpProvider.interceptors.push('spotifyAuthHttpInterceptor');
 
     $httpProvider.defaults.headers.delete = {
       'Content-Type': 'application/json;charset=utf-8'
     };
   })
-  .factory('spotifyAuthHttpInterceptor', ($injector, auth, spotifyApiUrl) => {
+  .factory('spotifyAuthHttpInterceptor', function spotifyAuthHttpInterceptor($injector, auth, spotifyApiUrl) {
     return {
       request(config) {
         if (config.url.indexOf(spotifyApiUrl) === 0) {
