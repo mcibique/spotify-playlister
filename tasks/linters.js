@@ -3,8 +3,7 @@
 import gulp from 'gulp';
 import eslint from 'gulp-eslint';
 import htmlhint from 'gulp-htmlhint';
-import scsslint from 'gulp-scss-lint';
-import scsslintStylish from 'gulp-scss-lint-stylish';
+import sasslint from 'gulp-sass-lint';
 
 import paths from './paths';
 
@@ -23,10 +22,9 @@ gulp.task('linter-js', () => {
     .pipe(eslint.format());
 });
 
-gulp.task('linter-scss', () => {
+gulp.task('linter-sass', () => {
   return gulp.src(paths.scss)
-    .pipe(scsslint({
-      config: '.scss-lint.yml',
-      customReport: scsslintStylish
-    }));
+    .pipe(sasslint())
+    .pipe(sasslint.format())
+    .pipe(sasslint.failOnError());
 });

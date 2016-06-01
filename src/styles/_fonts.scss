@@ -19,6 +19,8 @@
   font-variant: normal;
   text-transform: none;
   line-height: 1em;
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: optimizeLegibility;
 }
 .sp-icon-ok:before {
   content: '\e800';

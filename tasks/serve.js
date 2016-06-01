@@ -20,4 +20,4 @@ gulp.task('serve:dist', (cb) => {
 /**
  * all linter tasks
  */
-gulp.task('linters', ['linter-html', 'linter-js', 'linter-scss']);
+gulp.task('linters', ['linter-html', 'linter-js', 'linter-sass']);
