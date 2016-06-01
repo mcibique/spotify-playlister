@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister', ['ui.bootstrap', 'playlister.config', 'playlister.states', 'playlister.filters', 'playlister.services', 'playlister.directives', 'playlister.templates'])
   .config(function appConfig($urlRouterProvider, $httpProvider, $logProvider, $compileProvider, config) {

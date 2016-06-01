@@ -18,8 +18,8 @@ gulp.task('linter-html', () => {
 });
 
 gulp.task('linter-js', () => {
-  return gulp.src([paths.js].concat(['gulpfile.babel.js', 'tasks/**/*.js', '!src/scripts/config.js']))
-    .pipe(eslint())
+  return gulp.src([paths.js].concat(['!src/scripts/config.js']))
+    .pipe(eslint('.eslintrc.js'))
     .pipe(eslint.format());
 });
 

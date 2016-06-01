@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.spotify.comparer', [])
   .factory('sanitize', function sanitizeFactory() {
@@ -9,17 +7,17 @@ angular
   })
   .factory('tracksComparer', function tracksComparer(sanitize) {
     function generateTrackUniqueIds(item) {
-      let track = item.track;
-      let id = track.id;
-      let title = sanitize(track.name);
-      let local = item.is_local;
-      let artistsMap = track.artists.map(artist => artist.id).sort();
-      let artists = artistsMap.join(';');
+      const track = item.track;
+      const id = track.id;
+      const title = sanitize(track.name);
+      const local = item.is_local;
+      const artistsMap = track.artists.map(artist => artist.id).sort();
+      const artists = artistsMap.join(';');
       return { id, title, artists, local };
     }
 
     function comapareTwoTrackLists(itemsToCompareA, itemsToCompareB) {
-      let result = {
+      const result = {
         ids: [],
         titles: []
       };
@@ -32,11 +30,11 @@ angular
         itemsB = itemsToCompareA;
       }
 
-      let hashSet = {};
+      const hashSet = Object.create(null);
 
       itemsA.forEach(item => {
-        let ids = generateTrackUniqueIds(item);
-        let value = { ids, item };
+        const ids = generateTrackUniqueIds(item);
+        const value = { ids, item };
         const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local) {
           hashSet[ids.id] = value;
@@ -45,14 +43,14 @@ angular
       });
 
       itemsB.forEach(item => {
-        let ids = generateTrackUniqueIds(item);
+        const ids = generateTrackUniqueIds(item);
         const hashKey = `${ids.title}-${ids.artists}`;
-        if (!ids.local && hashSet.hasOwnProperty(ids.id)) {
+        if (!ids.local && ids.id in hashSet) {
           result.ids.push({
             a: hashSet[ids.id],
             b: { ids, item }
           });
-        } else if (hashSet.hasOwnProperty(hashKey)) {
+        } else if (hashKey in hashSet) {
           result.titles.push({
             a: hashSet[hashKey],
             b: { ids, item }
@@ -64,23 +62,23 @@ angular
     }
 
     function compareSingleTrackList(items) {
-      let result = {
+      const result = {
         ids: [],
         titles: []
       };
 
-      let hashSet = {};
+      const hashSet = Object.create(null);
 
       items.forEach(item => {
-        let ids = generateTrackUniqueIds(item);
-        let value = { ids, item };
+        const ids = generateTrackUniqueIds(item);
+        const value = { ids, item };
         const hashKey = `${ids.title}-${ids.artists}`;
-        if (!ids.local && hashSet.hasOwnProperty(ids.id)) {
+        if (!ids.local && ids.id in hashSet) {
           result.ids.push({
             a: hashSet[ids.id],
             b: value
           });
-        } else if (hashSet.hasOwnProperty(hashKey)) {
+        } else if (hashKey in hashSet) {
           result.titles.push({
             a: hashSet[hashKey],
             b: value

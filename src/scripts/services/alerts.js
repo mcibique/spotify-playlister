@@ -1,9 +1,7 @@
-'use strict';
-
 angular
   .module('playlister.services.alerts', [])
   .factory('alerts', function alerts($window) {
-    let sweetAlert = $window.swal;
+    const sweetAlert = $window.swal;
 
     function info(title, message) {
       return sweetAlert(title, message);

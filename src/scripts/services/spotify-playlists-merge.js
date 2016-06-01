@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.spotify.playlists-merge', [])
   .factory('playlistsMerge', function playlistsMerge($uibModal) {
@@ -30,16 +28,16 @@ angular
     vm.toPlaylist = toPlaylist;
     vm.toTracks = toTracks;
     vm.lastXDays = 7;
-    vm.ok = function () {
+    vm.ok = function ok() {
       $uibModalInstance.close();
     };
-    vm.cancel = function () {
+    vm.cancel = function cancel() {
       $uibModalInstance.dismiss();
     };
 
     // filtering
     function filterTracks(tracks, days) {
-      let fromDate = new Date();
+      const fromDate = new Date();
       fromDate.setDate(fromDate.getDate() - days);
       return tracks.filter(item => new Date(item.added_at) >= fromDate);
     }
@@ -61,20 +59,20 @@ angular
     //     track.isCommon = true;
     //   });
     // });
-    let compareResult = tracksComparer.compare(fromTracks, toTracks);
-    compareResult.ids.forEach(result => result.a.isCommon = true);
-    compareResult.titles.forEach(result => result.a.isCommon = true);
+    const compareResult = tracksComparer.compare(fromTracks, toTracks);
+    compareResult.ids.forEach(result => (result.a.isCommon = true));
+    compareResult.titles.forEach(result => (result.a.isCommon = true));
 
-    vm.getUniqueTracks = function (tracks) {
+    vm.getUniqueTracks = function getUniqueTracks(tracks) {
       return tracks.filter(item => !item.track.isCommon || item.userOverride);
     };
 
-    vm.getDuplicateTracks = function (tracks) {
+    vm.getDuplicateTracks = function getDuplicateTracks(tracks) {
       return tracks.filter(item => item.track.isCommon && !item.userOverride);
     };
 
-    vm.addSelectedToPlaylist = function () {
-      let selected = vm.filteredFromTracks.filter(item => item.selected).map(item => item.track.uri);
+    vm.addSelectedToPlaylist = function addSelectedToPlaylist() {
+      const selected = vm.filteredFromTracks.filter(item => item.selected).map(item => item.track.uri);
       if (!selected.length) {
         return;
       }

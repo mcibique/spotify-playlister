@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.states.login', ['ui.router', 'playlister.states.login.controller', 'playlister.services.auth'])
   .config(function loginStateConfig($stateProvider) {
@@ -12,10 +10,10 @@ angular
       });
   })
   .run(function loginStateRun($window, $location, auth) {
-    let search = $window.location.hash;
-    let matches = (/access_token=([^&]*)/g).exec(search);
+    const search = $window.location.hash;
+    const matches = (/access_token=([^&]*)/g).exec(search);
     if (matches) {
-      let code = matches[1];
+      const code = matches[1];
       if (code) {
         auth.setKey(code);
         $location.path('playlists');

@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.spotify.api.playlist', [])
   .factory('playlistService', function playlistService($http, spotifyApiUrl) {

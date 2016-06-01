@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.settings', [])
   .constant('settingsDefaults', {
@@ -16,23 +14,17 @@ angular
       compareNames: true
     }
   })
-  .factory('tracksComparerSettings', (userSettingsStorage) => {
-    return userSettingsStorage.get('tracksComparer');
-  })
-  .factory('artistsComparerSettings', (userSettingsStorage) => {
-    return userSettingsStorage.get('artistsComparer');
-  })
-  .factory('tracksCacheSettings', (userSettingsStorage) => {
-    return userSettingsStorage.get('tracksCache');
-  })
+  .factory('tracksComparerSettings', userSettingsStorage => userSettingsStorage.get('tracksComparer'))
+  .factory('artistsComparerSettings', userSettingsStorage => userSettingsStorage.get('artistsComparer'))
+  .factory('tracksCacheSettings', userSettingsStorage => userSettingsStorage.get('tracksCache'))
   .factory('userSettingsStorage', ($window, settingsDefaults) => {
-    let localStorage = $window.localStorage;
+    const localStorage = $window.localStorage;
 
     function getSettings(settingsGroup) {
-      let key = `settings-${settingsGroup}`;
-      let item = localStorage.getItem(key);
+      const key = `settings-${settingsGroup}`;
+      const item = localStorage.getItem(key);
       if (item) {
-        let settings = angular.parseJson(item);
+        const settings = angular.parseJson(item);
         if (settings) {
           return settings;
         }
@@ -42,7 +34,7 @@ angular
     }
 
     function saveSettings(settingsGroup, settings) {
-      let key = `settings-${settingsGroup}`;
+      const key = `settings-${settingsGroup}`;
       localStorage.setItem(key, angular.toJson(settings));
     }
 

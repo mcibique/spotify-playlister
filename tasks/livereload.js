@@ -30,7 +30,7 @@ gulp.task('html', () => {
 
 gulp.task('js', () => {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'])
-    .pipe(eslint())
+    .pipe(eslint('.eslintrc.js'))
     .pipe(eslint.format())
     .pipe(sourcemaps.init())
     .pipe(babel())

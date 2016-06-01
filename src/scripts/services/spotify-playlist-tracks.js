@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.spotify.playlistTracks', ['playlister.spotify.api'])
   .factory('playlistTracks', function playlistTracks($q, playlistService) {
@@ -29,7 +27,7 @@ angular
           fields
         })
         .then(response => {
-          let { data } = response;
+          const { data } = response;
           defer.notify(data.items);
           getTracksResponse(data.items, playlist, offset, fields).then(
             tracks => defer.resolve(tracks),

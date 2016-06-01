@@ -1,11 +1,11 @@
-'use strict';
-
 angular
   .module('playlister.spotify.choose-playlist', [])
   .factory('choosePlaylist', function choosePlaylist($uibModal, $q, playlistService) {
     function show(currentPlaylist, profile) {
-      return $q(function (resolve, reject) {
-        playlistService.getPlaylists(profile.id, { limit: 50 }).then(response => response.data).then(onPlaylistsLoaded);
+      return $q(function showPromise(resolve, reject) {
+        playlistService.getPlaylists(profile.id, { limit: 50 })
+          .then(response => response.data)
+          .then(onPlaylistsLoaded);
 
         function onPlaylistsLoaded(playlists) {
           if (playlists.items && playlists.items.length <= 1) {
@@ -39,11 +39,11 @@ angular
       vm.playlists = playlists.filter(playlist => playlist.id !== currentPlaylist.id);
     }
 
-    vm.close = function () {
+    vm.close = function close() {
       $uibModalInstance.dismiss();
     };
 
-    vm.select = function (playlist) {
+    vm.select = function select(playlist) {
       if (!playlist) {
         return;
       }

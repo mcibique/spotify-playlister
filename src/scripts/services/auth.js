@@ -1,9 +1,7 @@
-'use strict';
-
 angular
   .module('playlister.services.auth', [])
   .run(function authRun($log, $rootScope, $state, auth) {
-    $rootScope.$on('$stateChangeStart', function onStateChange(event, toState) {
+    const changeStartOff = $rootScope.$on('$stateChangeStart', function onStateChange(event, toState) {
       if (toState.name === 'login') {
         return;
       }
@@ -14,11 +12,13 @@ angular
         $state.go('login');
       }
     });
+
+    $rootScope.$on('$destroy', changeStartOff);
   })
   .factory('auth', function auth($window, $log) {
-    let localStorage = $window.localStorage;
+    const localStorage = $window.localStorage;
     function getKey() {
-      let key = localStorage.getItem('authKey') || '';
+      const key = localStorage.getItem('authKey') || '';
       if (!key) {
         $log.debug('No auth code present.');
       }

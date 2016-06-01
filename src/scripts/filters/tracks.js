@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.filters.tracks', ['playlister.filters.artists'])
   .filter('track', function trackFilterFactory($filter) {

@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.directives.perfectScrollbar', [])
   .directive('scrollbar', function scrollbarDirective($window) {

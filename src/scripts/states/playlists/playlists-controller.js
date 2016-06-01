@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.states.playlists.controller', [])
   .controller('PlaylistsController', function PlaylistsController($scope, profile, playlistService) {

@@ -1,12 +1,11 @@
-'use strict';
-
 angular
   .module('playlister.spotify.tracksCache', ['playlister.settings', 'playlister.spotify.playlistTracks'])
   .factory('tracksCache', function tracksCache($q, playlistTracks, tracksCacheSettings) {
-    let memory = {};
+    const memory = Object.create(null);
 
     function isEntryValid(entry) {
-      let diff = Math.abs(new Date() - entry.added) / 1000 / 60;
+      const milisecondsInOneMinute = 1000 * 60;
+      const diff = Math.abs(new Date() - entry.added) / milisecondsInOneMinute;
       return diff <= tracksCacheSettings.expires;
     }
 
@@ -17,7 +16,7 @@ angular
     function getTracks(playlist, offset, fields) {
       const defer = $q.defer();
 
-      let entry = memory[playlist.id];
+      const entry = memory[playlist.id];
       if (entry && isEntryValid(entry) && areSettingsMatch(entry, offset, fields)) {
         defer.resolve(entry.result);
       } else {
@@ -41,7 +40,7 @@ angular
     }
 
     function refresh(playlist) {
-      if (memory.hasOwnProperty(playlist.id)) {
+      if (playlist.id in memory) {
         memory[playlist.id] = null;
       }
     }

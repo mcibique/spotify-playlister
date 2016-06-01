@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.states.playlists.playlistTracks', [])
   .directive('playlistTracks', function playlistTracks() {

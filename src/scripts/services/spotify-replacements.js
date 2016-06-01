@@ -1,10 +1,8 @@
-'use strict';
-
 angular
   .module('playlister.spotify.replacements', ['ui.slider', 'playlister.spotify.api'])
   .factory('tracksReplacement', function tracksReplacement($uibModal) {
     function replace(playlist, profile) {
-      let fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
+      const fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
 
       const modalInstance = $uibModal.open({
         templateUrl: '/views/modals/replace.html',
@@ -39,7 +37,7 @@ angular
       if (newValue === oldValue) {
         return;
       }
-      let trackItem = vm.trackItems[newValue];
+      const trackItem = vm.trackItems[newValue];
       if (trackItem) {
         vm.currentTrackItem = trackItem;
         vm.searchString = vm.currentTrackItem.searchString || getSearchString(vm.currentTrackItem);
@@ -86,15 +84,15 @@ angular
     };
 
     // buttons
-    vm.save = function () {
+    vm.save = function save() {
       saveCurrentTrackItem();
-      let items = vm.trackItems;
-      let selectedItems = items.filter(item => item.replacement && item.replacement.length);
+      const items = vm.trackItems;
+      const selectedItems = items.filter(item => item.replacement && item.replacement.length);
       if (!selectedItems.length) {
         return;
       }
 
-      let toDelete = [];
+      const toDelete = [];
       let toAdd = [];
 
       selectedItems.forEach(selectedItem => {
@@ -112,26 +110,26 @@ angular
       // TODO: toDelete
     };
 
-    vm.next = function () {
+    vm.next = function next() {
       if (vm.currentIndex < vm.trackItems.length - 1) {
         saveCurrentTrackItem();
         vm.currentIndex++;
       }
     };
 
-    vm.previous = function () {
+    vm.previous = function previous() {
       if (vm.currentIndex > 0) {
         saveCurrentTrackItem();
         vm.currentIndex--;
       }
     };
 
-    vm.cancel = function () {
+    vm.cancel = function cancel() {
       $uibModalInstance.dismiss();
     };
 
     function getSearchString(trackItem) {
-      let track = trackItem.track;
+      const track = trackItem.track;
       let result = $filter('artists')(trackItem.track.artists);
 
       if (result) {
@@ -150,8 +148,8 @@ angular
           vm.possibleReplacements = response.data.tracks.items;
 
           for (let i = 0, len = vm.possibleReplacements.length; i < len; i++) {
-            let replacement = vm.possibleReplacements[i];
-            let available = !vm.isAvailableForMarket(replacement);
+            const replacement = vm.possibleReplacements[i];
+            const available = !vm.isAvailableForMarket(replacement);
             if (available) {
               replacement.selected = true;
               break;
@@ -181,7 +179,7 @@ angular
     }
 
     function saveCurrentTrackItem() {
-      let selected = vm.possibleReplacements.filter(replacement => replacement.selected);
+      const selected = vm.possibleReplacements.filter(replacement => replacement.selected);
       if (selected.length) {
         vm.currentTrackItem.replacement = selected;
       } else {

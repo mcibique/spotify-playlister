@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.states.playlists.playlistToolbar', [])
   .directive('playlistToolbar', function playlistToolbar() {
@@ -30,7 +28,7 @@ angular
 
     // find duplicates button logic
     function findPlaylistDuplicates() {
-      let result = tracksComparer.compare(trackItems);
+      const result = tracksComparer.compare(trackItems);
       $log.debug('duplicates', result);
 
       if (!result.ids.length && !result.titles.length) {
@@ -63,10 +61,11 @@ angular
       return choosePlaylist.show(playlist, profile).then(onPlaylistChosen, onPlaylistChooseCanceled);
 
       function onPlaylistChosen(selectedPlaylist) {
-        let currentTracks = vm.trackItems;
-        tracksCache.get(selectedPlaylist, 0).then(trackItems => {
-          let tracksToCompare = trackItems;
-          let result = tracksComparer.compare(currentTracks, tracksToCompare);
+        const currentTracks = vm.trackItems;
+        const startingOffset = 0;
+        tracksCache.get(selectedPlaylist, startingOffset).then(trackItems => {
+          const tracksToCompare = trackItems;
+          const result = tracksComparer.compare(currentTracks, tracksToCompare);
           $log.debug('duplicates', result);
 
           if (!result.ids.length && !result.titles.length) {

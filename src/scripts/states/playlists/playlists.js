@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.states.playlists', ['ui.router', 'playlister.states.playlists.detail', 'playlister.states.playlists.controller', 'playlister.states.playlists.playlistList'])
   .config(function playlistStateConfig($stateProvider) {

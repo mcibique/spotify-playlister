@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.spotify.credentials', [])
   .constant('spotifyCredentials', {

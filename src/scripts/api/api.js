@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.spotify.api', ['playlister.spotify.api.playlist', 'playlister.spotify.api.search', 'playlister.spotify.api.user'])
   .config(function apiConfig($httpProvider) {

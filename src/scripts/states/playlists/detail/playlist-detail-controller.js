@@ -1,5 +1,3 @@
-'use strict';
-
 angular
   .module('playlister.states.playlists.detail.controller', [])
   .controller('PlaylistDetailController', function PlaylistDetailController($scope, $uibModal, $log, profile, playlist, tracksCache) {
@@ -16,7 +14,8 @@ angular
         total: playlist.tracks.total
       };
 
-      return tracksCache.get(playlist, 0).then(onItemsLoaded, onItemsLoadFailed, onItemsLoadNotification);
+      const startingOffset = 0;
+      return tracksCache.get(playlist, startingOffset).then(onItemsLoaded, onItemsLoadFailed, onItemsLoadNotification);
 
       function onItemsLoaded(result) {
         vm.trackItems = result;
