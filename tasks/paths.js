@@ -17,7 +17,7 @@ const paths = {
   js: 'src/scripts/**/*.js',
   scss: 'src/styles/**/*.scss',
   images: 'src/images/**/*',
-  templates: ['src/states/**/*.html', 'src/views/**/*.html'],
+  templates: ['src/scripts/states/**/*.html', 'src/views/**/*.html'],
   jsVendor: [
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/ui/core.js',

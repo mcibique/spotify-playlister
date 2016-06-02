@@ -35,6 +35,7 @@ function generateConfig(environment) {
   .pipe(rename('config.js'))
   .pipe(beautify({
     indentSize: 2,
+    eol: '\r\n',
     maxPreserveNewlines: 2,
     jslintHappy: true
   }))

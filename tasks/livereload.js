@@ -11,8 +11,7 @@ import connect from 'gulp-connect';
 import htmlhint from 'gulp-htmlhint';
 import eslint from 'gulp-eslint';
 import sass from 'gulp-sass';
-import scsslint from 'gulp-scss-lint';
-import scsslintStylish from 'gulp-scss-lint-stylish';
+import sasslint from 'gulp-sass-lint';
 import sourcemaps from 'gulp-sourcemaps';
 import wrap from 'gulp-wrap-js';
 
@@ -54,10 +53,8 @@ gulp.task('js', () => {
 gulp.task('styles', () => {
   return gulp.src(paths.scss)
     .pipe(sourcemaps.init())
-    .pipe(scsslint({
-      config: '.scss-lint.yml',
-      customReport: scsslintStylish
-    }))
+    .pipe(sasslint())
+    .pipe(sasslint.format())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({
       cascade: false,
