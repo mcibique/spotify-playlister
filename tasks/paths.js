@@ -19,6 +19,8 @@ const paths = {
   images: 'src/images/**/*',
   templates: ['src/scripts/states/**/*.html', 'src/views/**/*.html'],
   jsVendor: [
+    'bower_components/es6-shim/es6-shim.js',
+    'bower_components/es6-shim/es6-sham.js',
     'bower_components/jquery/dist/jquery.js',
     'bower_components/jquery-ui/ui/core.js',
     'bower_components/jquery-ui/ui/widget.js',
