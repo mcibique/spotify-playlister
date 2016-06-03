@@ -11,18 +11,4 @@ angular
     };
 
     vm.spotifyAuthorizeUrl = `${spotifyCredentials.authorizeUrl}/?${$.param(params)}`;
-  })
-  .controller('LogoutController', function LogoutController($scope, $state, auth) {
-    const vm = this;
-    vm.logout = logout;
-    vm.isLoggedIn = isLoggedIn;
-
-    function logout() {
-      auth.clearKey();
-      $state.go('login');
-    }
-
-    function isLoggedIn() {
-      return !!auth.getKey();
-    }
   });

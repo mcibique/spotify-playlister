@@ -1,5 +1,5 @@
 angular
-  .module('playlister.directives.perfectScrollbar', [])
+  .module('playlister.components.perfectScrollbar', [])
   .directive('scrollbar', function scrollbarDirective($window) {
     return {
       restict: 'A',
