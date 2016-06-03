@@ -1,12 +1,15 @@
+@import 'variables';
+
 // layout widths
 $max-content-width: 1280px;
 $min-content-width: 720px;
 $sidebar-width: 280px;
 $header-height: 6rem;
+
 header {
   @include border-bottom(0.1rem);
   position: fixed;
-  background-color: #fff;
+  background-color: $body-background;
   width: 100%;
   left: 0;
   top: 0;
@@ -27,8 +30,9 @@ header {
     }
   }
 }
+
 main {
-  background-color: #fff;
+  background-color: $body-background;
   position: absolute;
   top: $header-height;
   left: 0;

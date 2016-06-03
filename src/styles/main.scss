@@ -1,8 +1,12 @@
 @import 'vendor';
+@import 'variables';
 @import 'mixins';
 @import 'fonts';
-@import 'components';
+@import 'icons';
+@import 'general';
 @import 'layout';
-@import 'login';
-@import 'playlists';
-@import 'replace';
+@import 'components/button';
+@import 'components/modals/replace';
+@import 'states/login';
+@import 'states/playlists';
+

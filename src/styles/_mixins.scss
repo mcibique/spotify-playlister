@@ -1,6 +1,5 @@
-// colors
-$border-color: #ccc !default;
-$font-color: #333 !default;
+@import 'variables';
+
 // borders
 @mixin border($width: 1px, $style: solid, $color: $border-color) {
   border: $width $style $border-color;
@@ -17,6 +16,7 @@ $font-color: #333 !default;
 @mixin border-right($width: 1px, $style: solid, $color: $border-color) {
   border-right: $width $style $border-color;
 }
+
 // text-overflow
 @mixin ellipsis() {
   overflow: hidden;

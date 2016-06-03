@@ -10,6 +10,7 @@
       // desired height - padding-top - padding-bottom
       line-height: $playlists-header-height - (2 * 0.5rem);
       font-size: 1.8rem;
+      font-weight: 600;
     }
   }
   .playlist-sidebar {
@@ -121,7 +122,7 @@
     .playlist-is-public,
     .playlist-is-collaborative {
       margin: 0 25px;
-      font-weight: bold;
+      font-weight: 600;
       .sp-icon-ok {
         margin: 0 4px;
         color: #008000;
