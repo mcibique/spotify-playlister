@@ -34,10 +34,10 @@ function generateConfig(environment) {
   })
   .pipe(rename('config.js'))
   .pipe(beautify({
-    indentSize: 2,
+    indent_size: 2,
+    indent_char: ' ',
     eol: '\r\n',
-    maxPreserveNewlines: 2,
-    jslintHappy: true
+    end_with_newline: true
   }))
   .pipe(gulp.dest(path.join(paths.src, 'scripts')));
 }
