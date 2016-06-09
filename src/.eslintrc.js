@@ -273,7 +273,11 @@ module.exports = {
     "angular/component-limit": ["off", 1],
     "angular/document-service": "error",
     "angular/empty-controller": "error",
-    "angular/file-name": ["off", { "typeSeparator": "dash", "nameStyle": "dash", "ignoreTypeSuffix": true }], // TODO
+    "angular/file-name": ["off", {
+      "typeSeparator": "dash",
+      "nameStyle": "dash",
+      "ignoreTypeSuffix": true
+    }], // TODO
     "angular/filter-name": "error",
     "angular/foreach": "off",
     "angular/function-type": ["error", "named"],

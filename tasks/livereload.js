@@ -1,5 +1,3 @@
-'use strict';
-
 import fs from 'fs';
 import path from 'path';
 
@@ -20,14 +18,14 @@ import paths from './paths';
 /**
  * livereload
  */
-gulp.task('html', () => {
+gulp.task('html', function html() {
   return gulp.src([paths.views, paths.index])
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'))
     .pipe(connect.reload());
 });
 
-gulp.task('js', () => {
+gulp.task('js', function js() {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'])
     .pipe(eslint('.eslintrc.js'))
     .pipe(eslint.format())
@@ -51,7 +49,7 @@ gulp.task('js', () => {
     .pipe(connect.reload());
 });
 
-gulp.task('styles', () => {
+gulp.task('styles', function styles() {
   return gulp.src(paths.scss)
     .pipe(sourcemaps.init())
     .pipe(sasslint())

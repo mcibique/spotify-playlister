@@ -1,7 +1,3 @@
-/* eslint-disable angular/no-inline-template */
-
-'use strict';
-
 import path from 'path';
 import fs from 'fs';
 
@@ -28,7 +24,7 @@ import paths from './paths';
 /**
  * dist build: main application
  */
-gulp.task('build-js', () => {
+gulp.task('build-js', function buildJs() {
   return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js', '!**/templates.js'])
     .pipe(babel())
     .pipe(filesort())
@@ -52,7 +48,7 @@ gulp.task('build-js', () => {
 /**
  * dist build: vendor scripts
  */
-gulp.task('build-js-vendor', () => {
+gulp.task('build-js-vendor', function buildJsVendor() {
   return gulp.src(paths.jsVendor)
     .pipe(concat('vendor.js'))
     .pipe(uglify({
@@ -72,7 +68,7 @@ gulp.task('build-js-vendor', () => {
 /**
  * dist build: html -> js templates
  */
-gulp.task('build-js-templates', () => {
+gulp.task('build-js-templates', function buildJsTemplates() {
   return gulp
     .src(paths.templates, {
       base: paths.src
@@ -106,7 +102,7 @@ gulp.task('build-js-templates', () => {
 /**
  * dist build: styles
  */
-gulp.task('build-styles', () => {
+gulp.task('build-styles', function buildStyles() {
   return gulp.src(paths.scss)
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer({
@@ -122,7 +118,7 @@ gulp.task('build-styles', () => {
 /**
  * dist build: html
  */
-gulp.task('build-views', () => {
+gulp.task('build-views', function buildViews() {
   return gulp.src(paths.views)
     .pipe(minifyHTML({
       empty: true,
@@ -135,7 +131,7 @@ gulp.task('build-views', () => {
 /**
  * dist build: index.html
  */
-gulp.task('build-index', () => {
+gulp.task('build-index', function buildIndex() {
   return gulp.src(paths.index)
     .pipe(inject(gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js'], {
       read: false
@@ -170,7 +166,7 @@ gulp.task('build-index', () => {
 /**
  * dist build: fonts
  */
-gulp.task('build-fonts', () => {
+gulp.task('build-fonts', function buildFonts() {
   return gulp.src(paths.fonts)
     .pipe(gulp.dest(path.join(paths.tmpDist, 'fonts')));
 });
@@ -178,7 +174,7 @@ gulp.task('build-fonts', () => {
 /**
  * dist build: images
  */
-gulp.task('build-images', () => {
+gulp.task('build-images', function buildImages() {
   return gulp.src(paths.images)
     .pipe(imagemin({
       progressive: true,
@@ -193,8 +189,8 @@ gulp.task('build-images', () => {
 /**
  * dist build: revisions
  */
-gulp.task('build-rev', () => {
-  let builder = new Rev({
+gulp.task('build-rev', function buildRev() {
+  const builder = new Rev({
     dontRenameFile: ['.*.html'],
     dontUpdateReference: ['.*.html'],
     dontSearchFile: ['.*vendor.js']
@@ -213,19 +209,22 @@ gulp.task('build-rev', () => {
 /**
  * dev build main task
  */
-gulp.task('build:dev', (cb) => {
-  return sequence('clean:dev', 'config:dev', ['html', 'styles', 'js', 'index:dev'], cb);
-});
+gulp.task('build:dev', cb =>
+  sequence(
+    'clean:dev',
+    'config:dev',
+    ['html', 'styles', 'js', 'index:dev'],
+    cb)
+);
 
 /**
  * dist main build task
  */
-gulp.task('build:dist', (cb) => {
-  return sequence(
+gulp.task('build:dist', cb =>
+  sequence(
     'clean:dist',
-    'config:dist', ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts',
-      'build-views', 'build-index'
-    ],
+    'config:dist',
+    ['build-js', 'build-js-vendor', 'build-js-templates', 'build-images', 'build-styles', 'build-fonts', 'build-views', 'build-index'],
     'build-rev',
-    cb);
-});
+    cb)
+);

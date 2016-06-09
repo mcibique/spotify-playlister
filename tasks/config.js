@@ -1,7 +1,3 @@
-/* eslint-disable angular/json-functions */
-
-'use strict';
-
 import extend from 'node.extend';
 import fs from 'fs';
 import path from 'path';
@@ -16,10 +12,10 @@ import paths from './paths';
 function generateConfig(environment) {
   const defaultConfigPath = paths.config;
   const envConfigPath = defaultConfigPath.replace(/\.json$/i, `.${environment}.json`);
-  let defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf8'));
+  const defaultConfig = JSON.parse(fs.readFileSync(defaultConfigPath, 'utf8'));
 
   if (fs.existsSync(envConfigPath)) {
-    let envConfig = JSON.parse(fs.readFileSync(envConfigPath, 'utf8'));
+    const envConfig = JSON.parse(fs.readFileSync(envConfigPath, 'utf8'));
     extend(true, defaultConfig, envConfig);
   }
 
@@ -45,10 +41,5 @@ function generateConfig(environment) {
 /**
  * config.js
  */
-gulp.task('config:dev', () => {
-  return generateConfig('dev');
-});
-
-gulp.task('config:dist', () => {
-  return generateConfig('dist');
-});
+gulp.task('config:dev', () => generateConfig('dev'));
+gulp.task('config:dist', () => generateConfig('dist'));

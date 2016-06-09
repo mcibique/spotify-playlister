@@ -1,9 +1,7 @@
-'use strict';
-
 /**
  * paths
  */
-const paths = {
+export default {
   root: '.',
   dist: 'dist',
   tmp: '.tmp',
@@ -17,7 +15,10 @@ const paths = {
   js: 'src/scripts/**/*.js',
   scss: 'src/styles/**/*.scss',
   images: 'src/images/**/*',
-  templates: ['src/scripts/states/**/*.html', 'src/views/**/*.html'],
+  templates: [
+    'src/scripts/states/**/*.html',
+    'src/views/**/*.html'
+  ],
   jsVendor: [
     'node_modules/es6-shim/es6-shim.js',
     'node_modules/es6-shim/es6-sham.js',
@@ -30,5 +31,3 @@ const paths = {
     'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
   ]
 };
-
-module.exports = paths;
