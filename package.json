@@ -62,7 +62,7 @@
     "angularjs-slider": "^4.0.2",
     "bootstrap-sass": "^3.3.6",
     "es6-shim": "^0.35.1",
-    "jquery": "^2.2.4",
+    "jquery": "^3.0.0",
     "normalize-scss": "^5.0.3",
     "perfect-scrollbar": "^0.6.11",
     "sweetalert": "^1.1.3"
