@@ -7,6 +7,7 @@ angular
       const modalInstance = $uibModal.open({
         templateUrl: '/scripts/components/modals/tracks-replacement/tracks-replacement.html',
         size: 'lg',
+        windowClass: 'tracks-replacement-modal',
         resolve: {
           trackItems: tracksCache => tracksCache.get(playlist, 0, fields),
           playlist: () => playlist,

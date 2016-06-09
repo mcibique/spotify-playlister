@@ -1,11 +1,11 @@
-.replace-tracks-modal {
+.tracks-replacement-modal {
   .current-track-item-wrapper {
     @include ellipsis;
     text-align: center;
     line-height: 3rem;
     font-size: 2.4rem;
     position: relative;
-    padding: 0 40px;
+    padding: 0 45px;
     .previous-button {
       position: absolute;
       left: 0;
@@ -20,11 +20,19 @@
       right: 0;
     }
   }
-  .ui-slider {
-    background-color: #ccc;
-    margin: 1rem 0;
-    .ui-slider-handle {
+  .rzslider {
+    margin: 3rem 0 1.5rem;
+    .rz-pointer {
       background-color: #aaa;
+      &.rz-active {
+        background-color: #888;
+        &:after {
+          background-color: #fff;
+        }
+      }
+    }
+    .rz-bar {
+      background-color: #ccc;
     }
   }
   .replace-toolbar {
@@ -39,8 +47,9 @@
       text-align: right;
       input {
         @include border;
-        border-radius: 2px;
-        padding: 5px 10px;
+        width: 250px;
+        border-radius: 0.2rem;
+        padding: 0.5rem 1rem;
       }
     }
   }

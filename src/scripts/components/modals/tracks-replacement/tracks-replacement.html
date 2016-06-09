@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h3 class="modal-title">Find replacements - {{:: vm.playlist.name }} ({{ vm.currentIndex + 1 }} of {{:: vm.trackItems.length }})</h3>
 </div>
-<div class="modal-body replace-tracks-modal">
+<div class="modal-body">
   <div class="current-track-item-wrapper">
     <button class="btn btn-default previous-button" ng-click="vm.previous()"><i class="sp-icon sp-icon-left-open-big"></i></button>
     <span class="current-track-name"><i class="sp-icon sp-icon-download" ng-if="vm.currentTrackItem.is_local"></i> {{ vm.currentTrackItem.track | track }}</span>
