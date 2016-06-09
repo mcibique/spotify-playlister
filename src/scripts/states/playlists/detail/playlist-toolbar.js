@@ -8,14 +8,15 @@ angular
       scope: {
         playlist: '=',
         trackItems: '=',
-        profile: '='
+        profile: '=',
+        refreshTracks: '&'
       },
       bindToController: true,
       controllerAs: 'vm',
       controller: 'PlaylistToolbarController'
     };
   })
-  .controller('PlaylistToolbarController', function PlaylistToolbarController($uibModal, $log, tracksCache, tracksComparer, tracksReplacement, choosePlaylist, playlistsMerge, alerts) {
+  .controller('PlaylistToolbarController', function PlaylistToolbarController($uibModal, $log, tracksCache, tracksComparer, tracksReplacement, choosePlaylist, playlistsMerge, alerts, playlistDuplicates) {
     const vm = this;
     vm.findPlaylistDuplicates = findPlaylistDuplicates;
     vm.findReplacements = findReplacements;
@@ -23,11 +24,11 @@ angular
     vm.mergePlaylists = mergePlaylists;
 
     const playlist = vm.playlist;
-    const trackItems = vm.trackItems;
     const profile = vm.profile;
 
     // find duplicates button logic
     function findPlaylistDuplicates() {
+      const trackItems = vm.trackItems;
       const result = tracksComparer.compare(trackItems);
       $log.debug('duplicates', result);
 
@@ -47,7 +48,7 @@ angular
       function onReplacementFinished(numberOfReplaced) {
         $log.debug('tracks replaced: ', numberOfReplaced);
         if (numberOfReplaced) {
-          // vm.refreshTracks(vm.playlist).then(() => alerts.info('Tracks have been refreshed.'));
+          vm.refreshTracks(vm.playlist).then(() => alerts.info('Tracks have been refreshed.'));
         }
       }
 
@@ -74,7 +75,7 @@ angular
             return;
           }
 
-          displayComparisonResult(playlist, vm.trackItems, result);
+          displayComparisonResult(playlist, currentTracks, result);
         });
       }
 
@@ -95,43 +96,6 @@ angular
 
     // Duplicates result
     function displayComparisonResult(playlist, trackItems, result) {
-      $uibModal.open({
-        templateUrl: '/views/modals/playlist-duplicates.html',
-        resolve: {
-          duplicates: () => result,
-          playlist: () => playlist,
-          trackItems: () => trackItems
-        },
-        controller: 'FindDuplicatesModalController',
-        controllerAs: 'vm'
-      });
+      playlistDuplicates.show(playlist, trackItems, result);
     }
-  })
-  .controller('FindDuplicatesModalController', function FindDuplicatesModalController($scope, $uibModalInstance,
-    duplicates, playlist, trackItems/* , SpotifyPlaylist */) {
-    const vm = this;
-    vm.duplicates = duplicates;
-    vm.playlist = playlist;
-    vm.trackItems = trackItems;
-    vm.close = close;
-    // vm.removeDuplicate = removeDuplicate;
-
-    function close() {
-      $uibModalInstance.dismiss();
-    }
-
-    // function removeDuplicate(duplicate) {
-    //   // TODO  http delete doesn't support params in angular
-    //   var item = duplicate.b.item;
-    //   SpotifyPlaylist.removeTracks({
-    //     userId: playlist.owner.id,
-    //     playlistId: playlist.id
-    //   }, {
-    //     tracks: [{
-    //       uri: item.track.uri
-    //     }]
-    //   }, function (response) {
-    //     $log.debug('response', response);
-    //   });
-    // }
   });

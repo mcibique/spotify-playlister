@@ -10,14 +10,14 @@ export default {
   src: 'src',
   config: 'src/config.json',
   fonts: 'src/fonts/**/*',
-  views: 'src/views/**/*.html',
+  views: 'src/scripts/**/*.html',
   index: 'src/index.html',
   js: 'src/scripts/**/*.js',
   scss: 'src/styles/**/*.scss',
   images: 'src/images/**/*',
   templates: [
     'src/scripts/states/**/*.html',
-    'src/views/**/*.html'
+    'src/scripts/components/**/*.html'
   ],
   jsVendor: [
     'node_modules/es6-shim/es6-shim.js',

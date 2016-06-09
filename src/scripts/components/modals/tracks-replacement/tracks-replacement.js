@@ -1,11 +1,11 @@
 angular
-  .module('playlister.spotify.replacements', ['rzModule', 'playlister.spotify.api'])
+  .module('playlister.components.modals.tracks-replacement', ['rzModule'])
   .factory('tracksReplacement', function tracksReplacement($uibModal) {
     function replace(playlist, profile) {
       const fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
 
       const modalInstance = $uibModal.open({
-        templateUrl: '/views/modals/replace.html',
+        templateUrl: '/scripts/components/modals/tracks-replacement/tracks-replacement.html',
         size: 'lg',
         resolve: {
           trackItems: tracksCache => tracksCache.get(playlist, 0, fields),
@@ -78,7 +78,7 @@ angular
         slidingState = vm.currentIndex;
         slidingInProgress = true;
       },
-      onEnd () {
+      onEnd() {
         slidingInProgress = false;
 
         if (slidingState !== vm.currentIndex) {

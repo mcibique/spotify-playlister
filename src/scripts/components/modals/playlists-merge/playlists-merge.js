@@ -1,11 +1,11 @@
 angular
-  .module('playlister.spotify.playlists-merge', [])
+  .module('playlister.components.modals.playlists-merge', [])
   .factory('playlistsMerge', function playlistsMerge($uibModal) {
     function merge(fromPlaylist, toPlaylist) {
       const fields = 'items(added_at,track(name,id,uri,album(name,id),artists(id,name)))';
 
       const modalInstance = $uibModal.open({
-        templateUrl: '/views/modals/merge.html',
+        templateUrl: '/scripts/components/modals/playlists-merge/playlists-merge.html',
         resolve: {
           fromTracks: tracksCache => tracksCache.get(fromPlaylist, 0, fields),
           fromPlaylist: () => fromPlaylist,

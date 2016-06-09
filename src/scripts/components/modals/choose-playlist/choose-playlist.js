@@ -1,5 +1,5 @@
 angular
-  .module('playlister.spotify.choose-playlist', [])
+  .module('playlister.components.modals.choose-playlist', [])
   .factory('choosePlaylist', function choosePlaylist($uibModal, $q, playlistService) {
     function show(currentPlaylist, profile) {
       return $q(function showPromise(resolve, reject) {
@@ -13,7 +13,7 @@ angular
             return;
           }
           const modalInstance = $uibModal.open({
-            templateUrl: '/views/modals/choose-playlist.html',
+            templateUrl: '/scripts/components/modals/choose-playlist/choose-playlist.html',
             resolve: {
               playlists: () => playlists.items,
               currentPlaylist: () => currentPlaylist

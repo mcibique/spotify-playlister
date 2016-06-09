@@ -1,0 +1,1 @@
+angular.module('playlister.components.modals', ['playlister.components.modals.choose-playlist', 'playlister.components.modals.playlists-merge', 'playlister.components.modals.playlist-duplicates', 'playlister.components.modals.tracks-replacement']);
