@@ -1,5 +1,6 @@
+@import '../../node_modules/normalize-scss/sass/normalize/import-now';
 @import 'vendor/bootstrap';
-@import '../../bower_components/perfect-scrollbar/css/perfect-scrollbar';
-@import '../../bower_components/jquery-ui/themes/base/slider';
-@import '../../bower_components/sweetalert/dist/sweetalert';
+@import '../../node_modules/perfect-scrollbar/dist/css/perfect-scrollbar';
+@import '../../node_modules/angularjs-slider/dist/rzslider';
+@import '../../node_modules/sweetalert/dist/sweetalert';
 @import 'vendor/sweetalert-overrides';

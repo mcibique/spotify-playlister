@@ -33,6 +33,7 @@ gulp.task('js', () => {
     .pipe(eslint.format())
     .pipe(sourcemaps.init())
     .pipe(babel())
+    .on('error', console.error.bind(console))
     .pipe(concat('all.js'))
     .pipe(wrap(fs.readFileSync('./templates/all.scripts.template', 'utf8'), {
       indent: {

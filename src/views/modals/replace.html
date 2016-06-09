@@ -7,7 +7,7 @@
     <span class="current-track-name"><i class="sp-icon sp-icon-download" ng-if="vm.currentTrackItem.is_local"></i> {{ vm.currentTrackItem.track | track }}</span>
     <button class="btn btn-default next-button" ng-click="vm.next()"><i class="sp-icon sp-icon-right-open-big"></i></button>
   </div>
-  <div ui-slider="vm.sliderOptions" ng-model="vm.currentIndex" max="{{:: vm.trackItems.length - 1 }}" min="0"></div>
+  <rzslider rz-slider-model="vm.currentIndex" rz-slider-options="vm.sliderOptions"></rzslider>
   <div class="replace-toolbar">
     <div class="annoucement" ng-if="!vm.currentTrackItem.keep">
       Current track will be removed and replaced by selected track(s).

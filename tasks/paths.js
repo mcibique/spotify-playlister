@@ -19,19 +19,15 @@ const paths = {
   images: 'src/images/**/*',
   templates: ['src/scripts/states/**/*.html', 'src/views/**/*.html'],
   jsVendor: [
-    'bower_components/es6-shim/es6-shim.js',
-    'bower_components/es6-shim/es6-sham.js',
-    'bower_components/jquery/dist/jquery.js',
-    'bower_components/jquery-ui/ui/core.js',
-    'bower_components/jquery-ui/ui/widget.js',
-    'bower_components/jquery-ui/ui/mouse.js',
-    'bower_components/jquery-ui/ui/slider.js',
-    'bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.js',
-    'bower_components/sweetalert/dist/sweetalert-dev.js',
-    'bower_components/angular/angular.js',
-    'bower_components/angular-ui-router/release/angular-ui-router.js',
-    'bower_components/angular-ui-slider/src/slider.js',
-    'bower_components/angular-bootstrap/ui-bootstrap-tpls.js'
+    'node_modules/es6-shim/es6-shim.js',
+    'node_modules/es6-shim/es6-sham.js',
+    'node_modules/jquery/dist/jquery.js',
+    'node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.js',
+    'node_modules/sweetalert/dist/sweetalert-dev.js',
+    'node_modules/angular/angular.js',
+    'node_modules/angular-ui-router/release/angular-ui-router.js',
+    'node_modules/angularjs-slider/dist/rzslider.js',
+    'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
   ]
 };
 

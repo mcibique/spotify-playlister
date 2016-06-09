@@ -1,7 +1,6 @@
 .tmp
 dist
 node_modules
-bower_components
 src/scripts/config.js
 src/scripts/services/spotify-credentials-*.js
 src/config.dev.json

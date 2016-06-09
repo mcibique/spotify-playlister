@@ -1,5 +1,5 @@
 angular
-  .module('playlister.spotify.replacements', ['ui.slider', 'playlister.spotify.api'])
+  .module('playlister.spotify.replacements', ['rzModule', 'playlister.spotify.api'])
   .factory('tracksReplacement', function tracksReplacement($uibModal) {
     function replace(playlist, profile) {
       const fields = 'items(added_at,is_local,track(name,id,uri,duration_ms,album(name,id),artists(id,name)))';
@@ -69,12 +69,16 @@ angular
 
     // slider
     vm.sliderOptions = {
-      start() {
+      floor: 0,
+      ceil: vm.trackItems.length - 1,
+      hidePointerLabels: true,
+      hideLimitLabels: true,
+      onStart() {
         saveCurrentTrackItem();
         slidingState = vm.currentIndex;
         slidingInProgress = true;
       },
-      stop() {
+      onEnd () {
         slidingInProgress = false;
 
         if (slidingState !== vm.currentIndex) {
