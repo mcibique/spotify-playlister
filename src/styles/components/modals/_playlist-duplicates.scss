@@ -1,0 +1,36 @@
+.playlist-duplicates-modal {
+  .duplicates-section {
+    + .duplicates-section {
+      margin-top: 2rem;
+    }
+  }
+
+  .duplicates-header {
+    font-size: 2rem;
+    line-height: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .duplicate {
+    display: block;
+    font-size: 1.3rem;
+
+    a {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .two-tracks-duplicate {
+    + .two-tracks-duplicate {
+      @include border-top;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+    }
+  }
+
+  .track {
+    &.track-removed {
+      text-decoration: line-through;
+    }
+  }
+}

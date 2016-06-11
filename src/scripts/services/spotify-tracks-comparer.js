@@ -32,9 +32,9 @@ angular
 
       const hashSet = Object.create(null);
 
-      itemsA.forEach(item => {
+      itemsA.forEach((item, index) => {
         const ids = generateTrackUniqueIds(item);
-        const value = { ids, item };
+        const value = { ids, item, index };
         const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local) {
           hashSet[ids.id] = value;
@@ -42,18 +42,19 @@ angular
         hashSet[hashKey] = value;
       });
 
-      itemsB.forEach(item => {
+      itemsB.forEach((item, index) => {
         const ids = generateTrackUniqueIds(item);
+        const value = { ids, item, index };
         const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local && ids.id in hashSet) {
           result.ids.push({
             a: hashSet[ids.id],
-            b: { ids, item }
+            b: value
           });
         } else if (hashKey in hashSet) {
           result.titles.push({
             a: hashSet[hashKey],
-            b: { ids, item }
+            b: value
           });
         }
       });
@@ -69,9 +70,9 @@ angular
 
       const hashSet = Object.create(null);
 
-      items.forEach(item => {
+      items.forEach((item, index) => {
         const ids = generateTrackUniqueIds(item);
-        const value = { ids, item };
+        const value = { ids, item, index };
         const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local && ids.id in hashSet) {
           result.ids.push({

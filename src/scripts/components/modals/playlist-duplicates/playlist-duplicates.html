@@ -1,30 +1,28 @@
 <div class="modal-header">
-  <h3 class="modal-title">Duplicates for {{:: vm.playlist.name }} ({{:: vm.trackItems.length }} tracks)</h3>
+  <h3 class="modal-title">Duplicates for {{:: vm.playlist.name }} ({{ vm.trackItems.length }} tracks)</h3>
 </div>
 <div class="modal-body replace-tracks-modal">
-  <section ng-if="vm.duplicates.ids.length">
-    <h3>Tracks with same ID:</h3>
+  <section ng-if="::vm.duplicates.ids.length" class="duplicates-section">
+    <h3 class="duplicates-header">Tracks with same ID ({{:: vm.duplicates.ids.length}})</h3>
     <ul class="duplicates">
       <li class="duplicate" ng-repeat="duplicate in ::vm.duplicates.ids">
-        <div class="track original-track" ng-init="trackA = duplicate.a.item.track;">
-          {{:: trackA.artists | artists }} - {{:: trackA.name }} ({{:: trackA.album.name }})
-        </div>
-        <a href="#" ng-click="vm.removeDuplicate(duplicate)">Remove track</a>
+        <span class="track original-track" ng-class="{ 'track-removed': duplicate.a.removed }">{{:: duplicate.a.item.track | track }}</span>
+        <a href="javascript:void(0)" ng-click="vm.removeDuplicate(duplicate.a)" ng-if="!duplicate.a.removed">Remove track</a>
       </li>
     </ul>
   </section>
-  <section ng-if="vm.duplicates.titles.length">
-    <h3>Tracks with same title:</h3>
+  <section ng-if="::vm.duplicates.titles.length" class="duplicates-section">
+    <h3 class="duplicates-header">Tracks with same title ({{:: vm.duplicates.titles.length}})</h3>
     <ul class="duplicates">
-      <li class="duplicate" ng-repeat="duplicate in vm.duplicates.titles">
-        <div class="track original-track" ng-init="trackA = duplicate.a.item.track;">
-          {{:: trackA.artists | artists }} - {{:: trackA.name }} ({{:: trackA.album.name }})
+      <li class="duplicate two-tracks-duplicate" ng-repeat="duplicate in vm.duplicates.titles">
+        <div>
+          <span class="track original-track" ng-class="{ 'track-removed': duplicate.a.removed }">{{:: duplicate.a.item.track | track }}</span>
+          <a href="javascript:void(0)" ng-click="vm.removeDuplicate(duplicate.a)" ng-if="!duplicate.a.removed">Remove track</a>
         </div>
-        <div class="versus">vs.</div>
-        <div class="track duplicate-track" ng-init="trackB = duplicate.b.item.track;">
-          {{:: trackB.artists | artists }} - {{:: trackB.name }} ({{:: trackB.album.name }})
+        <div>
+          <span class="track duplicate-track" ng-class="{ 'track-removed': duplicate.b.removed }">{{:: duplicate.b.item.track | track }}</span>
+          <a href="javascript:void(0)" ng-click="vm.removeDuplicate(duplicate.b)" ng-if="!duplicate.b.removed">Remove track</a>
         </div>
-        <a href="#" ng-click="vm.removeDuplicate(duplicate)">Remove track</a>
       </li>
     </ul>
   </section>
