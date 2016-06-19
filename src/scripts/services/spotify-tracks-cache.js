@@ -39,7 +39,7 @@ angular
       return defer.promise;
     }
 
-    function refresh(playlist) {
+    function invalidate(playlist) {
       if (playlist.id in memory) {
         memory[playlist.id] = null;
       }
@@ -47,6 +47,6 @@ angular
 
     return {
       get: getTracks,
-      refresh
+      invalidate
     };
   });

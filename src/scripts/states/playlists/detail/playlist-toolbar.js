@@ -26,7 +26,7 @@ angular
     const playlist = vm.playlist;
     const profile = vm.profile;
 
-    // find duplicates button logic
+    // Find duplicates button logic
     function findPlaylistDuplicates() {
       const trackItems = vm.trackItems;
       const result = tracksComparer.compare(trackItems);

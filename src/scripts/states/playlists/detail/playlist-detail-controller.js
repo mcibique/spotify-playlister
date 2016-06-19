@@ -6,6 +6,8 @@ angular
     vm.refreshTracks = refreshTracks;
     vm.profile = profile;
 
+    loadItems(vm.playlist);
+
     function loadItems(playlist) {
       let notificationsCount = 0;
 
@@ -41,10 +43,8 @@ angular
       }
     }
 
-    loadItems(playlist);
-
     function refreshTracks(playlist) {
-      tracksCache.refresh(playlist);
+      tracksCache.invalidate(playlist);
       return loadItems(playlist);
     }
   });

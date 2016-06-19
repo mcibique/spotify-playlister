@@ -44,21 +44,13 @@ angular
 
     vm.filteredFromTracks = filterTracks(fromTracks, vm.lastXDays);
 
-    $scope.$watch(scope => scope.lastXDays, (newValue, oldValue) => {
-      if (newValue !== oldValue && !isNaN(newValue) && newValue >= 0) {
-        vm.filteredFromTracks = filterTracks(fromTracks, newValue);
+    $scope.$watch(() => vm.lastXDays, (newDays, oldDays) => {
+      if (newDays !== oldDays && !isNaN(newDays) && newDays >= 0) {
+        vm.filteredFromTracks = filterTracks(fromTracks, newDays);
       }
     });
 
     // compare
-    // vm.commonTracks = [];
-
-    // tracksComparer.compare(fromTracks, toTracks).then(function (commonTracks) {
-    //   vm.commonTracks = commonTracks.ids;
-    //   vm.commonTracks.forEach(function (track) {
-    //     track.isCommon = true;
-    //   });
-    // });
     const compareResult = tracksComparer.compare(fromTracks, toTracks);
     compareResult.ids.forEach(result => (result.a.isCommon = true));
     compareResult.titles.forEach(result => (result.a.isCommon = true));

@@ -6,7 +6,7 @@ angular
         return;
       }
 
-      if (!auth.getKey()) {
+      if (!auth.isLoggedIn()) {
         $log.debug('Unauthenticated request. Redirecting to login.');
         event.preventDefault();
         $state.go('login');
@@ -35,5 +35,13 @@ angular
       $log.debug('Auth code cleared.');
     }
 
-    return { getKey, setKey, clearKey };
+    function isLoggedIn() {
+      return !!getKey();
+    }
+
+    function logout() {
+      return clearKey();
+    }
+
+    return { getKey, setKey, clearKey, isLoggedIn, logout };
   });

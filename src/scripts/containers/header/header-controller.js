@@ -3,14 +3,10 @@ angular
   .controller('HeaderController', function HeaderController($state, auth) {
     const vm = this;
     vm.logout = logout;
-    vm.isLoggedIn = isLoggedIn;
+    vm.isLoggedIn = () => auth.isLoggedIn();
 
     function logout() {
-      auth.clearKey();
+      auth.logout();
       $state.go('login');
-    }
-
-    function isLoggedIn() {
-      return !!auth.getKey();
     }
   });

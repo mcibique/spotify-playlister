@@ -17,10 +17,7 @@ angular
     }
 
     function comapareTwoTrackLists(itemsToCompareA, itemsToCompareB) {
-      const result = {
-        ids: [],
-        titles: []
-      };
+      const result = emptyResult();
 
       let itemsA = itemsToCompareA;
       let itemsB = itemsToCompareB;
@@ -47,15 +44,9 @@ angular
         const value = { ids, item, index };
         const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local && ids.id in hashSet) {
-          result.ids.push({
-            a: hashSet[ids.id],
-            b: value
-          });
+          result.ids.push({ a: hashSet[ids.id], b: value });
         } else if (hashKey in hashSet) {
-          result.titles.push({
-            a: hashSet[hashKey],
-            b: value
-          });
+          result.titles.push({ a: hashSet[hashKey], b: value });
         }
       });
 
@@ -63,11 +54,7 @@ angular
     }
 
     function compareSingleTrackList(items) {
-      const result = {
-        ids: [],
-        titles: []
-      };
-
+      const result = emptyResult();
       const hashSet = Object.create(null);
 
       items.forEach((item, index) => {
@@ -75,15 +62,9 @@ angular
         const value = { ids, item, index };
         const hashKey = `${ids.title}-${ids.artists}`;
         if (!ids.local && ids.id in hashSet) {
-          result.ids.push({
-            a: hashSet[ids.id],
-            b: value
-          });
+          result.ids.push({ a: hashSet[ids.id], b: value });
         } else if (hashKey in hashSet) {
-          result.titles.push({
-            a: hashSet[hashKey],
-            b: value
-          });
+          result.titles.push({ a: hashSet[hashKey], b: value });
         } else {
           if (!ids.local) {
             hashSet[ids.id] = value;
@@ -95,12 +76,13 @@ angular
       return result;
     }
 
+    function emptyResult() {
+      return { ids: [], titles: [] };
+    }
+
     function compare(itemsA, itemsB) {
       if (!itemsA && !itemsB) {
-        return {
-          ids: [],
-          titles: []
-        };
+        return emptyResult();
       }
       if (itemsA && !itemsB) {
         return compareSingleTrackList(itemsA);

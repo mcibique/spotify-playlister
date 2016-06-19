@@ -11,13 +11,13 @@ angular
       return sweetAlert(title, message, 'success');
     }
 
-    function error(title, message) {
-      return sweetAlert(title, message, 'error');
-    }
-
     function warning(title, message) {
       return sweetAlert(title, message, 'warning');
     }
 
-    return { info, success, error, warning };
+    function error(title, message) {
+      return sweetAlert(title, message, 'error');
+    }
+
+    return { info, success, warning, error };
   });
