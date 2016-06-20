@@ -2,16 +2,17 @@
   "name": "spotify-playlister",
   "version": "1.0.0",
   "description": "No description so far.",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp build:dist",
+    "start": "gulp serve:dev",
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/mcibique/spotify-playlister.git"
   },
   "author": "mcibique",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mcibique/spotify-playlister/issues"
   },
