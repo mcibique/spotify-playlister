@@ -12,7 +12,10 @@ export default {
   fonts: 'src/fonts/**/*',
   views: 'src/scripts/**/*.html',
   index: 'src/index.html',
-  js: 'src/scripts/**/*.js',
+  js: [
+    'src/scripts/**/*.js',
+    '!src/scripts/**/*.spec.js'
+  ],
   scss: 'src/styles/**/*.scss',
   images: 'src/images/**/*',
   templates: [

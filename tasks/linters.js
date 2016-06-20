@@ -15,7 +15,7 @@ gulp.task('linter-html', function linterHtml() {
 });
 
 gulp.task('linter-js-src', function linterJsSrc() {
-  return gulp.src([paths.js, '!src/scripts/config.js'])
+  return gulp.src([...paths.js, '!src/scripts/config.js'])
     .pipe(eslint('src/.eslintrc.js'))
     .pipe(eslint.format());
 });

@@ -5,6 +5,9 @@ angular
       if (!artists || artists.length === 0) {
         return '';
       }
-      return artists.map(artist => artist.name || '').join(', ');
+      return artists
+        .filter(artist => !!artist.name)
+        .map(artist => artist.name || '')
+        .join(', ');
     };
   });

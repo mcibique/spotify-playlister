@@ -25,7 +25,7 @@ import paths from './paths';
  * dist build: main application
  */
 gulp.task('build-js', function buildJs() {
-  return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js', '!**/templates.js'])
+  return gulp.src([...paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js', '!**/templates.js'])
     .pipe(babel())
     .pipe(filesort())
     .pipe(concat('app.js'))
@@ -133,7 +133,7 @@ gulp.task('build-views', function buildViews() {
  */
 gulp.task('build-index', function buildIndex() {
   return gulp.src(paths.index)
-    .pipe(inject(gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js'], {
+    .pipe(inject(gulp.src([...paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-debug.js'], {
       read: false
     })))
     .pipe(inject(gulp.src(paths.jsVendor, {

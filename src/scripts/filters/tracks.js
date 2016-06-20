@@ -7,13 +7,21 @@ angular
         return '';
       }
       let result = artistsFilter(track.artists);
-      if (result) {
-        result += ' - ';
+
+      if (track.name) {
+        if (result) {
+          result += ' - ';
+        }
+        result += track.name;
       }
-      result += track.name;
+
       if (track.album && track.album.name) {
-        result += ` (${track.album.name})`;
+        if (result) {
+          result += ' ';
+        }
+        result += `(${track.album.name})`;
       }
+
       return result;
     };
   });

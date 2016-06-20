@@ -26,7 +26,7 @@ gulp.task('html', function html() {
 });
 
 gulp.task('js', function js() {
-  return gulp.src([paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'])
+  return gulp.src([...paths.js, '!**/spotify-credentials.js', '!**/spotify-credentials-dist.js'])
     .pipe(eslint('src/.eslintrc.js'))
     .pipe(eslint.format())
     .pipe(sourcemaps.init())
